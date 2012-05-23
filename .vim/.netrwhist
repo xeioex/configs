@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/media/os0/home/xeioex/workspace/undev/deb-playout/Headers/Playout/Inputs'
+let g:netrw_dirhist_2='/media/os0/home/xeioex/workspace/undev/deb-playout/MLStreams/Sources/SPIF2'
+let g:netrw_dirhist_3='/home/xeioex/.vim/plugin'
+let g:netrw_dirhist_4='/media/os0/home/xeioex/workspace/undev/deb-playout/Sources/Common'

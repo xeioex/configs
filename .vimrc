@@ -1,6 +1,6 @@
 "spaces number per \t
-set tabstop=4
-set shiftwidth=4
+set tabstop=8
+set shiftwidth=8
 set smarttab
 
 "wrap long strings
@@ -33,6 +33,11 @@ set statusline=%f%m%r%h%w\ %y\ enc:%{&enc}\ ff:%{&ff}\ fenc:%{&fenc}%=(ch:%3b\ h
 
 "hint searching
 set hls
+
+"path variable
+set path+=Headers,Sources,MLStreams/Sources/,MLStreams/Headers/,MLStreams/MLFoundation/Sources/,MLStreams/MLFoundation/Headers/
+
+hi Normal ctermbg=darkgrey
 
 "===========
 "   maps
