@@ -18,7 +18,7 @@ alias config-gcc='sudo update-alternatives --config gcc'
 #exports 
 export HISTTIMEFORMAT='%F %T '
 export PROMPT_COMMAND='history -a;history -n'
-export PS1='[`date +'%m-%d-%H:%M'`] \u@\h \w\n \$'
+export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ '
 export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 export HISTIGNORE="&:ls:[bf]g:exit:[ ]*:ssh:history"
