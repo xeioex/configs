@@ -1,3 +1,6 @@
+"temporarily
+set makeprg=scons
+
 "spaces number per \t
 set tabstop=8
 set shiftwidth=8
@@ -39,6 +42,10 @@ set path+=Headers,Sources,MLStreams/Sources/,MLStreams/Headers/,MLStreams/MLFoun
 
 hi Normal ctermbg=darkgrey
 
+"switchbuf
+" Vim will jump to that window, instead of creating a new window
+set switchbuf=useopen
+
 "===========
 "   maps
 "===========
@@ -67,6 +74,24 @@ map <F7> :tprev <CR>
 "next tag
 imap <F8> <Esc> :tnext <CR>i
 map <F8> :tnext <CR>
+
+"copen
+imap <C-p> <Esc> :cp <CR>i
+map <C-p> :cp <CR>
+imap <C-n> <Esc> :cn <CR>i
+map <C-n> :cn <CR>
+
+"buffer
+imap <C-K> <Esc> :bp <CR>i
+map <C-K> :bp <CR>
+imap <C-L> <Esc> :bn <CR>i
+map <C-L> :bn <CR>
+
+
+" increase/decrease number under cursor
+" moved to avoid conflict with screen's (C-a) shortcut
+nnoremap <C-o> <C-x>
+nnoremap <C-p> <C-a>
 
 "autocomplete by <Tab> for current active syntax
  function! InsertTabWrapper(direction)
@@ -119,3 +144,17 @@ endfunction
 command! -complete=file -nargs=* Git call s:RunShellCommand('git '.<q-args>)
 command! -complete=file -nargs=* Svn call s:RunShellCommand('svn '.<q-args>)
 command! -complete=file -nargs=* Egrep call s:RunShellCommand('egrep '.<q-args>)
+command! -complete=file -nargs=* Gitk call s:RunShellCommand('gitk --all '.<q-args>)
+
+
+" set syntax hightlight for certain file types
+syntax on
+filetype on
+au BufNewFile,BufRead *.nu set filetype=lisp
+au BufNewFile,BufRead *.plist set filetype=xml
+
+
+"
+set matchpairs+=<:>
+set matchpairs+=[:]
+
