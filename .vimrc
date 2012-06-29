@@ -5,17 +5,19 @@ set makeprg=scons
 set tabstop=8
 set shiftwidth=8
 set smarttab
+"turn a tabs into spaces
+set expandtab
 
 "wrap long strings
-set wrap
+set nowrap
 
 "autoindent for newlines
-set ai 
+set ai
 "C language style indents
 set cin
 
 "hint stuff
-set showmatch 
+set showmatch
 set hlsearch
 set incsearch
 set ignorecase
@@ -29,7 +31,7 @@ syntax on
 
 set backspace=2
 
-set cursorline 
+set cursorline
 
 set laststatus=2   " show status line always
 set statusline=%f%m%r%h%w\ %y\ enc:%{&enc}\ ff:%{&ff}\ fenc:%{&fenc}%=(ch:%3b\ hex:%2B)\ col:%2c\ line:%2l/%L\ [%2p%%]
@@ -46,6 +48,17 @@ hi Normal ctermbg=darkgrey
 " Vim will jump to that window, instead of creating a new window
 set switchbuf=useopen
 
+set title
+set nobackup
+
+"remember copy registers after quitting in the .viminfo file
+set viminfo='100,\"1000
+"remember undo after quitting
+set hidden
+set history=500
+
+set mouse=v
+
 "===========
 "   maps
 "===========
@@ -57,7 +70,7 @@ inoremap <silent> <C-u> <ESC>u:set paste<CR>.:set nopaste<CR>gi
 nnoremap <F3> :set nonumber!<CR>
 
 "new tab
-imap <F4> <Esc>:browse tabnew<CR> 
+imap <F4> <Esc>:browse tabnew<CR>
 map <F4> <Esc>:browse tabnew<CR>
 
 "prev tab <F6>
@@ -82,16 +95,15 @@ imap <C-n> <Esc> :cn <CR>i
 map <C-n> :cn <CR>
 
 "buffer
-imap <C-K> <Esc> :bp <CR>i
-map <C-K> :bp <CR>
-imap <C-L> <Esc> :bn <CR>i
-map <C-L> :bn <CR>
-
+"nmap <M-LEFT> :bN <CR>
+"map <M-RIGHT> :bn <CR>
 
 " increase/decrease number under cursor
 " moved to avoid conflict with screen's (C-a) shortcut
 nnoremap <C-o> <C-x>
 nnoremap <C-p> <C-a>
+
+
 
 "autocomplete by <Tab> for current active syntax
  function! InsertTabWrapper(direction)
@@ -110,6 +122,7 @@ nnoremap <C-p> <C-a>
  set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 
  set wildmenu
+ set wildignore=*.o,*.obj,*.bak,*.exe,*.py[co],*.swp,*~,*.pyc,.svn
  set wcm=<Tab>
  menu Encoding.koi8-r  :e ++enc=koi8-r<CR>
  menu Encoding.cp1251  :e ++enc=cp1251<CR>
@@ -143,7 +156,8 @@ endfunction
 
 command! -complete=file -nargs=* Git call s:RunShellCommand('git '.<q-args>)
 command! -complete=file -nargs=* Svn call s:RunShellCommand('svn '.<q-args>)
-command! -complete=file -nargs=* Egrep call s:RunShellCommand('egrep '.<q-args>)
+command! -complete=file -nargs=* Egrep call s:RunShellCommand('egrep '.<q-args>.' -RI ./')
+command! -complete=file -nargs=* Mgrep call s:RunShellCommand('egrep '.<q-args>)
 command! -complete=file -nargs=* Gitk call s:RunShellCommand('gitk --all '.<q-args>)
 
 
@@ -157,4 +171,27 @@ au BufNewFile,BufRead *.plist set filetype=xml
 "
 set matchpairs+=<:>
 set matchpairs+=[:]
+
+
+"runtime path manipulator
+call pathogen#infect()
+
+
+"https://github.com/xolox/vim-reload
+" example - :ReloadScript ~/.vim/plugin/reload.vim
+"let g:reload_on_write = 0
+
+"JSON syntax hightlight
+au! BufRead,BufNewFile *.json set filetype=json
+
+augroup json_autocmd
+autocmd!
+autocmd FileType json set autoindent
+autocmd FileType json set formatoptions=tcq2l
+autocmd FileType json set textwidth=78 shiftwidth=2
+autocmd FileType json set softtabstop=2 tabstop=8
+autocmd FileType json set expandtab
+autocmd FileType json set foldmethod=syntax
+augroup END
+
 

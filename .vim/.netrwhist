@@ -1,8 +1,9 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_cnt =7
 let g:netrw_dirhist_1='/media/os0/home/xeioex/workspace/undev/deb-playout/Sources/Common'
 let g:netrw_dirhist_2='/media/os0/home/xeioex/workspace/undev/deb-playout/Sources'
 let g:netrw_dirhist_3='/media/os0/home/xeioex/workspace/undev/deb-playout'
 let g:netrw_dirhist_4='/home/xeioex/.vim/bundle/nerdtree'
 let g:netrw_dirhist_5='/home/xeioex/.vim/autoload'
 let g:netrw_dirhist_6='/home/xeioex/.vim/bundle'
+let g:netrw_dirhist_7='/media/os0/home/xeioex/workspace/undev/deb-playout'
