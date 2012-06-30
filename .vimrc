@@ -195,3 +195,29 @@ autocmd FileType json set foldmethod=syntax
 augroup END
 
 
+"pathogen
+filetype off
+
+call pathogen#helptags()
+call pathogen#runtime_append_all_bundles()
+
+filetype plugin on
+filetype plugin indent on
+
+"vundle (plugin manager/updater)
+set nocompatible
+filetype off  " required!
+
+set rtp+=~/.vim/vundle.git/ 
+call vundle#rc()
+
+"path to github or other repo for plugins
+Bundle 'L9'
+Bundle 'tpope/vim-fugitive'
+Bundle 'FuzzyFinder'
+Bundle 'scrooloose/nerdtree'
+
+" non github repos
+Bundle 'git://git.wincent.com/command-t.git'
+
+filetype plugin indent on     " required!
