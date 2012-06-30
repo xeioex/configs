@@ -69,17 +69,8 @@ inoremap <silent> <C-u> <ESC>u:set paste<CR>.:set nopaste<CR>gi
 
 nnoremap <F3> :set nonumber!<CR>
 
-"new tab
-imap <F4> <Esc>:browse tabnew<CR>
-map <F4> <Esc>:browse tabnew<CR>
-
-"prev tab <F6>
-imap <F5> <Esc> :tabprev <CR>i
-map <F5> :tabprev <CR>
-
-"next tab <F6>
-imap <F6> <Esc> :tabnext <CR>i
-map <F6> :tabnext <CR>
+"Gundo plugin toggle
+nnoremap <F5> :GundoToggle<CR>
 
 "prev tag
 imap <F7> <Esc> :tprev <CR>i
@@ -100,8 +91,8 @@ map <C-n> :cn <CR>
 
 " increase/decrease number under cursor
 " moved to avoid conflict with screen's (C-a) shortcut
-nnoremap <C-o> <C-x>
-nnoremap <C-p> <C-a>
+nnoremap <C-k> <C-x>
+nnoremap <C-l> <C-a>
 
 
 
@@ -216,6 +207,7 @@ Bundle 'L9'
 Bundle 'tpope/vim-fugitive'
 Bundle 'FuzzyFinder'
 Bundle 'scrooloose/nerdtree'
+Bundle 'sjl/gundo.vim'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
