@@ -421,7 +421,7 @@ CONF_OPT_PERL = --enable-perlinterp
 # Build two separate versions of Vim in that case.
 CONF_OPT_PYTHON = --enable-pythoninterp
 #CONF_OPT_PYTHON = --enable-pythoninterp=dynamic
-CONF_OPT_PYTHON3 = --enable-python3interp
+#CONF_OPT_PYTHON3 = --enable-python3interp
 #CONF_OPT_PYTHON3 = --enable-python3interp=dynamic
 
 # RUBY

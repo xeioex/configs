@@ -159,13 +159,10 @@ au BufNewFile,BufRead *.nu set filetype=lisp
 au BufNewFile,BufRead *.plist set filetype=xml
 
 
-"
+" matchpairs
 set matchpairs+=<:>
 set matchpairs+=[:]
 
-
-"runtime path manipulator
-call pathogen#infect()
 
 
 "https://github.com/xolox/vim-reload
@@ -186,9 +183,11 @@ autocmd FileType json set foldmethod=syntax
 augroup END
 
 
-"pathogen
+"pathogen (runtime path manipulator)
+
 filetype off
 
+call pathogen#infect()
 call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 
@@ -208,8 +207,22 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'FuzzyFinder'
 Bundle 'scrooloose/nerdtree'
 Bundle 'sjl/gundo.vim'
+Bundle 'vim-scripts/a.vim'
+Bundle 'vim-scripts/GdbFromVim'
+Bundle 'vim-scripts/JSON.vim'
+Bundle 'jjgod/vim-cocoa'
+Bundle 'vim-scripts/LanguageTool'
+Bundle 'danchoi/goog'
+Bundle 'xolox/vim-reload'
+Bundle 'tpope/vim-surround'
+Bundle 'msanders/snipmate.vim'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
 
 filetype plugin indent on     " required!
+
+
+"Languagetool options
+let g:languagetool_jar=$HOME . '/languagetool/LanguageTool.jar'
+let g:languagetool_disable_rules='WHITESPACE_RULE,EN_QUOTES,UPPERCASE_SENTENCE_START,COMMA_PARENTHESIS_WHITESPACE'
