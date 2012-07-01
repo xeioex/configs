@@ -1,3 +1,4 @@
+set nocompatible
 "temporarily
 set makeprg=scons
 
@@ -9,7 +10,7 @@ set smarttab
 set expandtab
 
 "wrap long strings
-set nowrap
+set wrap
 
 "autoindent for newlines
 set ai
@@ -22,6 +23,9 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+
+" turnoff highlight
+nnoremap <leader><space> :noh<cr>
 
 "lazy screen redrawing
 set lz
@@ -59,9 +63,22 @@ set history=500
 
 set mouse=v
 
+set undofile
+set backspace=indent,eol,start
+
+" search and regexp
+nnoremap / /\v
+vnoremap / /\v
+
+set gdefault
+
 "===========
 "   maps
 "===========
+
+inoremap <F1> <ESC>
+nnoremap <F1> <ESC>
+vnoremap <F1> <ESC>
 
 " after pastetoggle
 set pastetoggle=<F2>
@@ -195,7 +212,6 @@ filetype plugin on
 filetype plugin indent on
 
 "vundle (plugin manager/updater)
-set nocompatible
 filetype off  " required!
 
 set rtp+=~/.vim/vundle.git/ 
@@ -215,7 +231,12 @@ Bundle 'vim-scripts/LanguageTool'
 Bundle 'danchoi/goog'
 Bundle 'xolox/vim-reload'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-repeat'
 Bundle 'msanders/snipmate.vim'
+Bundle 'sukima/xmledit'
+Bundle 'bkad/CamelCaseMotion'
+Bundle 'vim-scripts/Rainbow-Parenthesis'
+Bundle 'xeioex/Conque-Shell'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
