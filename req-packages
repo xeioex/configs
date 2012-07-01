@@ -1,1 +1,1 @@
-sudo apt-get install pip etags elinks
+sudo apt-get install pip etags elinks ack-grep

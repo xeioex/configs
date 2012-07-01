@@ -5,9 +5,14 @@ set makeprg=scons
 "spaces number per \t
 set tabstop=8
 set shiftwidth=8
+set softtabstop=8
 set smarttab
 "turn a tabs into spaces
 set expandtab
+
+"list chars
+set listchars=tab:▸\ ,eol:¬
+
 
 "wrap long strings
 set wrap
@@ -58,6 +63,8 @@ set nobackup
 "remember copy registers after quitting in the .viminfo file
 set viminfo='100,\"1000
 "remember undo after quitting
+
+"allow switch from non-saved file
 set hidden
 set history=500
 
@@ -86,32 +93,54 @@ inoremap <silent> <C-u> <ESC>u:set paste<CR>.:set nopaste<CR>gi
 
 nnoremap <F3> :set nonumber!<CR>
 
+"Nerdtree toggle
+nnoremap <F4> :NERDTreeToggle <CR>
+
 "Gundo plugin toggle
 nnoremap <F5> :GundoToggle<CR>
 
+"list toggle (invisible character)
+nnoremap <F6> :set list!<CR>
+
+"Strip white spaces
+nnoremap <silent> <F7> :call <SID>StripTrailingWhitespaces()<CR>
+
+"=====leader(custom) maps=====
 "prev tag
-imap <F7> <Esc> :tprev <CR>i
-map <F7> :tprev <CR>
+"imap <F7> <Esc> :tprev <CR>i
+"map <F7> :tprev <CR>
+nnoremap <leader>e :tprev <CR>
+
 "next tag
-imap <F8> <Esc> :tnext <CR>i
-map <F8> :tnext <CR>
+"imap <F8> <Esc> :tnext <CR>i
+"map <F8> :tnext <CR>
+nnoremap <leader>r :tnext <CR>
 
 "copen
-imap <C-p> <Esc> :cp <CR>i
-map <C-p> :cp <CR>
-imap <C-n> <Esc> :cn <CR>i
-map <C-n> :cn <CR>
+"imap <C-p> <Esc> :cp <CR>i
+"map <C-p> :cp <CR>
+nnoremap <leader>q :cp <CR>
 
-"buffer
-"nmap <M-LEFT> :bN <CR>
-"map <M-RIGHT> :bn <CR>
+"imap <C-n> <Esc> :cn <CR>i
+"map <C-n> :cn <CR>
+nnoremap <leader>w :cn <CR>
+
+"buffer navigation
+nnoremap <leader>s :bprevious <CR>
+nnoremap <leader>d :bn <CR>
 
 " increase/decrease number under cursor
 " moved to avoid conflict with screen's (C-a) shortcut
-nnoremap <C-k> <C-x>
-nnoremap <C-l> <C-a>
+nnoremap <leader>z <C-x>
+nnoremap <leader>x <C-a>
 
+"strip all trailing whitespace in the current file
+nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
 
+"quickly open up my ~/.vimrc file in a vertically split
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+
+"=========================================
 
 "autocomplete by <Tab> for current active syntax
  function! InsertTabWrapper(direction)
@@ -180,12 +209,6 @@ au BufNewFile,BufRead *.plist set filetype=xml
 set matchpairs+=<:>
 set matchpairs+=[:]
 
-
-
-"https://github.com/xolox/vim-reload
-" example - :ReloadScript ~/.vim/plugin/reload.vim
-"let g:reload_on_write = 0
-
 "JSON syntax hightlight
 au! BufRead,BufNewFile *.json set filetype=json
 
@@ -198,6 +221,20 @@ autocmd FileType json set softtabstop=2 tabstop=8
 autocmd FileType json set expandtab
 autocmd FileType json set foldmethod=syntax
 augroup END
+
+
+" Stripwhitespace
+function! <SID>StripTrailingWhitespaces()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
 
 
 "pathogen (runtime path manipulator)
@@ -214,7 +251,7 @@ filetype plugin indent on
 "vundle (plugin manager/updater)
 filetype off  " required!
 
-set rtp+=~/.vim/vundle.git/ 
+set rtp+=~/.vim/vundle.git/
 call vundle#rc()
 
 "path to github or other repo for plugins
@@ -237,6 +274,9 @@ Bundle 'sukima/xmledit'
 Bundle 'bkad/CamelCaseMotion'
 Bundle 'vim-scripts/Rainbow-Parenthesis'
 Bundle 'xeioex/Conque-Shell'
+Bundle 'mileszs/ack.vim'
+Bundle 'vim-scripts/scratch.vim'
+Bundle 'godlygeek/tabular'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
