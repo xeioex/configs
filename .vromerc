@@ -1,0 +1,3 @@
+" Define search engines. the value should be valid json looks like below.
+" Please remember the first searchengine is the default one. in the below one, it is google
+set searchengines={"goog":"http://www.google.com/search?q={{keyword}}", "yahoo":"http://search.yahoo.com/search?p={{keyword}}","wiki":"http://en.wikipedia.org/wiki/{{keyword}}","answers":"http://www.answers.com/main/ntquery?s={{keyword}}","yubnub":"http://yubnub.org/parser/parse?command={{keyword}}"}
