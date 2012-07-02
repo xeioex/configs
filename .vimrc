@@ -249,6 +249,7 @@ filetype plugin on
 filetype plugin indent on
 
 "vundle (plugin manager/updater)
+" https://github.com/gmarik/vundle/
 filetype off  " required!
 
 set rtp+=~/.vim/vundle.git/
