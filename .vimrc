@@ -249,7 +249,6 @@ filetype plugin on
 filetype plugin indent on
 
 "vundle (plugin manager/updater)
-" https://github.com/gmarik/vundle/
 filetype off  " required!
 
 set rtp+=~/.vim/vundle.git/
@@ -273,11 +272,12 @@ Bundle 'tpope/vim-repeat'
 Bundle 'msanders/snipmate.vim'
 Bundle 'sukima/xmledit'
 Bundle 'bkad/CamelCaseMotion'
-Bundle 'vim-scripts/Rainbow-Parenthesis'
+Bundle 'hrp/rainbow-parenthesis'
 Bundle 'xeioex/Conque-Shell'
 Bundle 'mileszs/ack.vim'
 Bundle 'vim-scripts/scratch.vim'
 Bundle 'godlygeek/tabular'
+Bundle 'corntrace/bufexplorer'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
