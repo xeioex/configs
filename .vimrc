@@ -11,8 +11,7 @@ set smarttab
 set expandtab
 
 "list chars
-set listchars=tab:▸\ ,eol:¬
-
+set listchars=tab:▸-,eol:¬,trail:@,nbsp:=
 
 "wrap long strings
 set wrap
@@ -130,7 +129,7 @@ nnoremap <leader>s :bprevious <CR>
 nnoremap <leader>d :bn <CR>
 
 " increase/decrease number under cursor
-" moved to avoid conflict with screen's (C-a) shortcut
+" moved to avoid conflict with tmux's (C-a) shortcut
 nnoremap <leader>z <C-x>
 nnoremap <leader>x <C-a>
 
@@ -261,7 +260,7 @@ Bundle 'FuzzyFinder'
 Bundle 'scrooloose/nerdtree'
 Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/a.vim'
-Bundle 'vim-scripts/GdbFromVim'
+"Bundle 'vim-scripts/GdbFromVim'
 Bundle 'vim-scripts/JSON.vim'
 Bundle 'jjgod/vim-cocoa'
 Bundle 'vim-scripts/LanguageTool'
@@ -288,3 +287,32 @@ filetype plugin indent on     " required!
 "Languagetool options
 let g:languagetool_jar=$HOME . '/languagetool/LanguageTool.jar'
 let g:languagetool_disable_rules='WHITESPACE_RULE,EN_QUOTES,UPPERCASE_SENTENCE_START,COMMA_PARENTHESIS_WHITESPACE'
+
+" Set tabstop, softtabstop and shiftwidth to the same value
+command! -nargs=* Stab call Stab()
+function! Stab()
+  let l:tabstop = 1 * input('set tabstop = softtabstop = shiftwidth = ')
+  if l:tabstop > 0
+    let &l:sts = l:tabstop
+    let &l:ts = l:tabstop
+    let &l:sw = l:tabstop
+  endif
+  call SummarizeTabs()
+endfunction
+
+function! SummarizeTabs()
+  try
+    echohl ModeMsg
+    echon 'tabstop='.&l:ts
+    echon ' shiftwidth='.&l:sw
+    echon ' softtabstop='.&l:sts
+    if &l:et
+      echon ' expandtab'
+    else
+      echon ' noexpandtab'
+    endif
+  finally
+    echohl None
+  endtry
+endfunction
+
