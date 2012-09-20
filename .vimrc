@@ -32,7 +32,7 @@ set smartcase
 nnoremap <leader><space> :noh<cr>
 
 "lazy screen redrawing
-set lz
+"set lz
 
 set number
 syntax on
@@ -78,6 +78,9 @@ vnoremap / /\v
 
 set gdefault
 
+"so changed buffers are automatically saved when switching to another buffer
+set autowrite
+
 "===========
 "   maps
 "===========
@@ -102,7 +105,7 @@ nnoremap <F5> :GundoToggle<CR>
 nnoremap <F6> :set list!<CR>
 
 "Strip white spaces
-nnoremap <silent> <F7> :call <SID>StripTrailingWhitespaces()<CR>
+nnoremap <F7> :call <SID>StripTrailingWhitespaces()<CR>
 
 "=====leader(custom) maps=====
 "prev tag
@@ -172,22 +175,22 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 function! s:RunShellCommand(cmdline)
-	echo a:cmdline
-	let expanded_cmdline = a:cmdline
-	for part in split(a:cmdline, ' ')
-	if part[0] =~ '\v[%#<]'
+        echo a:cmdline
+        let expanded_cmdline = a:cmdline
+        for part in split(a:cmdline, ' ')
+        if part[0] =~ '\v[%#<]'
 let expanded_part = fnameescape(expand(part))
-	let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
-	endif
-	endfor
-	botright new
-	setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-	call setline(1, 'You entered:    ' . a:cmdline)
-	call setline(2, 'Expanded Form:  ' .expanded_cmdline)
-	call setline(3,substitute(getline(2),'.','=','g'))
-	execute '$read !'. expanded_cmdline
-	setlocal nomodifiable
-	1
+        let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
+        endif
+        endfor
+        botright new
+        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+        call setline(1, 'You entered:    ' . a:cmdline)
+        call setline(2, 'Expanded Form:  ' .expanded_cmdline)
+        call setline(3,substitute(getline(2),'.','=','g'))
+        execute '$read !'. expanded_cmdline
+        setlocal nomodifiable
+        1
 endfunction
 
 command! -complete=file -nargs=* Git call s:RunShellCommand('git '.<q-args>)
@@ -220,7 +223,6 @@ autocmd FileType json set softtabstop=2 tabstop=8
 autocmd FileType json set expandtab
 autocmd FileType json set foldmethod=syntax
 augroup END
-
 
 " Stripwhitespace
 function! <SID>StripTrailingWhitespaces()
@@ -315,4 +317,22 @@ function! SummarizeTabs()
     echohl None
   endtry
 endfunction
+
+if has("autocmd")
+  " Enable file type detection
+  filetype on
+
+  " Syntax of these languages is fussy over tabs Vs spaces
+  autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
+  autocmd FileType objc setlocal ts=8 sts=8 sw=8 expandtab
+  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+  " Customisations based on house-style (arbitrary)
+  autocmd FileType html setlocal ts=2 sts=2 sw=2 expandtab
+  autocmd FileType css setlocal ts=2 sts=2 sw=2 expandtab
+  autocmd FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
+
+  " Treat .rss files as XML
+  autocmd BufNewFile,BufRead *.rss setfiletype xml
+endif
 

@@ -1,3 +1,7 @@
+[user]
+	name = Dmitry Volyntsev
+	email = xeioexception@gmail.com
+
 [alias] 
 	st = status -s
 	cm = commit 
@@ -19,3 +23,5 @@
 	prune-all = !git remote | xargs -n 1 git remote prune
 	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
 	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+	sub-update = "submodule update --init --recursive"
+	out = push origin HEAD
