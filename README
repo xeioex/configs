@@ -2,3 +2,6 @@ My own config presets
 
 1. get latest vim source
         http://vim.wikia.com/wiki/Getting_the_Vim_source_with_Mercurial
+
+2. get ctags with Obj-C support
+        https://github.com/mcormier/ctags-ObjC-5.8.1.git
