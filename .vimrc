@@ -264,6 +264,9 @@ Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/a.vim'
 "Bundle 'vim-scripts/GdbFromVim'
 Bundle 'vim-scripts/JSON.vim'
+Bundle 'vim-scripts/errormarker.vim'
+Bundle 'vim-scripts/ifdef-highlighting'
+Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jjgod/vim-cocoa'
 Bundle 'vim-scripts/LanguageTool'
 Bundle 'danchoi/goog'
@@ -322,8 +325,8 @@ if has("autocmd")
   " Enable file type detection
   filetype on
 
-  " Syntax of these languages is fussy over tabs Vs spaces
-  autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
+  " Syntax of these languages is fussy over bs Vs spaces
+  autocmd FileType make setlocal ts=8 sts=8 sw8 noexpandtab
   autocmd FileType objc setlocal ts=8 sts=8 sw=8 expandtab
   autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
@@ -336,3 +339,13 @@ if has("autocmd")
   autocmd BufNewFile,BufRead *.rss setfiletype xml
 endif
 
+" smart source/header switch (fswitch plugin)
+ augroup mycodefiles
+   au!
+   au BufEnter *.h let b:fswitchdst  = 'm,c,cpp'
+   au BufEnter *.h let b:fswitchlocs = 'reg:|Headers/Playout|Sources|,reg:|Headers/MLStreams|Sources|,reg:|Headers/MLFoundation|Sources|'
+   au BufEnter *.m let b:fswitchdst  = 'h'
+   au BufEnter *.m let b:fswitchlocs = 'reg:|Sources|Headers/Playout|,reg:|Sources|Headers/MLStreams|,reg:|Sources|Headers/MLFoundation|'
+ augroup END
+
+nmap <silent> <Leader>of :FSHere<cr>
