@@ -4,4 +4,10 @@ My own config presets
         http://vim.wikia.com/wiki/Getting_the_Vim_source_with_Mercurial
 
 2. get ctags with Obj-C support
-        https://github.com/mcormier/ctags-ObjC-5.8.1.git
+        ctags from trunk
+        svn co https://ctags.svn.sourceforge.net/svnroot/ctags ctags
+        autoheaders
+        autoconf
+        configure
+        make -j4
+        sudo make install
