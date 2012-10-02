@@ -11,3 +11,5 @@ My own config presets
         configure
         make -j4
         sudo make install
+
+3. uncrustify - support autoindent for ObjectiveC
