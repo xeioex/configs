@@ -81,6 +81,8 @@ set gdefault
 "so changed buffers are automatically saved when switching to another buffer
 set autowrite
 
+" Highlights space at the end of a line
+let c_space_errors = 1
 "===========
 "   maps
 "===========
@@ -204,12 +206,14 @@ command! -complete=file -nargs=* Gitk call s:RunShellCommand('gitk --all '.<q-ar
 syntax on
 filetype on
 au BufNewFile,BufRead *.nu set filetype=lisp
+au BufNewFile,BufRead *.podsl set filetype=lisp
 au BufNewFile,BufRead *.plist set filetype=xml
 
 
 " matchpairs
 set matchpairs+=<:>
 set matchpairs+=[:]
+set matchpairs+=,:,
 
 "JSON syntax hightlight
 au! BufRead,BufNewFile *.json set filetype=json
@@ -349,3 +353,9 @@ endif
  augroup END
 
 nmap <silent> <Leader>of :FSHere<cr>
+
+
+" Folding options
+" Note, perl automatically sets foldmethod in the syntax file
+autocmd Syntax c,cpp,vim,xml,html,xhtml setlocal foldmethod=syntax
+autocmd Syntax c,cpp,vim,xml,html,xhtml,perl normal zR

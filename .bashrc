@@ -37,3 +37,4 @@ export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 export HISTIGNORE="&:ls:[bf]g:exit:[ ]*:ssh:history"
 
+alias prep='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern'
