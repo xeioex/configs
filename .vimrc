@@ -65,7 +65,7 @@ set viminfo='100,\"1000
 
 "allow switch from non-saved file
 set hidden
-set history=500
+set history=1500
 
 set mouse=v
 
@@ -208,6 +208,7 @@ filetype on
 au BufNewFile,BufRead *.nu set filetype=lisp
 au BufNewFile,BufRead *.podsl set filetype=lisp
 au BufNewFile,BufRead *.plist set filetype=xml
+au BufNewFile,BufRead SCons* set filetype=python
 
 
 " matchpairs
@@ -286,6 +287,8 @@ Bundle 'mileszs/ack.vim'
 Bundle 'vim-scripts/scratch.vim'
 Bundle 'godlygeek/tabular'
 Bundle 'corntrace/bufexplorer'
+Bundle 'scrooloose/syntastic'
+Bundle 'vim-scripts/AnsiEsc.vim'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'
