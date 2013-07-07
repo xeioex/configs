@@ -1,4 +1,8 @@
 set nocompatible
+
+"path variable
+set path+=.,,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams/MLFoundation/Sources/**,MLStreams/MLFoundation/Headers/** 
+
 "temporarily
 set makeprg=scons
 
@@ -47,9 +51,6 @@ set statusline=%f%m%r%h%w\ %y\ enc:%{&enc}\ ff:%{&ff}\ fenc:%{&fenc}%=(ch:%3b\ h
 "hint searching
 set hls
 
-"path variable
-set path+=Headers,Sources,MLStreams/Sources/,MLStreams/Headers/,MLStreams/MLFoundation/Sources/,MLStreams/MLFoundation/Headers/
-
 hi Normal ctermbg=darkgrey
 
 "switchbuf
@@ -65,12 +66,13 @@ set viminfo='100,\"1000
 
 "allow switch from non-saved file
 set hidden
-set history=1500
+set history=15000
 
 set mouse=v
 
-set undofile
 set backspace=indent,eol,start
+
+set nrformats=
 
 " search and regexp
 nnoremap / /\v
@@ -163,7 +165,7 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
  set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 
  set wildmenu
- set wildignore=*.o,*.obj,*.bak,*.exe,*.py[co],*.swp,*~,*.pyc,.svn
+ set wildignore=*.o,*.obj,*.bak,*.exe,*.swp,*~,*.pyc,.svn
  set wcm=<Tab>
  menu Encoding.koi8-r  :e ++enc=koi8-r<CR>
  menu Encoding.cp1251  :e ++enc=cp1251<CR>
