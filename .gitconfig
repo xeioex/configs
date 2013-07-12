@@ -1,7 +1,10 @@
+[include]
+       path = ~/.gitconfigprivate
 [alias] 
 	st = status -s
 	cm = commit 
 	pom = push origin master
+        merge = merge --no-ff
 	sst = status
 	br = branch
 	co = checkout
