@@ -1,5 +1,7 @@
 #PATHs
-PATH=/home/xeioex/java/jdk1.6.0_25/bin:$PATH
+PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
+PATH=/opt/llvm/llvm-3.3/bin/:$PATH
+PATH=$PATH:$HOME/.rvm/bin
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -22,19 +24,22 @@ alias ss='source ~/.bashrc'
 
 alias ls='ls --color=always'
 
-# Compiling
-alias findso='find ./ -type f -name "*.so"'
-alias finda='find ./ -type f -name "*.a"'
+alias find='find -regextype posix-egrep'
+
+# custom
+alias prep='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern'
 
 alias config-gcc='sudo update-alternatives --config gcc'
 
-#exports 
+# bash options 
 export HISTTIMEFORMAT='%F %T '
-#export PROMPT_COMMAND='history -a;history -n'
-#export PS1='[`date +'%m-%d-%H:%M'`] \u@\h \w\n \$'
 export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ '
-export HISTSIZE=10000
-export HISTCONTROL=ignoredups
-export HISTIGNORE="&:ls:[bf]g:exit:[ ]*:ssh:history"
+export HISTSIZE=100000
+export HISTCONTROL=erasedups
+# [ \t]*  - do not put to history cmd prefixed with space or tabs
+export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-alias prep='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern'
+# Run for each sub-shell 
+prep
+
+
