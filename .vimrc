@@ -6,6 +6,7 @@ source ~/.vim/tags.vim
 source ~/.vim/hls.vim
 source ~/.vim/tabs.vim
 source ~/.vim/syntax.vim
+source ~/.vim/navigation.vim
 
 " various routines
 source ~/.vim/routines.vim

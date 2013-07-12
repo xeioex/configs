@@ -1,16 +1,11 @@
 "path variable
 set path+=.,,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams/MLFoundation/Sources/**,MLStreams/MLFoundation/Headers/**,/usr/include/GNUstep/**
 
+" UTF-8 is the only format
+set encoding=utf-8
+
 "temporarily
 set makeprg=scons
-
-"spaces number per \t
-set tabstop=8
-set shiftwidth=8
-set softtabstop=8
-set smarttab
-"turn a tabs into spaces
-set expandtab
 
 "list chars
 set listchars=tab:▸-,eol:¬,trail:@,nbsp:=
@@ -72,3 +67,12 @@ set autowrite
 
 " Highlights space at the end of a line
 let c_space_errors = 1
+
+" Things to ignore
+set wildignore=*~
+set wildignore+=*vim/backups*
+set wildignore+=build/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif,*.pdf
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*.o,*.out,*.obj,*.git,*.rbc,*.class,*.svn,*.gem

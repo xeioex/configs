@@ -22,9 +22,21 @@ fi
 alias ainstall='sudo apt-get install'
 alias ss='source ~/.bashrc'
 
-alias ls='ls --color=always'
+alias ..="cd .."
+alias ....="cd ../.."
+alias ls='ls --color=auto'
 
 alias find='find -regextype posix-egrep'
+alias grep="egrep --color=auto"
+
+# Typo aliases
+alias ,,="cd .."
+alias ..l="cd .. && ls"
+alias cd..="cd .."
+alias gits="git s"
+alias mdkir="mkdir"
+alias gut="git"
+alias sudp="sudo"
 
 # custom
 alias prep='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern'
