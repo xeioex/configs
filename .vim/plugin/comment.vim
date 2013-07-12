@@ -161,8 +161,8 @@ function! CommentLine()
   " for VHDL and Haskell files use -- 
   elseif file_name =~ '\.vhd$' || file_name =~ '\.vhdl$' || file_name =~ '\.hs$'
     execute ":silent! normal ^gI-- \<ESC>\<down>^"
-  " for .lisp, .nu files
-  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' 
+  " for .lisp, .nu, .podsl files
+  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' || file_name =~ '\.podsl$'
     execute ":silent! normal ^i;\<ESC>\<down>^"
   " for all other files use # 
   else
@@ -209,8 +209,8 @@ function! UnCommentLine()
   " for VHDL and Haskell files use --
   elseif file_name =~ '\.vhd$' || file_name =~ '\.vhdl$' || file_name =~ '\.hs$'
     execute ":silent! normal :nohlsearch\<CR>:s/-- //\<CR>:nohlsearch\<CR>"
-  " for .lisp, .nu files
-  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' 
+  " for .lisp, .nu, .podsl files
+  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' || file_name =~ '\.podsl$'
     execute ":silent! normal :nohlsearch\<CR>:s/\\;//\<CR>:nohlsearch\<CR>"
   " for all other files use # 
   else
@@ -277,9 +277,9 @@ function! RangeCommentLine()
   " for VHDL and Haskell files use --
   elseif file_name =~ '\.vhd$' || file_name =~ '\.vhdl$' || file_name =~ '\.hs$'
     execute ":silent! normal ^gI-- \<ESC>\<down>^"
-  " for .lisp, .nu files
-  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' 
-    execute ":silent! normal :s/\\S/\\;\\0/\<CR>:nohlsearch<CR>"
+  " for .lisp, .nu, .podsl files
+  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' || file_name =~ '\.podsl$'
+    execute ":silent! normal :s/\S/;\0/\<CR>:nohlsearch<CR>"
   " for all other files use #  
   else
     execute ":silent! normal :s/\\S/\\#\\0/\<CR>:nohlsearch<CR>"
@@ -324,8 +324,8 @@ function! RangeUnCommentLine()
   " for VHDL and Haskell files use --
   elseif file_name =~ '\.vhd$' || file_name =~ '\.vhdl$' || file_name =~ '\.hs$'
     execute ":silent! normal :s/-- //\<CR>:nohlsearch\<CR>"
-  " for .lisp, .nu files
-  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' 
+  " for .lisp, .nu, .podsl files
+  elseif file_name =~ '\.lisp$' || file_name =~ '\.nu$' || file_name =~ '\.podsl$'
     execute ":silent! normal :s/\\;//\<CR>:nohlsearch\<CR>"
   " for all other files use # 
   else

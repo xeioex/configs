@@ -1,0 +1,4 @@
+--totals
+--languages=-javascript
+--exclude=.git
+-R
