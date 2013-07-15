@@ -26,7 +26,7 @@ alias ..="cd .."
 alias ....="cd ../.."
 alias ls='ls --color=auto'
 
-alias find='find -regextype posix-egrep'
+alias find='find ./ -regextype posix-egrep'
 alias grep="egrep --color=auto"
 
 # Typo aliases
