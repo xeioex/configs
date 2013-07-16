@@ -64,9 +64,8 @@ alias sudp="sudo"
 # custom
 alias prepare-workspace='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern; ulimit -c unlimited'
 
-alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-version='dpkg -l| grep playout'
-
+alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 
 # bash options 
 export HISTTIMEFORMAT='%F %T '
