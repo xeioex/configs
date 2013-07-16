@@ -4,7 +4,7 @@ source ~/.vim/maps.vim
 
 source ~/.vim/tags.vim
 source ~/.vim/hls.vim
-source ~/.vim/tabs.vim
+source ~/.vim/indent.vim
 source ~/.vim/syntax.vim
 source ~/.vim/navigation.vim
 

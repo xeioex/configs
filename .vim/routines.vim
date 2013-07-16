@@ -2,7 +2,7 @@
 nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
 
 " Stripwhitespace
-function! <SID>StripTrailingWhitespaces()
+function! StripTrailingWhitespaces()
     " Preparation: save last search, and cursor position.
     let _s=@/
     let l = line(".")

@@ -102,8 +102,12 @@ Bundle 'nelstrom/vim-qargs'
 " Highlight matching parens in a rainbow of colors
 Bundle 'vim-scripts/Rainbow-Parenthesis'
 
+"  It handles syntax, indenting, compiling, and more. Also included is support
+"  for CoffeeScript in Haml and HTML.
+Bundle 'kchmck/vim-coffee-script'
+
 " Conveniently shows loaded bundles and plugins
-Bundle 'mbadran/headlights'
+"Bundle 'mbadran/headlights'
 
 " non github repos
 Bundle 'git://git.wincent.com/command-t.git'

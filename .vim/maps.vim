@@ -19,7 +19,7 @@ nnoremap <F5> :GundoToggle<CR>
 nnoremap <F6> :set list!<CR>
 
 " Strip white spaces
-nnoremap <F7> :call <SID>StripTrailingWhitespaces()<CR>
+nnoremap <F7> :call StripTrailingWhitespaces()<CR>
 
 " turn on/off syntastic checker
 nnoremap <F8> :SyntasticToggleMode<CR>
