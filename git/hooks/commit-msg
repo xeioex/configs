@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# types
+declare -A TYPES
+TYPES["add"]="added files"
+TYPES["change"]="changed behaviour"
+TYPES["delete"]="deleted files"
+TYPES["enh"]="code enhancement (micro feature)"
+TYPES["fea"]="new feature"
+TYPES["fix"]="implemented fix"
+TYPES["merge"]="complex merge"
+TYPES["minor"]="minor or trivial (micro refactor, indenting)"
+TYPES["refactor"]="refactor"
+TYPES["sub"]="submodule update"
+TYPES["type"]="misprint fix"
+
+TDESC=""
+for t in "${!TYPES[@]}"
+do
+        TPATTERN+="\s*$t\s*|"        
+        TDESC+="$t - ${TYPES[$t]}\n"
+done
+TPATTERN=$(echo $TPATTERN| sed -e 's/|$//')
+TDESC=$(echo -e $TDESC| sort)
+
+TMESSAGE=$( cat <<EOF
+Please provide al least one type of commit:
+        format: [<commit_types_separated_by_comma>] <commit_message> 
+
+Types: 
+EOF
+)
+
+# ticket
+TWARN=$( cat << EOF
+Warning: please refer commit to ticket if possible 
+        format: fixes #<ticket_numbers_separated_by_comma> or 
+                        refs #<ticket_numbers_separated_by_comma> 
+EOF
+)
+
+# message
+VAGUEWORDLIST=('some' 'некотор' 'иногда' 'почему-то' 'странн' 'unknown');
+VPATTERN=""
+VLIST=""
+for v in "${VAGUEWORDLIST[@]}"
+do
+        VPATTERN+="$v|"        
+        VLIST+="$v "        
+done
+VPATTERN=$(echo $VPATTERN| sed -e 's/|$//')
+CWARN=$( cat << EOF
+Please avoid using vague description, be specific. 
+        Do not use words: 
+EOF
+)
+
+# Checks
+RES="$(egrep -i "(\[(($TPATTERN),?)+\]|Merge branch)" $1)"
+if [ -z "$RES" ]; then
+	echo -e >&2 "$TMESSAGE" "$TDESC"
+	exit 1
+# TODO: check mixed commit types
+#else
+        #TLIST=( $(echo $RES | egrep -o "$TPATTERN") )
+#
+        #if [ $TIS[""] ]; then
+                #echo >&2 "Do not mix different type of commits"
+                #exit 1
+        #fi
+fi
+
+RES="$(egrep -i '(refs|fixes)' $1)"
+if [ -z "$RES" ]; then 
+        echo >&2 "$TWARN"
+fi
+
+# TODO: check only header
+RES="$(egrep -i $VPATTERN $1)"
+if [ -n "$RES" ]; then
+        echo >&2 "$CWARN" $VLIST
+fi
+
+
+
