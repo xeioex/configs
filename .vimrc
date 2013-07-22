@@ -2,6 +2,7 @@ set nocompatible
 source ~/.vim/global.vim
 source ~/.vim/maps.vim
 
+source ~/.vim/edit.vim
 source ~/.vim/tags.vim
 source ~/.vim/hls.vim
 source ~/.vim/indent.vim

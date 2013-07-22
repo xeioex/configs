@@ -8,6 +8,8 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# Sources
+
 # Cdargs
 if [ -f /usr/share/doc/cdargs/examples/cdargs-bash.sh ]; then
     . /usr/share/doc/cdargs/examples/cdargs-bash.sh
@@ -16,6 +18,11 @@ fi
 # Completion
 if [ -f /etc/bash_completion ]; then
 . /etc/bash_completion
+fi
+
+# Nvm
+if [ -f ~/.nvm/nvm.sh ]; then
+. ~/.nvm/nvm.sh
 fi
 
 if [ ! -d ~/workspace/ ]; then
@@ -39,6 +46,33 @@ function __prepare-server() {
         upload-essential-configs $1:~/
         ssh $1 "source ~/.bashrc && install-essential"
 }
+
+# tmux reload environment
+if [ -n "$(which tmux 2>/dev/null)" ]; then
+    function tmux() {
+        local tmux=$(type -fp tmux)
+        case "$1" in
+            update-environment|update-env|env-update)
+                local v
+                while read v; do
+                    echo "processing $v"
+                    if [[ $v == -* ]]; then
+                        v=$(echo "$v" | sed -e 's/=.*//')
+                        unset ${v/#-/}
+                    else
+                        # Add quotes around the argument
+                        v=${v/=/=\"}
+                        v=${v/%/\"}
+                        eval export $v
+                    fi
+                done < <(tmux show-environment)
+                ;;
+            *)
+                $tmux "$@"
+                ;;
+        esac
+    }
+fi
 
 alias prepare-server='__prepare-server'
 
@@ -66,6 +100,8 @@ alias prepare-workspace='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./
 
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
+alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
+alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
 
 # bash options 
 export HISTTIMEFORMAT='%F %T '
@@ -74,6 +110,3 @@ export HISTSIZE=100000
 export HISTCONTROL=erasedups
 # [ \t]*  - do not put to history cmd prefixed with space or tabs
 export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
-
-
-
