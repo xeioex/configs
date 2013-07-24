@@ -3,12 +3,11 @@ PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
 PATH=/opt/llvm/llvm-3.3/bin/:$PATH
 PATH=$PATH:$HOME/.rvm/bin
 
+# Sources
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
-
-# Sources
 
 # Cdargs
 if [ -f /usr/share/doc/cdargs/examples/cdargs-bash.sh ]; then
@@ -30,11 +29,12 @@ mkdir -p ~/workspace
 fi
 
 # aliases
-shopt -s expand_aliases # expand aliases in non-interactive shell
+shopt -s expand_aliases  expand aliases in non-interactive shell
 alias ainstall='sudo apt-get install'
 alias ss='source ~/.bashrc'
 
 # remote server helpers
+alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 alias upload-essential-configs='scp  ~/.bashrc'
 alias upload-all-configs='scp -r ~/.bashrc ~/.vimrc ~/.vim/'
@@ -80,7 +80,7 @@ alias ..="cd .."
 alias ....="cd ../.."
 alias ls='ls --color=auto'
 
-alias find='find ./ -regextype posix-egrep'
+alias mfind='find ./ -regextype posix-egrep'
 alias grep="egrep --color=auto"
 
 
@@ -96,7 +96,18 @@ alias gut="git"
 alias sudp="sudo"
 
 # custom
-alias prepare-workspace='cd ~/workspace/undev/playout/;export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout; echo "/tmp/core.%t.%h.%e.%p" > /proc/sys/kernel/core_pattern; ulimit -c unlimited'
+function __enable-cores() {
+        sudo sh -c "echo '/tmp/core.%t.%h.%e.%p' > /proc/sys/kernel/core_pattern; ulimit -c unlimited"
+}
+function __prepare-playout-env() {
+        export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout
+        __enable-cores
+}
+alias prepare-playout-env='__prepare-playout-env'
+alias prepare-workspace='cd ~/workspace/undev/playout/; __prepare-playout-env'
+
+alias enter-build-env='cd ~/workspace/undev/build-env/; sudo chroot /home/xeioex/workspace/undev/build-env/'
+alias prepare-build-env='cd /home/build/playout/; sudo -u build bash /home/build/.buildenv; sudo -u build bash'
 
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'

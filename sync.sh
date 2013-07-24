@@ -12,6 +12,11 @@ if [ "$2" = "skipcheck" ]; then
                 exit 0
 fi
 
+
+# TODO
+# default SKIPLIST (.gitconfigprivate, .bash_history)
+#default COPYLIST (.vim)
+
 if [ "$1" = "install" ]; then
         DEST_DIR="$HOME/"
         SRC_DIR="./"
@@ -19,8 +24,6 @@ if [ "$1" = "install" ]; then
 elif [ "$1" = "upload" ]; then
         DEST_DIR="./"
         SRC_DIR="$HOME/"
-        #TODO
-        #SKIPLIST=( ".gitconfigprivate" ".bash_history" )
 else
         echo "specify: install or upload"
         exit 1
