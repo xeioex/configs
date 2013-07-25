@@ -120,7 +120,6 @@ function __prepare-playout-env() {
 alias prepare-playout-env='__prepare-playout-env'
 alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
 
-alias prepare-build-env="sudo -u build bash"
 
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
@@ -133,7 +132,11 @@ export HISTTIMEFORMAT='%F %T '
 # HOST only
 if [[ $(whoami) -eq "xeioex" ]]; then
 export BUILDENV='/home/xeioex/workspace/undev/build-env'
-alias enter-build-env="cd $BUILDENV; cp $ESSENTIALCONFIGS ./home/build/; sudo chroot $BUILDENV"
+alias enter-build-env="cd $BUILDENV; cp $ESSENTIALCONFIGS ./home/build/;  sudo cp /etc/hosts $BUILDENV/etc/; sudo cp /proc/mounts $BUILDENV/etc/mtab; sudo chroot $BUILDENV"
+fi
+
+if [[ $(whoami) -eq "build" ]]; then
+alias prepare-build-env="sudo -u build bash"
 fi
 
 if [[ $(whoami) -eq "xeioex" || $(whoami) -eq "build" ]]; then
