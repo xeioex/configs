@@ -28,23 +28,37 @@ if [ ! -d ~/workspace/ ]; then
 mkdir -p ~/workspace
 fi
 
+if [ $(whoami) == "xeioex" ]; then
+export WORKSPACE='~/workspace/undev/playout'
+fi
+
+if [ $(whoami) == "build" ]; then
+export WORKSPACE='~/playout'
+fi
+
+export ESSENTIALCONFIGS='~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile ~/.vimrc'
+
 # aliases
-shopt -s expand_aliases  expand aliases in non-interactive shell
+if [[ $(whoami) -eq "xeioex" || $EXPALIAS ]]; then
+shopt -s expand_aliases  #expand aliases in non-interactive shell
+fi
+
 alias ainstall='sudo apt-get install'
+alias asearch='sudo apt-cache search'
 alias ss='source ~/.bashrc'
 
 # remote server helpers
 alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
-alias upload-essential-configs='scp  ~/.bashrc'
-alias upload-all-configs='scp -r ~/.bashrc ~/.vimrc ~/.vim/'
+alias upload-essential-configs="scp  $ESSENTIALCONFIGS"
+alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 alias install-essential='ainstall -y sshfs gdb'
 alias mount-workspace='sshfs xeioex@192.168.215.32:/home/xeioex/workspace/ /root/workspace/'
 
 function __prepare-server() {
         ssh-copy-id $1
         upload-essential-configs $1:~/
-        ssh $1 "source ~/.bashrc && install-essential"
+        ssh $1 "export EXPALIAS=1; source ~/.bashrc && install-essential"
 }
 
 # tmux reload environment
@@ -104,10 +118,9 @@ function __prepare-playout-env() {
         __enable-cores
 }
 alias prepare-playout-env='__prepare-playout-env'
-alias prepare-workspace='cd ~/workspace/undev/playout/; __prepare-playout-env'
+alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
 
-alias enter-build-env='cd ~/workspace/undev/build-env/; sudo chroot /home/xeioex/workspace/undev/build-env/'
-alias prepare-build-env='cd /home/build/playout/; sudo -u build bash /home/build/.buildenv; sudo -u build bash'
+alias prepare-build-env="sudo -u build bash"
 
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
@@ -116,8 +129,22 @@ alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
 
 # bash options 
 export HISTTIMEFORMAT='%F %T '
+
+# HOST only
+if [[ $(whoami) -eq "xeioex" ]]; then
+export BUILDENV='/home/xeioex/workspace/undev/build-env'
+alias enter-build-env="cd $BUILDENV; cp $ESSENTIALCONFIGS ./home/build/; sudo chroot $BUILDENV"
+fi
+
+if [[ $(whoami) -eq "xeioex" || $(whoami) -eq "build" ]]; then
 export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ '
+echo "WORKSPACE $WORKSPACE"
+fi
+
 export HISTSIZE=100000
-export HISTCONTROL=erasedups
+#export HISTCONTROL=erasedups
 # [ \t]*  - do not put to history cmd prefixed with space or tabs
 export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+
+export EDITOR=vim
+
