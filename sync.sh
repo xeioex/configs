@@ -1,3 +1,7 @@
+#! /bin/bash
+
+SKIPLIST=( '.gitconfigprivate' '.bash_history' '.viminfo' '..' '.' )
+
 if [ "$2" = "skipcheck" ]; then
         if [ "$1" = "install" ]; then
                 echo "installing: cp -r ./* ~/"
@@ -12,15 +16,23 @@ if [ "$2" = "skipcheck" ]; then
                 exit 0
 fi
 
-
-# TODO
-# default SKIPLIST (.gitconfigprivate, .bash_history)
-#default COPYLIST (.vim)
+function __contains ()
+{
+        param=$1;
+        #echo "compare $1"
+        shift;
+        declare -a arr=("${!1}")
+        for elem in "${arr[@]}";
+        do
+                [[ "$param" == "$elem" ]] && return 1;
+        done;
+        #echo 'do not contain'
+        return 0
+}
 
 if [ "$1" = "install" ]; then
         DEST_DIR="$HOME/"
         SRC_DIR="./"
-        SKIPLIST=
 elif [ "$1" = "upload" ]; then
         DEST_DIR="./"
         SRC_DIR="$HOME/"
@@ -34,28 +46,30 @@ echo "SRC DIR: $SRC_DIR"
 
 for d in $SRC_DIR.*
 do
-        if [ -d $d ]; then
+        d=$(basename "$d")
+
+        __contains $d SKIPLIST[@];
+        if [[ $?  -gt 0  || -z $(echo $d|egrep -v '*~') ]]; then
                 continue
         fi
 
-        d=$(basename "$d")
+        diff "$SRC_DIR$d" "$DEST_DIR$d" 2>/dev/null >/dev/null
+        RES=$?
 
+        if [[ $RES -eq 0 || $RES -eq 2 ]]; then
+                continue
+        fi
         echo ""
         echo "installing $d:"
         echo "===== diff start ====="
-        colordiff "$SRC_DIR$d" "$DEST_DIR$d" 2>/dev/null
-        RES=$?
+        colordiff "$DEST_DIR$d" "$SRC_DIR$d" 2>/dev/null
         echo "===== diff stop ====="
-
-        if [[ "$RES" -eq "0" || "$RES" -eq "2" ]]; then
-                continue
-        fi
 
         echo "Do you want to install $d?"
 
         select yn in "y" "n" "q"; do
                 case "$REPLY" in
-                            "y" ) echo "copy $SRC_DIR$d to $DEST_DIR$d"; cp $SRC_DIR$d $DEST_DIR$d; break;;
+                            "y" ) echo "copy $SRC_DIR$d to $DEST_DIR$d"; cp -r $SRC_DIR$d $DEST_DIR$d; break;;
                             "n" ) break;;
                             "q" ) exit 0;;
                             * ) echo "print y, n or q";;
