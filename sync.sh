@@ -69,7 +69,7 @@ do
 
         select yn in "y" "n" "q"; do
                 case "$REPLY" in
-                            "y" ) echo "copy $SRC_DIR$d to $DEST_DIR$d"; cp -r $SRC_DIR$d $DEST_DIR$d; break;;
+                            "y" ) echo "copy $SRC_DIR$d to $DEST_DIR"; cp -r $SRC_DIR$d $DEST_DIR; break;;
                             "n" ) break;;
                             "q" ) exit 0;;
                             * ) echo "print y, n or q";;

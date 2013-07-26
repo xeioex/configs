@@ -18,9 +18,6 @@ set ai
 "C language style indents
 set cin
 
-"lazy screen redrawing
-"set lz
-
 set number
 syntax on
 
@@ -39,7 +36,9 @@ set switchbuf=useopen
 set title
 
 "backup dir list
-set backupdir =~/.vim/backups,/tmp
+set backupdir=~/.vim/backups,/tmp
+set directory=~/.vim/backups,/tmp
+
 
 "remember copy registers after quitting in the .viminfo file
 set viminfo='100,\"1000

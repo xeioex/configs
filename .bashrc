@@ -1,6 +1,6 @@
 #PATHs
 PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
-PATH=/opt/llvm/llvm-3.3/bin/:$PATH
+PATH=/opt/llvm/llvm-3.3/bin:$PATH
 PATH=$PATH:$HOME/.rvm/bin
 
 # Sources
@@ -36,7 +36,7 @@ if [ $(whoami) == "build" ]; then
 export WORKSPACE='~/playout'
 fi
 
-export ESSENTIALCONFIGS='~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile ~/.vimrc'
+export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile ~/.vimrc"
 
 # aliases
 if [[ $(whoami) -eq "xeioex" || $EXPALIAS ]]; then
@@ -121,15 +121,25 @@ alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
 export HISTTIMEFORMAT='%F %T '
 
 # HOST only
-if [[ $(whoami) -eq "xeioex" ]]; then
-alias enter-build-env="cd $BUILDENV; cp $ESSENTIALCONFIGS ./home/build/;  sudo cp /etc/hosts $BUILDENV/etc/; sudo cp /proc/mounts $BUILDENV/etc/mtab; sudo chroot $BUILDENV"
+if [[ $(whoami) == "xeioex" ]]; then
+
+function __enter-build-env() {
+        cp $ESSENTIALCONFIGS  $1/home/build/;
+        xauth extract - $DISPLAY | xauth -f $1/home/build/.Xauthority merge -
+        sudo cp /etc/hosts $1/etc/;
+        sudo cp /proc/mounts $1/etc/mtab;
+        sudo chroot $1;
+}
+
+alias enter-build-env="__enter-build-env $BUILDENV"
 fi
 
-if [[ $(whoami) -eq "build" ]]; then
+if [[ $(whoami) == "build" ]]; then
 alias prepare-build-env="sudo -u build bash"
+unset XAUTHORITY
 fi
 
-if [[ $(whoami) -eq "xeioex" || $(whoami) -eq "build" ]]; then
+if [[ $(whoami) == "xeioex" || $(whoami) == "build" ]]; then
 export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ '
 echo "WORKSPACE $WORKSPACE"
 fi
