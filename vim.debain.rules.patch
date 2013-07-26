@@ -1,0 +1,6 @@
+66a67
+> OPTFLAGS+=--with-compiledby=xeioex
+136c137
+< CFGFLAGS_vim-basic:=$(CFGFLAGS) $(OPTFLAGS) $(NOXFLAGS) $(NOINTERPFLAGS)
+---
+> CFGFLAGS_vim-basic:=$(CFGFLAGS) $(OPTFLAGS) $(NOXFLAGS) $(ALLINTERPFLAGS)
