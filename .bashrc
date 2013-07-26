@@ -48,6 +48,7 @@ alias asearch='sudo apt-cache search'
 alias ss='source ~/.bashrc'
 
 # remote server helpers
+alias freboot='echo 'b' > /proc/sysrq-trigger'
 alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 alias upload-essential-configs="scp  $ESSENTIALCONFIGS"
@@ -90,8 +91,6 @@ fi
 
 alias prepare-server='__prepare-server'
 
-alias ..="cd .."
-alias ....="cd ../.."
 alias ls='ls --color=auto'
 
 alias mfind='find ./ -regextype posix-egrep'
@@ -99,15 +98,6 @@ alias grep="egrep --color=auto"
 
 
 alias config-gcc='sudo update-alternatives --config gcc'
-
-# Typo aliases
-alias ,,="cd .."
-alias ..l="cd .. && ls"
-alias cd..="cd .."
-alias gits="git s"
-alias mdkir="mkdir"
-alias gut="git"
-alias sudp="sudo"
 
 # custom
 function __enable-cores() {
@@ -121,6 +111,7 @@ alias prepare-playout-env='__prepare-playout-env'
 alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
 
 
+alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
@@ -131,7 +122,6 @@ export HISTTIMEFORMAT='%F %T '
 
 # HOST only
 if [[ $(whoami) -eq "xeioex" ]]; then
-export BUILDENV='/home/xeioex/workspace/undev/build-env'
 alias enter-build-env="cd $BUILDENV; cp $ESSENTIALCONFIGS ./home/build/;  sudo cp /etc/hosts $BUILDENV/etc/; sudo cp /proc/mounts $BUILDENV/etc/mtab; sudo chroot $BUILDENV"
 fi
 

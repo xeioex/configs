@@ -40,37 +40,3 @@
 	sub-update = "submodule update --init --recursive"
 	unadd = reset HEAD --
 	unstage = reset HEAD --
-
-        # Typos
-        ad = add
-        bisec = bisect
-        bisetc = bisect
-        branhc = branch
-        breach = branch
-        rbanch = branch
-        breanch = branch
-        checout = checkout
-        checkou = checkout
-        hceckout = checkout
-        checkotu = checkout
-        cherrypick = cherry-pick
-        comit = commit
-        comitt = commit
-        committ = commit
-        dif = diff
-        fetc = fetch
-        fethc = fetch
-        grp = grep
-        grpe = grep
-        greo = grep
-        merg = merge
-        mereg = merge
-        stat = status
-        stats = status
-        statu = status
-        sttus = status
-        stauts = status
-        statys = status
-        statsu = status
-        statis = status
-        statsus = status
