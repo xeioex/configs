@@ -1,7 +1,17 @@
+# ENV VARS
 #PATHs
 PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
 PATH=/opt/llvm/llvm-3.3/bin:$PATH
 PATH=$PATH:$HOME/.rvm/bin
+
+export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile ~/.vimrc"
+export WORKSPACE='~/workspace/undev/playout'
+
+export HISTTIMEFORMAT='%F %T '
+export HISTSIZE=100000
+export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+
+export EDITOR=vim
 
 # Sources
 # Source global definitions
@@ -28,16 +38,6 @@ if [ ! -d ~/workspace/ ]; then
 mkdir -p ~/workspace
 fi
 
-if [ $(whoami) == "xeioex" ]; then
-export WORKSPACE='~/workspace/undev/playout'
-fi
-
-if [ $(whoami) == "build" ]; then
-export WORKSPACE='~/playout'
-fi
-
-export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile ~/.vimrc"
-
 # aliases
 if [[ $(whoami) -eq "xeioex" || $EXPALIAS ]]; then
 shopt -s expand_aliases  #expand aliases in non-interactive shell
@@ -61,6 +61,8 @@ function __prepare-server() {
         upload-essential-configs $1:~/
         ssh $1 "export EXPALIAS=1; source ~/.bashrc && install-essential"
 }
+
+alias prepare-server='__prepare-server'
 
 # tmux reload environment
 if [ -n "$(which tmux 2>/dev/null)" ]; then
@@ -89,13 +91,10 @@ if [ -n "$(which tmux 2>/dev/null)" ]; then
     }
 fi
 
-alias prepare-server='__prepare-server'
-
 alias ls='ls --color=auto'
 
 alias mfind='find ./ -regextype posix-egrep'
 alias grep="egrep --color=auto"
-
 
 alias config-gcc='sudo update-alternatives --config gcc'
 
@@ -110,32 +109,27 @@ function __prepare-playout-env() {
 alias prepare-playout-env='__prepare-playout-env'
 alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
 
-
 alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
 alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
 
-# bash options 
-export HISTTIMEFORMAT='%F %T '
 
 # HOST only
 if [[ $(whoami) == "xeioex" ]]; then
-
+export BUILDENV='~/workspace/undev/build-env/'
 function __enter-build-env() {
-        cp $ESSENTIALCONFIGS  $1/home/build/;
         xauth extract - $DISPLAY | xauth -f $1/home/build/.Xauthority merge -
-        sudo cp /etc/hosts $1/etc/;
-        sudo cp /proc/mounts $1/etc/mtab;
-        sudo chroot $1;
+        sudo cp /etc/hosts $1/etc/
+        sudo cp /proc/mounts $1/etc/mtab
+        sudo chroot $1
 }
-
 alias enter-build-env="__enter-build-env $BUILDENV"
 fi
 
-if [[ $(whoami) == "build" ]]; then
-alias prepare-build-env="sudo -u build bash"
+if [[ $(whoami) == "build" || $(whoami) == "root" ]]; then
+alias prepare-build-env="sudo mount -a 2>/dev/null; sudo -u build bash"
 unset XAUTHORITY
 fi
 
@@ -144,10 +138,4 @@ export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[3
 echo "WORKSPACE $WORKSPACE"
 fi
 
-export HISTSIZE=100000
-#export HISTCONTROL=erasedups
-# [ \t]*  - do not put to history cmd prefixed with space or tabs
-export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
-
-export EDITOR=vim
 
