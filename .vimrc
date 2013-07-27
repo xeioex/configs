@@ -9,6 +9,8 @@ source ~/.vim/indent.vim
 source ~/.vim/syntax.vim
 source ~/.vim/navigation.vim
 
+source ~/.vim/sessions.vim
+
 " various routines
 source ~/.vim/routines.vim
 

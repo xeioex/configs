@@ -1,0 +1,10 @@
+tmux has-session -t aux
+if [ $? != 0 ]; then
+tmux new-session -s aux -n pyconsole -d
+tmux send-keys -t aux:1 'python' C-m
+tmux new-window -n curl -t aux
+
+tmux select-window -t aux:1
+fi
+
+tmux attach -t aux
