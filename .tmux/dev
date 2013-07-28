@@ -1,18 +1,25 @@
 tmux has-session -t dev
 if [ $? != 0 ]; then
 tmux new-session -s dev -n shell -d
-tmux new-window -n local -t dev
+
+tmux new-window -n build-env-shell -t dev
+tmux send-keys -t dev:2 'build-env-enter' C-m
+tmux send-keys -t dev:2 'prepare-build-env' C-m
+tmux send-keys -t dev:2 'prepare-workspace' C-m
+
 tmux new-window -n build-env -t dev
 tmux send-keys -t dev:3 'build-env-enter' C-m
 tmux send-keys -t dev:3 'prepare-build-env' C-m
 tmux send-keys -t dev:3 'prepare-workspace' C-m
-tmux send-keys -t dev:3 'vim -S ~/.vim/dev-session.vim' C-m
-tmux new-window -n test-212 -t dev
-tmux send-keys -t dev:4 'enter-server root@192.168.215.212' C-m
-tmux new-window -n rtsp-stage-gra -t dev
-tmux send-keys -t dev:5 'enter-server 10.40.37.242' C-m
+tmux send-keys -t dev:3 'vim-enter-dev' C-m
 
-tmux select-window -t dev:1
+tmux new-window -n test-212 -t dev
+tmux send-keys -t dev:4 'host-enter root@192.168.215.212' C-m
+
+tmux new-window -n rtsp-stage-gra -t dev
+tmux send-keys -t dev:5 'host-enter 10.40.37.242' C-m
+
+tmux select-window -t dev:3
 fi
 
 tmux attach -t dev
