@@ -11,9 +11,10 @@ function! KeyMapHighlight()
     endif
 endfunction
 
-au WinEnter * :call KeyMapHighlight()<CR>
+au WinEnter * :call KeyMapHighlight()
 
 cmap <silent> <leader>^ <C-^>
 imap <silent> <leader>^ <C-^>X<Esc>:call KeyMapHighlight()<CR>a<C-H>
 nmap <silent> <leader>^ a<C-^><Esc>:call KeyMapHighlight()<CR>
 vmap <silent> <leader>^ <Esc>a<C-^><Esc>:call KeyMapHighlight()<CR>gv
+
