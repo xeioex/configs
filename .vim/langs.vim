@@ -6,11 +6,12 @@ highlight lCursor guifg=NONE guibg=Cyan
 function! KeyMapHighlight()
     if &iminsert == 0
         hi StatusLine ctermfg=DarkBlue guifg=DarkBlue
+    else
         hi StatusLine ctermfg=white guifg=yellow
     endif
 endfunction
 
-au WinEnter * :call KeyMapHighlight<CR>
+au WinEnter * :call KeyMapHighlight()<CR>
 
 cmap <silent> <leader>^ <C-^>
 imap <silent> <leader>^ <C-^>X<Esc>:call KeyMapHighlight()<CR>a<C-H>
