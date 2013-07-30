@@ -24,6 +24,12 @@ nnoremap <F7> :call StripTrailingWhitespaces()<CR>
 " turn on/off syntastic checker
 nnoremap <F8> :SyntasticToggleMode<CR>
 
+" toggle spell
+nnoremap <F9> :<C-U>call MySpellLang()<CR>
+
+" toggle spell
+nnoremap <F10> :set iminsert!<CR> :set imsearch!<CR>
+
 "=====leader(custom) maps=====
 " prev tag
 nnoremap <leader>e :tprev <CR>

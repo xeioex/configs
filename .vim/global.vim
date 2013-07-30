@@ -10,9 +10,6 @@ set makeprg=scons
 "list chars
 set listchars=tab:▸-,eol:¬,trail:@,nbsp:=
 
-"wrap long strings
-"set wrap
-
 "autoindent for newlines
 set ai
 "C language style indents

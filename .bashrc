@@ -53,7 +53,7 @@ alias install-essential="ainstall -y $ESSENTIALPACKETS"
 
 alias ls='ls --color=auto'
 alias mfind='find ./ -regextype posix-egrep'
-alias grep="egrep --color=auto"
+alias grep='egrep --color=auto'
 
 alias config-gcc='sudo update-alternatives --config gcc'
 alias vbox-open='rdesktop 127.0.0.1'
@@ -70,6 +70,8 @@ fi
 
 if [[ $(hostname) != "xeioex-host" ]]; then
     alias mount-workspace='sshfs xeioex@192.168.215.32:/home/xeioex/workspace/ /root/workspace/'
+    alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
+    alias root-shell-enter="install-root-essential-configs; sudo -i"
 fi
 
 function __host-prepare() {
@@ -84,7 +86,7 @@ function __host-enter() {
 }
 
 alias host-prepare='__host-prepare'
-alias host-enter="__host-enter"
+alias host-enter='__host-enter'
 
 # TMUX
 # reload environment
@@ -114,10 +116,10 @@ if [ -n "$(which tmux 2>/dev/null)" ]; then
 }
 fi
 
-alias tmux-enter-dev="~/.tmux/dev"
-alias tmux-enter-aux="~/.tmux/aux"
-alias tmux-kill-dev="tmux kill-session -t dev"
-alias tmux-kill-aux="tmux kill-session -t aux"
+alias tmux-enter-dev='~/.tmux/dev'
+alias tmux-enter-aux='~/.tmux/aux'
+alias tmux-kill-dev='tmux kill-session -t dev'
+alias tmux-kill-aux='tmux kill-session -t aux'
 
 # custom
 function __enable-cores() {
@@ -131,13 +133,15 @@ function __prepare-playout-env() {
 
 alias prepare-playout-env='__prepare-playout-env'
 alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
-alias vim-enter-dev="vim -S"
+alias vim-enter-dev='vim -S'
 
 alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
 alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
+
+alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # HOST only
 if [[ $(hostname) == "xeioex-host" ]]; then

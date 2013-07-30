@@ -8,6 +8,8 @@ source ~/.vim/hls.vim
 source ~/.vim/indent.vim
 source ~/.vim/syntax.vim
 source ~/.vim/navigation.vim
+source ~/.vim/spell.vim
+source ~/.vim/langs.vim
 
 source ~/.vim/sessions.vim
 
