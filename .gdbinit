@@ -1,6 +1,9 @@
 set history filename ~/.gdb_history
 set history save
+
+handle SIGPIPE nostop noprint pass
 add-auto-load-safe-path /opt/gcc/gcc-4.7.3/libstdc++.so.6.0.17-gdb.py
+
 
 # do: 
 # svn co svn://gcc.gnu.org/svn/gcc/trunk/libstdc++-v3/python gdb_printers

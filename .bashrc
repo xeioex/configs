@@ -58,12 +58,36 @@ alias grep='egrep --color=auto'
 alias config-gcc='sudo update-alternatives --config gcc'
 alias vbox-open='rdesktop 127.0.0.1'
 
+
 # remote server helpers
 alias freboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
+# tool name
+function __get-log()
+{
+    $1 "/storage/log/$2/current"
+}
+
+# prefix name
+function declare-log-aliases()
+{
+    alias $1-log="__get-log tailf $2"
+    alias $1-log-list="__get-log 'less -R' $2"
+    alias $1-log-open="__get-log vim $2"
+}
+
+declare-log-aliases "sdi" "sdi-grabber"
+declare-log-aliases "m2l" "m2l-transcoder"
+declare-log-aliases "rtsp" "rtsp-grabber"
+declare-log-aliases "tshift" "timeshifter-0"
+
 if [[ $(hostname) == "xeioex-host" ]]; then
+    # disabling XOFF
+    stty ixany
+    stty ixoff -ixon
+
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 fi
@@ -75,18 +99,21 @@ if [[ $(hostname) != "xeioex-host" ]]; then
 fi
 
 function __host-prepare() {
-    ssh-copy-id $1
-    upload-essential-configs $1:~/
-    ssh  $1 "bash -ic install-essential"
+    ssh-copy-id $2
+    upload-essential-configs $2:~/
+    if [[ $1 ==  "1" ]]; then
+        echo "host $2 enter, preparing debug env"
+        ssh  $2 "bash -ic install-essential"
+    fi
 }
 
 function __host-enter() {
-    __host-prepare $1
-    ssh $1
+    __host-prepare $1 $2
+    ssh $2
 }
 
-alias host-prepare='__host-prepare'
-alias host-enter='__host-enter'
+alias host-enter='__host-enter 0'
+alias host-enter-dbg='__host-enter 1'
 
 # TMUX
 # reload environment
