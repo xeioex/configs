@@ -56,32 +56,32 @@ alias mfind='find ./ -regextype posix-egrep'
 alias grep='egrep --color=auto'
 
 alias config-gcc='sudo update-alternatives --config gcc'
-alias vbox-open='rdesktop 127.0.0.1'
 
+alias kill-service='pkill -9 -f'
 
 # remote server helpers
 alias freboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
-# tool name
-function __get-log()
-{
-    $1 "/storage/log/$2/current"
-}
-
 # prefix name
-function declare-log-aliases()
+function declare-service-aliases()
 {
-    alias $1-log="__get-log tailf $2"
-    alias $1-log-list="__get-log 'less -R' $2"
-    alias $1-log-open="__get-log vim $2"
-}
+    export "$1_log_path"="/storage/log/$2/current"
+    alias $1-log="tailf \$$1_log_path"
+    alias $1-log-list="'less -R \$$1_log_path"
+    alias $1-log-open="vim \$$1_log_path"
 
-declare-log-aliases "sdi" "sdi-grabber"
-declare-log-aliases "m2l" "m2l-transcoder"
-declare-log-aliases "rtsp" "rtsp-grabber"
-declare-log-aliases "tshift" "timeshifter-0"
+    export "$1_cfg_path"="/etc/platform/$3"
+    alias $1-cfg="vim \$$1_cfg_path"
+
+    export "$1_run_path"="/etc/sv/$2/run"
+    alias $1-run="cat \$$1_run_path"
+    alias $1-run-open="vim \$$1_run_path"
+    alias $1-restart="sv restart \$$1_run_path"
+    alias $1-start="sv start \$$1_run_path"
+    alias $1-stop="sv stop \$$1_run_path"
+}
 
 if [[ $(hostname) == "xeioex-host" ]]; then
     # disabling XOFF
@@ -90,12 +90,26 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
+
+    alias vbox-open='rdesktop 127.0.0.1'
 fi
 
 if [[ $(hostname) != "xeioex-host" ]]; then
     alias mount-workspace='sshfs xeioex@192.168.215.32:/home/xeioex/workspace/ /root/workspace/'
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
+
+    alias restart-all="sv restart /etc/sv/*"
+    alias stop-all="sv restart /etc/sv/*"
+    declare-service-aliases "sdi" "sdi-grabber" "sdi_grabber/sdi-input.podsl"
+    declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
+    declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
+    declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
+    declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
+    declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
+    declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
+    declare-service-aliases "sdigra2" "sdigra-2" "sdigra2"
+    declare-service-aliases "sdigra3" "sdigra-3" "sdigra3"
 fi
 
 function __host-prepare() {

@@ -1,2 +1,2 @@
-nnoremap <leader>bl :%!git blame % <CR>
+nnoremap <leader>bl :%!git blame %<CR>
 
