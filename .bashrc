@@ -7,6 +7,7 @@ PATH=$PATH:$HOME/.rvm/bin
 # Global
 export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
 export ESSENTIALPACKETS="sshfs gdb linux-tools-2.6.32"
+export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg"
 export WORKSPACE='~/workspace/undev/playout'
 export EDITOR=vim
 
@@ -50,6 +51,7 @@ alias ss='source ~/.bashrc'
 alias ainstall='sudo apt-get install'
 alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
+alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
 
 alias ls='ls --color=auto'
 alias mfind='find ./ -regextype posix-egrep'
@@ -123,7 +125,7 @@ function __host-prepare() {
 
 function __host-enter() {
     __host-prepare $1 $2
-    ssh $2
+    ssh -X $2
 }
 
 alias host-enter='__host-enter 0'
