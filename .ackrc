@@ -2,3 +2,5 @@
 --type-set=lisp=.nu
 --type-set=javascript=.coffee
 --nohtml
+
+--ignore-dir=webface
