@@ -1,6 +1,9 @@
 --type-set=lisp=.podsl
 --type-set=lisp=.nu
 --type-set=javascript=.coffee
+
 --nohtml
+--nojs
+--nojavascript
 
 --ignore-dir=webface
