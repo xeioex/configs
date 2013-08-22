@@ -6,8 +6,8 @@ PATH=$PATH:$HOME/.rvm/bin
 
 # Global
 export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-export ESSENTIALPACKETS="sshfs gdb linux-tools-2.6.32"
-export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg"
+export ESSENTIALPACKETS="sshfs gdb linux-tools-2.6.32 rlwrap"
+export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 export WORKSPACE='~/workspace/undev/playout'
 export EDITOR=vim
 
@@ -15,6 +15,9 @@ export EDITOR=vim
 export HISTTIMEFORMAT='%F %T '
 export HISTSIZE=100000
 export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+
+export BREAK_CHARS="\"#'(),;\`\\|!?[]{}"
+alias sbcl-console="rlwrap -b \$BREAK_CHARS sbcl"
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then

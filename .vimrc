@@ -28,3 +28,4 @@ source ~/.vim/syntastic.vim
 source ~/.vim/language-tool.vim
 source ~/.vim/fswitch.vim
 
+source ~/.vim/swank.vim
