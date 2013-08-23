@@ -63,10 +63,11 @@ alias grep='egrep --color=auto'
 alias config-gcc='sudo update-alternatives --config gcc'
 
 alias kill-service='pkill -9 -f'
+alias kill-playout='pkill -9 -f playout'
 
 # remote server helpers
 alias freboot="echo 'b' > /proc/sysrq-trigger"
-alias reload-ssh-agent='ssh-agent /bin/bash; ssh-add'
+alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
 # prefix name
@@ -120,6 +121,7 @@ fi
 function __host-prepare() {
     ssh-copy-id $2
     upload-essential-configs $2:~/
+    scp  ~/.vimrc_minimal $2:~/.vimrc
     if [[ $1 ==  "1" ]]; then
         echo "host $2 enter, preparing debug env"
         ssh  $2 "bash -ic install-essential"
