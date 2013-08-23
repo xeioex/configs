@@ -11,6 +11,8 @@ export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 export WORKSPACE='~/workspace/undev/playout'
 export EDITOR=vim
 
+export SSHRTUNNELPORT='11111'
+
 # Shell
 export HISTTIMEFORMAT='%F %T '
 export HISTSIZE=100000
@@ -101,7 +103,9 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 fi
 
 if [[ $(hostname) != "xeioex-host" ]]; then
-    alias mount-workspace='sshfs xeioex@192.168.215.32:/home/xeioex/workspace/ /root/workspace/'
+    alias mount-workspace="sshfs -p $SSHRTUNNELPORT xeioex@localhost:/home/xeioex/workspace/ /root/workspace/"
+    alias prepare-workspace="mount-workspace; cd $WORKSPACE; __prepare-playout-env"
+
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
 
@@ -130,7 +134,7 @@ function __host-prepare() {
 
 function __host-enter() {
     __host-prepare $1 $2
-    ssh -X $2
+    ssh -X -R $SSHRTUNNELPORT:localhost:22 $2
 }
 
 alias host-enter='__host-enter 0'
@@ -180,7 +184,6 @@ function __prepare-playout-env() {
 }
 
 alias prepare-playout-env='__prepare-playout-env'
-alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
 alias vim-enter-dev='vim -S'
 
 alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
@@ -193,6 +196,7 @@ alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//
 
 # HOST only
 if [[ $(hostname) == "xeioex-host" ]]; then
+    alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
     if [[ $(whoami) == "xeioex" ]]; then
         export BUILDENVPATH='~/workspace/undev/build-env/'
         function __build-env-enter() {
