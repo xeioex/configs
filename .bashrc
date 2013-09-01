@@ -84,9 +84,9 @@ function declare-service-aliases()
     export "$1_cfg_path"="/etc/platform/$3"
     alias $1-cfg="vim \$$1_cfg_path"
 
-    export "$1_run_path"="/etc/sv/$2/run"
-    alias $1-run="cat \$$1_run_path"
-    alias $1-run-open="vim \$$1_run_path"
+    export "$1_run_path"="/etc/sv/$2/"
+    alias $1-run="cat \$$1_run_path/run"
+    alias $1-run-open="vim \$$1_run_path/run"
     alias $1-restart="sv restart \$$1_run_path"
     alias $1-start="sv start \$$1_run_path"
     alias $1-stop="sv stop \$$1_run_path"

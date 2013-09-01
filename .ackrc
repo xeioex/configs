@@ -7,3 +7,4 @@
 --nojavascript
 
 --ignore-dir=webface
+--ignore-dir=libpcre
