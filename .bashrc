@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ENV VARS
 #PATHs
 PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
@@ -15,9 +16,6 @@ export EDITOR=vim
 export HISTTIMEFORMAT='%F %T '
 export HISTSIZE=100000
 export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
-
-export BREAK_CHARS="\"#'(),;\`\\|!?[]{}"
-alias sbcl-console="rlwrap -b \$BREAK_CHARS sbcl"
 
 # AUX
 export SSHRTUNNELPORT='11111'
@@ -59,6 +57,8 @@ alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
 alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
 
+alias clean-build="rm -fr ./build/ && rm -fr .scon*"
+
 alias ls='ls --color=auto'
 alias mfind='find ./ -regextype posix-egrep'
 alias grep='egrep --color=auto'
@@ -97,6 +97,9 @@ if [[ $(hostname) == "xeioex-host" ]]; then
     stty ixany
     stty ixoff -ixon
 
+    export BREAK_CHARS="\"#'(),;\`\\|!?[]{}"
+    alias sbcl-console="rlwrap -b \$BREAK_CHARS sbcl"
+
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 
@@ -123,6 +126,7 @@ if [[ $(hostname) != "xeioex-host" ]]; then
     declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
     declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
     declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
+    declare-service-aliases "blue7" "playout-blue7-0" "playout-blue7/playout-blue7-0.podsl"
     declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
     declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
     declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
