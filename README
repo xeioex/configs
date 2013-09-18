@@ -1,9 +1,4 @@
-My own config presets
-
-1. get latest vim source
-        http://vim.wikia.com/wiki/Getting_the_Vim_source_with_Mercurial
-
-2. get ctags with Obj-C support
+1. get ctags with Obj-C support
         ctags from trunk
         svn co https://ctags.svn.sourceforge.net/svnroot/ctags ctags
         autoheaders
@@ -12,4 +7,7 @@ My own config presets
         make -j4
         sudo make install
 
-3. uncrustify - support autoindent for ObjectiveC
+2. using vim configs
+        copy .vimrc, .vim/ to home dir
+        git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+        Launch vim, run :BundleInstall
