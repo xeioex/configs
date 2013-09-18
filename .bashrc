@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# ENV VARS
-#PATHs
-PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
-PATH=/opt/llvm/llvm-3.3/bin:$PATH
-PATH=$PATH:$HOME/.rvm/bin
 
 # Global
 export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
@@ -93,12 +88,17 @@ function declare-service-aliases()
 }
 
 if [[ $(hostname) == "xeioex-host" ]]; then
+    # ENV VARS
+    #PATHs
+    PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
+    PATH=/opt/llvm/llvm-3.3/bin:$PATH
+    PATH=$PATH:$HOME/.rvm/bin
+
     # disabling XOFF
     stty ixany
     stty ixoff -ixon
 
-    export BREAK_CHARS="\"#'(),;\`\\|!?[]{}"
-    alias sbcl-console="rlwrap -b \$BREAK_CHARS sbcl"
+    alias sbcl-console="rlwrap -b \"#'(),;\`\\|!?[]{} sbcl"
 
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
@@ -107,6 +107,8 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 fi
 
 if [[ $(hostname) != "xeioex-host" ]]; then
+
+    export DISPLAY=":0.0"
 
     function __mount-workspace() {
         if [ ! -f $WORKSPACE ]; then
@@ -190,9 +192,24 @@ function __enable-cores() {
     sudo sysctl -w kernel.core_pattern=/tmp/core.%t.%h.%e.%p
     ulimit -c unlimited
 }
+
+function __prepare-nix-env {
+which nix-build
+if [[ $?  == "0" ]]; then
+    export NIX_REMOTE=daemon
+    export NIX_ENV=$1
+    sudo pkill nix-daemon
+    sudo su - -c "nohup nix-daemon &"
+    nix-build --run-env -A $1 $2
+else
+    echo "nix-env not available"
+fi
+}
+
 function __prepare-playout-env() {
     export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout
     __enable-cores
+    __prepare-nix-env playout-develop ../nix-pkgs/
 }
 
 alias prepare-playout-env='__prepare-playout-env'
@@ -237,5 +254,9 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 
     if [[ "$BUILDENV" == "1" ]]; then
         export PS1="(build-env) $PS1"
+    fi
+
+    if [ -n "$NIX_LDFLAGS" ] ; then
+        export PS1="(nix:$NIX_ENV) $PS1"
     fi
 fi
