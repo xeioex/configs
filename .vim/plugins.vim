@@ -54,6 +54,7 @@ Bundle 'danchoi/goog'
 " plugins runtime reload
 Bundle 'xolox/vim-reload'
 " handling surrounds: example cs"' inside "phase inside quote" convert it to 'phrase inside quote'
+Bundle 'xolox/vim-misc'
 Bundle 'tpope/vim-surround'
 " Repeat.vim remaps . in a way that plugins can tap into it
 Bundle 'tpope/vim-repeat'

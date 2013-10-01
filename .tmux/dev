@@ -3,13 +3,9 @@ if [ $? != 0 ]; then
 tmux new-session -s dev -n shell -d
 
 tmux new-window -n build-env-shell -t dev
-tmux send-keys -t dev:2 'build-env-enter' C-m
-tmux send-keys -t dev:2 'prepare-build-env' C-m
 tmux send-keys -t dev:2 'prepare-workspace' C-m
 
 tmux new-window -n build-env -t dev
-tmux send-keys -t dev:3 'build-env-enter' C-m
-tmux send-keys -t dev:3 'prepare-build-env' C-m
 tmux send-keys -t dev:3 'prepare-workspace' C-m
 tmux send-keys -t dev:3 'vim-enter-dev' C-m
 

@@ -2,9 +2,10 @@
 
 # Global
 export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-export ESSENTIALPACKETS="sshfs gdb linux-tools-2.6.32 rlwrap"
+export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
 export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 export WORKSPACE="$HOME/workspace/undev/playout"
+export DEVNIXPATH="$WORKSPACE/../nix-pkgs"
 export EDITOR=vim
 
 # Shell
@@ -48,6 +49,7 @@ alias ss='source ~/.bashrc'
 
 # Generic
 alias ainstall='sudo apt-get install'
+alias ainstall-dont-ask='sudo apt-get install -y --force-yes'
 alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
 alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
@@ -61,7 +63,8 @@ alias grep='egrep --color=auto'
 alias config-gcc='sudo update-alternatives --config gcc'
 
 alias kill-service='pkill -9 -f'
-alias kill-playout='pkill -9 -f playout'
+alias kill-all-playout='pkill -9 -f playout'
+alias kill-current-tty-playout="pkill -KILL -t $(tty | sed 's/\/dev\///') -f playout"
 
 # remote server helpers
 alias freboot="echo 'b' > /proc/sysrq-trigger"
@@ -98,8 +101,6 @@ if [[ $(hostname) == "xeioex-host" ]]; then
     stty ixany
     stty ixoff -ixon
 
-    alias sbcl-console="rlwrap -b \"#'(),;\`\\|!?[]{} sbcl"
-
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 
@@ -107,17 +108,37 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 fi
 
 if [[ $(hostname) != "xeioex-host" ]]; then
-
-    export DISPLAY=":0.0"
-
+    #export DISPLAY=":0.0"
     function __mount-workspace() {
         if [ ! -f $WORKSPACE ]; then
+            which sshfs
+            if [[ $? -ne 0 ]]; then
+                echo "sshfs not available, installing"
+                ainstall-dont-ask sshfs
+            fi
             sshfs -p $SSHRTUNNELPORT xeioex@localhost:/home/xeioex/workspace/ /root/workspace/
         fi
     }
 
+    function __mount-rw-nix() {
+        RW_NIX=/tmp/volyntsev-nix
+        mkdir -p $RW_NIX
+
+        which mount.aufs
+        if [[ $? -ne 0 ]]; then
+            ainstall aufs-tools
+        fi
+
+        RES=$(mount | grep nix  | grep aufs | wc -l)
+
+        if [[ $RES -ne "1" ]]; then
+            mount -t aufs -o br=$RW_NIX=rw:/nix=ro -o udba=reval none /nix
+        fi
+    }
+
     alias mount-workspace="__mount-workspace"
-    alias prepare-workspace="mount-workspace; cd $WORKSPACE; __prepare-playout-env"
+    alias mount-rw-nix="__mount-rw-nix"
+    alias prepare-workspace="mount-workspace; mount-rw-nix; cd $WORKSPACE; __prepare-playout-env"
 
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
@@ -178,6 +199,7 @@ if [ -n "$(which tmux 2>/dev/null)" ]; then
         *)
             $tmux "$@"
             ;;
+
     esac
 }
 fi
@@ -193,26 +215,35 @@ function __enable-cores() {
     ulimit -c unlimited
 }
 
-function __prepare-nix-env {
-which nix-build
-if [[ $?  == "0" ]]; then
-    export NIX_REMOTE=daemon
+
+function __prepare-nix-env() {
+    which nix-build
+    if [[ $? -ne 0 ]]; then
+        echo "nix-env not available, installing"
+        wget http://hydra.nixos.org/build/3668881/download/1/nix_1.3-1_amd64.deb
+        sudo dpkg -i ./nix_1.3-1_amd64.deb
+        sudo apt-get -y -f install
+        sudo nix-channel --add http://nix.undev.cc/channel
+        sudo nix-channel --update
+    fi
+
     export NIX_ENV=$1
+    export NIX_REMOTE=daemon
     sudo pkill nix-daemon
-    sudo su - -c "nohup nix-daemon &"
+    nohup nix-daemon &
     nix-build --run-env -A $1 $2
-else
-    echo "nix-env not available"
-fi
 }
 
 function __prepare-playout-env() {
     export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout
     __enable-cores
-    __prepare-nix-env playout-develop ../nix-pkgs/
+    __prepare-nix-env playout-develop $DEVNIXPATH
 }
 
-alias prepare-playout-env='__prepare-playout-env'
+alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
+alias prepare-nix-env='__prepare-nix-env'
+alias run-playout-with-clean-env='kill-current-tty-playout; sleep 1 &&'
+
 alias vim-enter-dev='vim -S'
 
 alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
@@ -220,6 +251,7 @@ alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
 alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
+alias gdb-run='gdb --args'
 
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
@@ -245,7 +277,7 @@ if [[ $(hostname) == "xeioex-host" ]]; then
 
     if [[ $(whoami) == "build" || $(whoami) == "root" ]]; then
         if [[ $(whoami) == "root" ]]; then
-            alias prepare-build-env="sudo mount -a 2>/dev/null; sudo -u build BUILDENV=1 bash"
+            alias prepare-build-env="sudo mount -a; sudo -u build BUILDENV=1 bash"
         fi
         unset XAUTHORITY
     fi
@@ -255,8 +287,8 @@ if [[ $(hostname) == "xeioex-host" ]]; then
     if [[ "$BUILDENV" == "1" ]]; then
         export PS1="(build-env) $PS1"
     fi
+fi
 
-    if [ -n "$NIX_LDFLAGS" ] ; then
-        export PS1="(nix:$NIX_ENV) $PS1"
-    fi
+if [ -n "$NIX_LDFLAGS" ] ; then
+    export PS1="(nix:$NIX_ENV) $PS1"
 fi
