@@ -1,20 +1,31 @@
 #!/usr/bin/env bash
+export VOLYNTSEVHOST="xeioex-host"
+export VOLYNTSEVIP="192.168.215.32"
 
-# Global
-export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
-export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
-export WORKSPACE="$HOME/workspace/undev/playout"
-export DEVNIXPATH="$WORKSPACE/../nix-pkgs"
-export EDITOR=vim
+if [[ $(hostname) != $VOLYNTSEVHOST ]]; then
+    if [[ $(echo $SSH_CONNECTION | egrep -o '^[0-9.]+') == $VOLYNTSEVIP ]];then
+        # Global
+        export EDITOR=vim
+        export USER=xeioex
+        export HOST=$VOLYNTSEVHOST
 
-# Shell
-export HISTTIMEFORMAT='%F %T '
-export HISTSIZE=100000
-export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+        export WORKSPACE="$HOME/workspace"
+        export PWORKSPACE="$WORKSPACE/undev/playout"
+        export DEVNIXPATH="$PWORKSPACE/../nix-pkgs"
 
-# AUX
-export SSHRTUNNELPORT='11111'
+        export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
+        export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
+        export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
+
+        # Shell
+        export HISTTIMEFORMAT='%F %T '
+        export HISTSIZE=100000
+        export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+
+        # AUX
+        export SSHRTUNNELPORT='11111'
+    fi
+fi
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -90,7 +101,7 @@ function declare-service-aliases()
     alias $1-stop="sv stop \$$1_run_path"
 }
 
-if [[ $(hostname) == "xeioex-host" ]]; then
+if [[ $(hostname) == $HOST ]]; then
     # ENV VARS
     #PATHs
     PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
@@ -107,16 +118,16 @@ if [[ $(hostname) == "xeioex-host" ]]; then
     alias vbox-open='rdesktop 127.0.0.1'
 fi
 
-if [[ $(hostname) != "xeioex-host" ]]; then
+if [[ $(hostname) != $HOST ]]; then
     #export DISPLAY=":0.0"
     function __mount-workspace() {
-        if [ ! -f $WORKSPACE ]; then
+        if [ ! -f $PWORKSPACE ]; then
             which sshfs
             if [[ $? -ne 0 ]]; then
                 echo "sshfs not available, installing"
                 ainstall-dont-ask sshfs
             fi
-            sshfs -p $SSHRTUNNELPORT xeioex@localhost:/home/xeioex/workspace/ /root/workspace/
+            sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ /root/workspace/
         fi
     }
 
@@ -138,7 +149,7 @@ if [[ $(hostname) != "xeioex-host" ]]; then
 
     alias mount-workspace="__mount-workspace"
     alias mount-rw-nix="__mount-rw-nix"
-    alias prepare-workspace="mount-workspace; mount-rw-nix; cd $WORKSPACE; __prepare-playout-env"
+    alias prepare-workspace="mount-workspace; mount-rw-nix; cd $PWORKSPACE; __prepare-playout-env"
 
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
@@ -240,6 +251,21 @@ function __prepare-playout-env() {
     __prepare-nix-env playout-develop $DEVNIXPATH
 }
 
+function __netem-activate() {
+    sudo modprobe ifb
+    sudo ip link set dev ifb0 up
+    sudo tc qdisc add dev eth0 ingress
+    sudo tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
+}
+
+function __netem-clear-qdisc() {
+    sudo tc qdisc delete dev ifb0 root
+    sudo tc qdisc delete dev eth0 root
+}
+
+alias netem-activate="__activate-netem"
+alias netem-clear="__netem-clear-qdisc"
+
 alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
 alias prepare-nix-env='__prepare-nix-env'
 alias run-playout-with-clean-env='kill-current-tty-playout; sleep 1 &&'
@@ -256,9 +282,9 @@ alias gdb-run='gdb --args'
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # HOST only
-if [[ $(hostname) == "xeioex-host" ]]; then
-    alias prepare-workspace="cd $WORKSPACE; __prepare-playout-env"
-    if [[ $(whoami) == "xeioex" ]]; then
+if [[ $(hostname) == $HOST ]]; then
+    alias prepare-workspace="cd $PWORKSPACE; __prepare-playout-env"
+    if [[ $(whoami) == $USER ]]; then
         export BUILDENVPATH='~/workspace/undev/build-env/'
         function __build-env-enter() {
         xauth extract - $DISPLAY | xauth -f $1/home/build/.Xauthority merge -
