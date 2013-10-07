@@ -2,29 +2,27 @@
 export VOLYNTSEVHOST="xeioex-host"
 export VOLYNTSEVIP="192.168.215.32"
 
-if [[ $(hostname) != $VOLYNTSEVHOST ]]; then
-    if [[ $(echo $SSH_CONNECTION | egrep -o '^[0-9.]+') == $VOLYNTSEVIP ]];then
-        # Global
-        export EDITOR=vim
-        export USER=xeioex
-        export HOST=$VOLYNTSEVHOST
+if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.]+') == $VOLYNTSEVIP ]]; then
+    # Global
+    export EDITOR=vim
+    export USER=xeioex
+    export HOST=$VOLYNTSEVHOST
 
-        export WORKSPACE="$HOME/workspace"
-        export PWORKSPACE="$WORKSPACE/undev/playout"
-        export DEVNIXPATH="$PWORKSPACE/../nix-pkgs"
+    export WORKSPACE="$HOME/workspace"
+    export PWORKSPACE="$WORKSPACE/undev/playout"
+    export DEVNIXPATH="$PWORKSPACE/../nix-pkgs"
 
-        export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-        export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
-        export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
+    export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
+    export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
+    export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 
-        # Shell
-        export HISTTIMEFORMAT='%F %T '
-        export HISTSIZE=100000
-        export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+    # Shell
+    export HISTTIMEFORMAT='%F %T '
+    export HISTSIZE=100000
+    export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-        # AUX
-        export SSHRTUNNELPORT='11111'
-    fi
+    # AUX
+    export SSHRTUNNELPORT='11111'
 fi
 
 # Source global definitions
@@ -263,7 +261,7 @@ function __netem-clear-qdisc() {
     sudo tc qdisc delete dev eth0 root
 }
 
-alias netem-activate="__activate-netem"
+alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
 alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
