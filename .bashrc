@@ -65,6 +65,10 @@ if [ ! -d ~/workspace/ ]; then
     mkdir -p ~/workspace 2>/dev/null
 fi
 
+if [ ! -d ~/.gdb/ ]; then
+    mkdir -p ~/.gdb 2>/dev/null
+fi
+
 # aliases
 if [[ $TMUX || $EXPALIAS ]]; then
     shopt -s expand_aliases  #expand aliases in non-interactive shell

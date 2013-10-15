@@ -24,7 +24,7 @@ set backspace=2
 set cursorline
 
 set laststatus=2   " show status line always
-set statusline=%{SyntasticStatuslineFlag()}:%f%m%r%h%w\ %y\ enc:%{&enc}\ ff:%{&ff}\ fenc:%{&fenc}%=(ch:%3b\ hex:%2B)\ col:%2c\ line:%2l/%L\ [%2p%%]\ indent:ts=%{&ts}\ sts=%{&sts}\ sw=%{&sw}\ et=%{&expandtab}
+set statusline=%f%m%r%h%w\ %{fugitive#statusline()}\ %y\ enc:%{&enc}\ ff:%{&ff}%=(ch:%3b\ hex:%2B)\ col:%2c\ line:%2l/%L\ [%2p%%]\ indent:ts=%{&ts}\ sts=%{&sts}\ sw=%{&sw}\ et=%{&expandtab}
 
 "switchbuf
 " Vim will jump to that window, instead of creating a new window
