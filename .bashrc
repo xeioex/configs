@@ -27,7 +27,7 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export HISTSIZE=100000
     export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\] $HOSTIP \u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[1;32m\]$HOSTIP\[\e[31;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
 
     # AUX
     export SSHRTUNNELPORT='11111'
