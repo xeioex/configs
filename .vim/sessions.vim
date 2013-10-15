@@ -1,4 +1,3 @@
-
 let cmdline=split( system( "ps -o command= -p " . getpid() ) )
 let g:seseq=index(cmdline, "-S")
 let uname=expand("$USERNAME")

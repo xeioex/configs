@@ -22,8 +22,6 @@ Bundle 'vundle'
 " path to github or other repo for plugins
 "
 
-" git wrapper
-Bundle 'tpope/vim-fugitive'
 " used for fuzzyFinder
 Bundle 'L9'
 " find files, tags, buffers, etc by fuzzy patterns
@@ -53,8 +51,11 @@ Bundle 'vim-scripts/LanguageTool'
 Bundle 'danchoi/goog'
 " plugins runtime reload
 Bundle 'xolox/vim-reload'
-" handling surrounds: example cs"' inside "phase inside quote" convert it to 'phrase inside quote'
 Bundle 'xolox/vim-misc'
+
+" git wrapper
+Bundle 'tpope/vim-fugitive'
+" handling surrounds: example cs"' inside "phase inside quote" convert it to 'phrase inside quote'
 Bundle 'tpope/vim-surround'
 " Repeat.vim remaps . in a way that plugins can tap into it
 Bundle 'tpope/vim-repeat'

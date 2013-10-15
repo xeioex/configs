@@ -2,6 +2,7 @@
 --type-set=lisp=.nu
 --type-set=javascript=.coffee
 --type-set=c=.cu
+--type-set=txt=.nix
 
 --nohtml
 --nojs

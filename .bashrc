@@ -7,10 +7,16 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export EDITOR=vim
     export USER=xeioex
     export HOST=$VOLYNTSEVHOST
+    export HOSTIP=$(ip addr|grep inet.*eth0|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
+
+    if [[ $HOSTIP == $VOLYNTSEVIP ]]; then
+        export HOSTIP='home'
+    fi
 
     export WORKSPACE="$HOME/workspace"
     export PWORKSPACE="$WORKSPACE/undev/playout"
-    export DEVNIXPATH="$PWORKSPACE/../nix-pkgs"
+    export DWORKSPACE="$WORKSPACE/undev/deligra"
+    export DEVNIXPATH="$WORKSPACE/undev/nix-pkgs"
 
     export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
     export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
@@ -21,13 +27,23 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export HISTSIZE=100000
     export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
+    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\] $HOSTIP \u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+
     # AUX
     export SSHRTUNNELPORT='11111'
+
+    # NIX
+    export NIX_REMOTE=daemon
 fi
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
+fi
+
+# Nix
+if [ -f /etc/profile.d/nix.sh ]; then
+    . /etc/profile.d/nix.sh
 fi
 
 # Cdargs
@@ -46,7 +62,7 @@ if [ -f ~/.nvm/nvm.sh ]; then
 fi
 
 if [ ! -d ~/workspace/ ]; then
-    mkdir -p ~/workspace
+    mkdir -p ~/workspace 2>/dev/null
 fi
 
 # aliases
@@ -68,6 +84,12 @@ alias clean-build="rm -fr ./build/ && rm -fr .scon*"
 alias ls='ls --color=auto'
 alias mfind='find ./ -regextype posix-egrep'
 alias grep='egrep --color=auto'
+alias ldd='bash ldd'
+alias unix-now='date +"%s"'
+alias unix-now-diff="perl -e 'print time - shift();print \"\n\";'"
+
+alias cursor-invisible='tput cinvis'
+alias cursor-visible='tput cnorm'
 
 alias config-gcc='sudo update-alternatives --config gcc'
 
@@ -102,9 +124,9 @@ function declare-service-aliases()
 if [[ $(hostname) == $HOST ]]; then
     # ENV VARS
     #PATHs
-    PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
-    PATH=/opt/llvm/llvm-3.3/bin:$PATH
-    PATH=$PATH:$HOME/.rvm/bin
+    #PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
+    #PATH=/opt/llvm/llvm-3.3/bin:$PATH
+    #PATH=$PATH:$HOME/.rvm/bin
 
     # disabling XOFF
     stty ixany
@@ -126,6 +148,9 @@ if [[ $(hostname) != $HOST ]]; then
                 ainstall-dont-ask sshfs
             fi
             sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ /root/workspace/
+            if [[ $? -ne 0 ]]; then
+                echo "Can't mount $PWORKSPACE. Try umount -l /root/workspace/ and do sshfs again"
+            fi
         fi
     }
 
@@ -224,7 +249,6 @@ function __enable-cores() {
     ulimit -c unlimited
 }
 
-
 function __prepare-nix-env() {
     which nix-build
     if [[ $? -ne 0 ]]; then
@@ -239,7 +263,8 @@ function __prepare-nix-env() {
     export NIX_ENV=$1
     export NIX_REMOTE=daemon
     sudo pkill nix-daemon
-    nohup nix-daemon &
+    sudo nix-channel --update
+    sudo nohup nix-daemon &
     nix-build --run-env -A $1 $2
 }
 
@@ -247,6 +272,12 @@ function __prepare-playout-env() {
     export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout
     __enable-cores
     __prepare-nix-env playout-develop $DEVNIXPATH
+}
+
+function __prepare-deligra-env() {
+    export LD_LIBRARY_PATH=./lib
+    __enable-cores
+    __prepare-nix-env deligra-develop $DEVNIXPATH
 }
 
 function __netem-activate() {
@@ -264,17 +295,21 @@ function __netem-clear-qdisc() {
 alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
+alias vim-enter-dev='vim -S'
+
 alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
 alias prepare-nix-env='__prepare-nix-env'
 alias run-playout-with-clean-env='kill-current-tty-playout; sleep 1 &&'
-
-alias vim-enter-dev='vim -S'
 
 alias playout-nix-version="ls /nix/store/ | grep playout | grep -o 'playout.*' | sort"
 alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
 alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
+
+alias prepare-deligra-env="cd $DWORKSPACE;__prepare-deligra-env"
+alias run-sdigra-in-nix-env="LD_PRELOAD=/usr/lib/libDeckLinkAPI.so:/usr/lib/libz.so.1:/usr/lib/libxml2.so.2 "
+
 alias gdb-run='gdb --args'
 
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
@@ -305,8 +340,6 @@ if [[ $(hostname) == $HOST ]]; then
         fi
         unset XAUTHORITY
     fi
-
-    export PS1='\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ '
 
     if [[ "$BUILDENV" == "1" ]]; then
         export PS1="(build-env) $PS1"

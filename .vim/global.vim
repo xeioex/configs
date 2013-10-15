@@ -64,6 +64,8 @@ set autowrite
 " Highlights space at the end of a line
 let c_space_errors = 1
 
+set foldmethod=manual
+
 " Things to ignore
 set wildignore=*~
 set wildignore+=*vim/backups*
