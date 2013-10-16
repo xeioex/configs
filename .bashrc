@@ -19,7 +19,7 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export DEVNIXPATH="$WORKSPACE/undev/nix-pkgs"
 
     export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-    export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap"
+    export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap tstools"
     export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 
     # Shell
@@ -116,6 +116,7 @@ function declare-service-aliases()
 
     export "$1_cfg_path"="/etc/platform/$3"
     alias $1-cfg="vim \$$1_cfg_path"
+    alias $1-cfg-path="echo \$$1_cfg_path"
 
     export "$1_run_path"="/etc/sv/$2/"
     alias $1-run="cat \$$1_run_path/run"
@@ -159,7 +160,7 @@ if [[ $(hostname) != $HOST ]]; then
     }
 
     function __mount-rw-nix() {
-        RW_NIX=/tmp/volyntsev-nix
+        export RW_NIX=/tmp/volyntsev-nix/
         mkdir -p $RW_NIX
 
         which mount.aufs
@@ -170,7 +171,8 @@ if [[ $(hostname) != $HOST ]]; then
         RES=$(mount | grep nix  | grep aufs | wc -l)
 
         if [[ $RES -ne "1" ]]; then
-            mount -t aufs -o br=$RW_NIX=rw:/nix=ro -o udba=reval none /nix
+            echo "mouting rw nix on $RW_NIX"
+            mount -t aufs -o br=$RW_NIX=rw:/nix=ro -o udba=reval none /nix/
         fi
     }
 
