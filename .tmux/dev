@@ -5,7 +5,7 @@ tmux new-session -s dev -n shell -d
 tmux new-window -n build-env-shell -t dev
 tmux send-keys -t dev:2 'prepare-workspace' C-m
 
-tmux new-window -n build-env -t dev
+tmux new-window -n ide-env -t dev
 tmux send-keys -t dev:3 'prepare-workspace' C-m
 tmux send-keys -t dev:3 'vim-enter-dev' C-m
 
@@ -14,7 +14,7 @@ tmux send-keys -t dev:4 'host-enter root@192.168.215.212' C-m
 tmux send-keys -t dev:4 'prepare-workspace' C-m
 
 tmux new-window -n test-84 -t dev
-tmux send-keys -t dev:5 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:5 'host-enter root@192.168.215.84' C-m
 tmux send-keys -t dev:5 'prepare-workspace' C-m
 
 tmux select-window -t dev:3
