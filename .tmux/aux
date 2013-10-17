@@ -15,6 +15,13 @@ tmux send-keys -t aux:4 'cdb 0' C-m
 tmux new-window -n root-shell -t aux
 tmux send-keys -t aux:5 'sudo -i' C-m
 
+tmux new-window -n nix-console -t aux
+tmux send-keys -t aux:6 'cd $DEVNIXPATH' C-m
+
+tmux new-window -n nix-edit -t aux
+tmux send-keys -t aux:7 'cd $DEVNIXPATH' C-m
+tmux send-keys -t aux:7 'vim ./pkgs/top-level/all-packages.nix' C-m
+
 tmux select-window -t aux:1
 fi
 
