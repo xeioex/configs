@@ -11,9 +11,11 @@ tmux send-keys -t dev:3 'vim-enter-dev' C-m
 
 tmux new-window -n test-212 -t dev
 tmux send-keys -t dev:4 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:4 'prepare-workspace' C-m
 
-tmux new-window -n rtsp-stage-gra -t dev
-tmux send-keys -t dev:5 'host-enter 10.40.37.242' C-m
+tmux new-window -n test-84 -t dev
+tmux send-keys -t dev:5 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:5 'prepare-workspace' C-m
 
 tmux select-window -t dev:3
 fi

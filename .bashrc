@@ -14,6 +14,7 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     fi
 
     export WORKSPACE="$HOME/workspace"
+    export RWORKSPACE="/root/workspace"
     export PWORKSPACE="$WORKSPACE/undev/playout"
     export DWORKSPACE="$WORKSPACE/undev/deligra"
     export DEVNIXPATH="$WORKSPACE/undev/nix-pkgs"
@@ -140,7 +141,7 @@ if [[ $(hostname) == $HOST ]]; then
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 
-    alias vbox-open='rdesktop 127.0.0.1'
+    alias elecard-open='DISPLAY=:0.0 xtightvncviewer 10.40.25.244'
 fi
 
 if [[ $(hostname) != $HOST ]]; then
@@ -152,9 +153,13 @@ if [[ $(hostname) != $HOST ]]; then
                 echo "sshfs not available, installing"
                 ainstall-dont-ask sshfs
             fi
-            sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ /root/workspace/
-            if [[ $? -ne 0 ]]; then
-                echo "Can't mount $PWORKSPACE. Try umount -l /root/workspace/ and do sshfs again"
+            alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
+            shopt -s expand_aliases 
+            RES=$(__mntws)
+            if [[ $RES -ne 0 ]]; then
+                echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
+                umount -l $RWORKSPACE
+                $(__mntws)
             fi
         fi
     }

@@ -59,3 +59,6 @@ nnoremap <leader>cl :!rm -fr .scon*; rm -fr ./build/*<CR>
 " search word under cursor using ack
 noremap <Leader>a :Ack <cword><cr>
 
+" open file's directory
+noremap <Leader>d :e %:h<cr>
+
