@@ -4,7 +4,7 @@ set path+=.,,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams
 " UTF-8 is the only format
 set encoding=utf-8
 
-"temporarily
+" default
 set makeprg=scons
 
 "list chars
@@ -12,13 +12,12 @@ set listchars=tab:▸-,eol:¬,trail:@,nbsp:=
 
 "autoindent for newlines
 set ai
+
 "C language style indents
 set cin
 
 set number
 syntax on
-
-set backspace=2
 
 "underline current line
 set cursorline
@@ -36,10 +35,9 @@ set title
 set backupdir=~/.vim/backups,/tmp
 set directory=~/.vim/backups,/tmp
 
-
 "remember copy registers after quitting in the .viminfo file
-set viminfo='100,\"1000
 "remember undo after quitting
+set viminfo='100,\"1000
 
 "allow switch from non-saved file
 set hidden
@@ -48,8 +46,6 @@ set history=15000
 set mouse=v
 
 set backspace=indent,eol,start
-
-set nrformats=
 
 " search and regexp
 nnoremap / /\v
@@ -66,6 +62,9 @@ let c_space_errors = 1
 
 set foldmethod=manual
 
+"interactive shell on '!
+set shell=/bin/bash\ --rcfile\ ~/.bash_profile
+
 " Things to ignore
 set wildignore=*~
 set wildignore+=*vim/backups*
@@ -74,3 +73,4 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif,*.pdf
 set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
 set wildignore+=*.o,*.out,*.obj,*.git,*.rbc,*.class,*.svn,*.gem
+

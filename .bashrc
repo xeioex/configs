@@ -9,8 +9,10 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export HOST=$VOLYNTSEVHOST
     export HOSTIP=$(ip addr|grep inet.*eth0|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
 
+    export PS1HOST="\[\e[1;31m\] $HOSTIP\[\e[31;1m\]"
     if [[ $HOSTIP == $VOLYNTSEVIP ]]; then
         export HOSTIP='home'
+        export PS1HOST="\[\e[1;32m\] $HOSTIP\[\e[31;1m\]"
     fi
 
     export WORKSPACE="$HOME/workspace"
@@ -28,7 +30,8 @@ if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.
     export HISTSIZE=100000
     export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] \[\e[1;32m\]$HOSTIP\[\e[31;1m\] \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+
+    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] $PS1HOST \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
 
     # AUX
     export SSHRTUNNELPORT='11111'
@@ -84,7 +87,7 @@ alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
 alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
 
-alias clean-build="rm -fr ./build/ && rm -fr .scon*"
+alias clean-build='rm -fr ./build/ && rm -fr .scon*'
 
 alias ls='ls --color=auto'
 alias mfind='find ./ -regextype posix-egrep'
@@ -108,7 +111,7 @@ alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
 # prefix name
-function declare-service-aliases()
+function __declare-service-aliases()
 {
     export "$1_log_path"="/storage/log/$2/current"
     alias $1-log="tailf \$$1_log_path"
@@ -125,6 +128,11 @@ function declare-service-aliases()
     alias $1-restart="sv restart \$$1_run_path"
     alias $1-start="sv start \$$1_run_path"
     alias $1-stop="sv stop \$$1_run_path"
+}
+
+function __install-repo-key()
+{
+    wget $1 -O- | apt-key add -
 }
 
 if [[ $(hostname) == $HOST ]]; then
@@ -190,16 +198,16 @@ if [[ $(hostname) != $HOST ]]; then
 
     alias restart-all="sv restart /etc/sv/*"
     alias stop-all="sv restart /etc/sv/*"
-    declare-service-aliases "sdi" "sdi-grabber" "sdi_grabber/sdi-input.podsl"
-    declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
-    declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
-    declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
-    declare-service-aliases "blue7" "playout-blue7-0" "playout-blue7/playout-blue7-0.podsl"
-    declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
-    declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
-    declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
-    declare-service-aliases "sdigra2" "sdigra-2" "sdigra2"
-    declare-service-aliases "sdigra3" "sdigra-3" "sdigra3"
+    __declare-service-aliases "sdi" "sdi-grabber" "sdi_grabber/sdi-input.podsl"
+    __declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
+    __declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
+    __declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
+    __declare-service-aliases "blue7" "playout-blue7-0" "playout-blue7/playout-blue7-0.podsl"
+    __declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
+    __declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
+    __declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
+    __declare-service-aliases "sdigra2" "sdigra-2" "sdigra2"
+    __declare-service-aliases "sdigra3" "sdigra-3" "sdigra3"
 fi
 
 function __host-prepare() {
@@ -254,6 +262,8 @@ alias tmux-enter-aux='~/.tmux/aux'
 alias tmux-kill-dev='tmux kill-session -t dev'
 alias tmux-kill-aux='tmux kill-session -t aux'
 
+alias install-repo-key="__install-repo-key $1"
+
 # custom
 function __enable-cores() {
     sudo sysctl -w kernel.core_pattern=/tmp/core.%t.%h.%e.%p
@@ -263,7 +273,7 @@ function __enable-cores() {
 function __prepare-nix-env() {
     which nix-build
     if [[ $? -ne 0 ]]; then
-        echo "nix-env not available, installing"
+        echo 'nix-env not available, installing'
         wget http://hydra.nixos.org/build/3668881/download/1/nix_1.3-1_amd64.deb
         sudo dpkg -i ./nix_1.3-1_amd64.deb
         sudo apt-get -y -f install
@@ -275,7 +285,7 @@ function __prepare-nix-env() {
     export NIX_REMOTE=daemon
     sudo pkill nix-daemon
     sudo nix-channel --update
-    sudo nohup nix-daemon &
+    sudo nohup nix-daemon > /dev/null&
     nix-build --run-env -A $1 $2
 }
 

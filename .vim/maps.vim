@@ -54,11 +54,17 @@ nnoremap <leader>x <C-a>
 nnoremap <leader>vr :source $MYVIMRC<cr>
 
 " clean build dir
-nnoremap <leader>cl :!rm -fr .scon*; rm -fr ./build/*<CR>
+nnoremap <leader>cl :!rm -fr ./build/ && rm -fr .scon*<CR>
 
 " search word under cursor using ack
 noremap <Leader>a :Ack <cword><cr>
+noremap <Leader>A :Ack <cWORD><cr>
 
 " open file's directory
 noremap <Leader>d :e %:h<cr>
 
+" man word under cursor
+noremap <Leader>m :!man 2 <cword><cr>
+
+" file history
+noremap <Leader>fh :Git lg %<cr>

@@ -10,3 +10,4 @@
 
 --ignore-dir=webface
 --ignore-dir=libpcre
+--ignore-dir=build
