@@ -1,17 +1,20 @@
 set nocompatible
-syntax on                                                                                                                                                       
-filetype on                                                                                                                                                                                                                                                                                                                     
-set matchpairs+=<:>                                                                                                                                             
-set matchpairs+=[:]                                                                                                                                             
-set matchpairs+=,:,                                                                                                                                             
-                                                                                                                                                                
-" set syntax hightlight for certain file types                                                                                                                  
-au BufNewFile,BufRead *.nu set filetype=lisp                                                                                                                    
-au BufNewFile,BufRead *.podsl set filetype=lisp                                                                                                                 
-au BufNewFile,BufRead *.plist set filetype=xml                                                                                                               
-au BufNewFile,BufRead SCons* set filetype=python                                                                                                                
-set smarttab                                                                                                                                                    
-"turn a tabs into spaces                                                                                                                                        
+syntax on
+filetype on
+set matchpairs+=<:>
+set matchpairs+=[:]
+set matchpairs+=,:,
+
+"turn a tabs into space
 set expandtab
+
 au FileType objc setlocal ts=8 sts=8 sw=8 expandtab
-au FileType python setlocal ts=4 sts=4 sw=4 expandtab 
+au FileType python setlocal ts=4 sts=4 sw=4 expandtab smarttab
+
+" set syntax hightlight for certain file types
+au BufNewFile,BufRead *.nu set filetype=lisp
+au BufNewFile,BufRead *.podsl set filetype=lisp
+au BufNewFile,BufRead *.plist set filetype=xml
+
+au BufNewFile,BufRead *.py set filetype=python
+au BufNewFile,BufRead SCons* set filetype=python

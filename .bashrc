@@ -1,44 +1,44 @@
 #!/usr/bin/env bash
-export VOLYNTSEVHOST="xeioex-host"
-export VOLYNTSEVIP="192.168.215.32"
 
-if [[ $(hostname) == $VOLYNTSEVHOST || $(echo $SSH_CONNECTION | egrep -o '^[0-9.]+') == $VOLYNTSEVIP ]]; then
-    # Global
-    export EDITOR=vim
-    export USER=xeioex
-    export HOST=$VOLYNTSEVHOST
-    export HOSTIP=$(ip addr|grep inet.*eth0|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
+# Global
+export EDITOR=vim
 
-    export PS1HOST="\[\e[1;31m\] $HOSTIP\[\e[31;1m\]"
-    if [[ $HOSTIP == $VOLYNTSEVIP ]]; then
-        export HOSTIP='home'
-        export PS1HOST="\[\e[1;32m\] $HOSTIP\[\e[31;1m\]"
-    fi
+export USER=xeioex
 
-    export WORKSPACE="$HOME/workspace"
-    export RWORKSPACE="/root/workspace"
-    export PWORKSPACE="$WORKSPACE/undev/playout"
-    export DWORKSPACE="$WORKSPACE/undev/deligra"
-    export DEVNIXPATH="$WORKSPACE/undev/nix-pkgs"
+export BASEHOST="xeioex-host"
+export BASEHOSTIP="192.168.215.32"
 
-    export ESSENTIALCONFIGS="~/.bashrc ~/.inputrc ~/.gdbinit ~/.gdb_history ~/.bash_profile"
-    export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap tstools"
-    export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
+export HOSTIP=$(ip addr|grep inet.*eth0|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
 
-    # Shell
-    export HISTTIMEFORMAT='%F %T '
-    export HISTSIZE=100000
-    export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
+export WORKSPACE="$HOME/workspace"
+export RWORKSPACE="/root/workspace"
+export PWORKSPACE="$WORKSPACE/undev/playout"
+export DWORKSPACE="$WORKSPACE/undev/deligra"
+export DEVNIXPATH="$WORKSPACE/undev/nix-pkgs"
 
+export ESSENTIALCONFIGS="~/.inputrc ~/.gdbinit ~/.gdb_history"
+export ESSENTIALPACKETS="sshfs aufs-tools gdb linux-tools-2.6.32 rlwrap tstools"
+export ESSENTIALDBGPACKETS="libc6-dbg libgnustep-base1.19-dbg libffi5-dbg"
 
-    export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] $PS1HOST \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+# Shell
+export HISTTIMEFORMAT='%F %T '
+export HISTSIZE=100000
+export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-    # AUX
-    export SSHRTUNNELPORT='11111'
-
-    # NIX
-    export NIX_REMOTE=daemon
+export PS1HOST="\[\e[1;31m\] $HOSTIP\[\e[31;1m\]"
+if [[ $HOSTIP == $BASEHOSTIP ]]; then
+    export HOSTIP='home'
+    export PS1HOST="\[\e[1;32m\] $HOSTIP\[\e[31;1m\]"
 fi
+
+export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] $PS1HOST \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+
+# AUX
+export SSHRTUNNELPORT='11111'
+
+# NIX
+export NIX_REMOTE=daemon
+#
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -135,13 +135,7 @@ function __install-repo-key()
     wget $1 -O- | apt-key add -
 }
 
-if [[ $(hostname) == $HOST ]]; then
-    # ENV VARS
-    #PATHs
-    #PATH=/var/lib/gems/1.9.1/bin/:/home/xeioex/.gem/ruby/1.9.1/bin/:$PATH
-    #PATH=/opt/llvm/llvm-3.3/bin:$PATH
-    #PATH=$PATH:$HOME/.rvm/bin
-
+if [[ $(hostname) == $BASEHOST ]]; then
     # disabling XOFF
     stty ixany
     stty ixoff -ixon
@@ -152,8 +146,8 @@ if [[ $(hostname) == $HOST ]]; then
     alias elecard-open='DISPLAY=:0.0 xtightvncviewer 10.40.25.244'
 fi
 
-if [[ $(hostname) != $HOST ]]; then
-    #export DISPLAY=":0.0"
+if [[ $(hostname) != $BASEHOST ]]; then
+    export DISPLAY=":0.0"
     function __mount-workspace() {
         if [ ! -f $PWORKSPACE ]; then
             which sshfs
@@ -169,11 +163,16 @@ if [[ $(hostname) != $HOST ]]; then
                 umount -l $RWORKSPACE
                 $(__mntws)
             fi
+
+            RES=$(cd $PWORKSPACE)
+            if [[ $RES -ne 0 ]]; then
+                echo "Can't mount $PWORKSPACE"
+            fi
         fi
     }
 
     function __mount-rw-nix() {
-        export RW_NIX=/tmp/volyntsev-nix/
+        export RW_NIX="/tmp/$USER-nix/"
         mkdir -p $RW_NIX
 
         which mount.aufs
@@ -198,7 +197,7 @@ if [[ $(hostname) != $HOST ]]; then
 
     alias restart-all="sv restart /etc/sv/*"
     alias stop-all="sv restart /etc/sv/*"
-    __declare-service-aliases "sdi" "sdi-grabber" "sdi_grabber/sdi-input.podsl"
+    __declare-service-aliases "sdi" "sdi_grabber" "sdi-grabber/sdi_input.podsl"
     __declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
     __declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
     __declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
@@ -214,6 +213,7 @@ function __host-prepare() {
     ssh-copy-id $2
     upload-essential-configs $2:~/
     scp  ~/.vimrc_minimal $2:~/.vimrc
+    scp  ~/.bashrc $2:~/.bashrc_$USER
     if [[ $1 ==  "1" ]]; then
         echo "host $2 enter, preparing debug env"
         ssh  $2 "bash -ic install-essential"
@@ -222,7 +222,7 @@ function __host-prepare() {
 
 function __host-enter() {
     __host-prepare $1 $2
-    ssh -X -R $SSHRTUNNELPORT:localhost:22 $2
+    ssh -t -X -R $SSHRTUNNELPORT:localhost:22 $2 "bash --rcfile ~/.bashrc_$USER -i"
 }
 
 alias host-enter='__host-enter 0'
@@ -327,16 +327,23 @@ alias playout-version='dpkg -l| grep playout'
 alias playout-upgrade='apt-get update && apt-get install playout playout-dbg'
 alias playout-gdb='gdb /usr/lib/debug/usr/bin/playout-launch'
 alias playout-gdb-run='gdb --args /usr/bin/playout-launch'
+alias playout-tree='pstree -plH $(pidof playout)'
+
+alias nix-check-derivations='nix-env --show-trace -f default.nix -qa \*'
+alias nix-find-derivation='nix-env  -qa '
 
 alias prepare-deligra-env="cd $DWORKSPACE;__prepare-deligra-env"
-alias run-sdigra-in-nix-env="LD_PRELOAD=/usr/lib/libDeckLinkAPI.so:/usr/lib/libz.so.1:/usr/lib/libxml2.so.2 "
 
 alias gdb-run='gdb --args'
+
+alias ps-search='ps aux | grep'
+
+alias ssh-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhost"
 
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # HOST only
-if [[ $(hostname) == $HOST ]]; then
+if [[ $(hostname) == $BASEHOST ]]; then
     alias prepare-workspace="cd $PWORKSPACE; __prepare-playout-env"
     if [[ $(whoami) == $USER ]]; then
         export BUILDENVPATH='~/workspace/undev/build-env/'
