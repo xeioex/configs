@@ -43,7 +43,7 @@ if [ -f /usr/share/doc/cdargs/examples/cdargs-bash.sh ]; then
 fi
 
 # Completion
-if [ -f /etc/bash_completion ]; then
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 
     if [ -f $PWORKSPACE/env/setup ]; then
@@ -63,6 +63,7 @@ if [[ -n $stdenv && -f $stdenv/setup &&  -n $NIX_ENV ]]; then
     export NIX_REMOTE=daemon
     echo "importing nix env ($NIX_ENV) using $stdenv/setup"
     export PS1="(nix:$NIX_ENV) $PS1"
+    set +e
 fi
 
 #Defs
@@ -290,8 +291,7 @@ function __prepare-nix-env() {
     sudo pkill nix-daemon
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
-    nix-build --run-env --command "exec $SHELLCMD" -A $1 $2
-    #nix-build --run-env  -A $1 $2
+    nix-build --run-env --command "$SHELLCMD" -A $1 $2
 }
 
 
