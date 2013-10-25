@@ -45,6 +45,10 @@ fi
 # Completion
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+
+    if [ -f $PWORKSPACE/env/setup ]; then
+        . $PWORKSPACE/env/setup
+    fi
 fi
 
 # NIX
@@ -52,7 +56,7 @@ if [ -f /etc/profile.d/nix.sh ]; then
     . /etc/profile.d/nix.sh
 fi
 
-if [ -f $stdenv/setup ]; then
+if [[ -n $stdenv && -f $stdenv/setup &&  -n $NIX_ENV ]]; then
     p=$PATH
     . $stdenv/setup
     export PATH="$PATH:$p"
@@ -105,8 +109,7 @@ alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
 # prefix name
-function __declare-service-aliases()
-{
+function __declare-service-aliases() {
     export "$1_log_path"="/storage/log/$2/current"
     alias $1-log="tailf \$$1_log_path"
     alias $1-log-list="'less -R \$$1_log_path"
@@ -124,16 +127,15 @@ function __declare-service-aliases()
     alias $1-stop="sv stop \$$1_run_path"
 }
 
-function __install-repo-key()
-{
+function __install-repo-key() {
     wget $1 -O- | apt-key add -
 }
 
-if [[ $(hostname) == $BASEHOST ]]; then
-    # disabling XOFF
-    stty ixany
-    stty ixoff -ixon
+# disabling XOFF
+stty ixany
+stty ixoff -ixon
 
+if [[ $(hostname) == $BASEHOST ]]; then
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
     alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
 
@@ -182,6 +184,8 @@ if [[ $(hostname) != $BASEHOST ]]; then
         fi
     }
 
+    alias vim="vim -S ~/.vimrc_$USER"
+
     alias mount-workspace="__mount-workspace"
     alias mount-rw-nix="__mount-rw-nix"
     alias prepare-workspace="mount-workspace; mount-rw-nix; cd $PWORKSPACE; __prepare-playout-env"
@@ -207,7 +211,12 @@ fi
 function __host-prepare() {
     ssh-copy-id $2
     upload-essential-configs $2:~/
-    scp  ~/.vimrc_minimal $2:~/.vimrc
+
+    scp  ~/.vimrc_minimal $2:~/.vimrc_$USER
+
+    ssh $2 "mkdir -p ~/.vim_$USER/plugin 2>/dev/null"
+    scp  ~/.vim/plugin/comment.vim $2:~/.vim_$USER/plugin/
+
     scp  ~/.bashrc $2:$SHELLRC
     if [[ $1 ==  "1" ]]; then
         echo "host $2 enter, preparing debug env"
@@ -282,6 +291,7 @@ function __prepare-nix-env() {
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
     nix-build --run-env --command "exec $SHELLCMD" -A $1 $2
+    #nix-build --run-env  -A $1 $2
 }
 
 

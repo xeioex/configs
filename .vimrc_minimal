@@ -18,3 +18,8 @@ au BufNewFile,BufRead *.plist set filetype=xml
 
 au BufNewFile,BufRead *.py set filetype=python
 au BufNewFile,BufRead SCons* set filetype=python
+
+let uname=expand("$USER")
+let g:vimrcpath='~/.vim_'.uname.'/'
+
+:exec ":source ~/.vim_" .$USER . "/plugin/*.vim"
