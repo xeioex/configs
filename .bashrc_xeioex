@@ -43,7 +43,7 @@ if [ -f /usr/share/doc/cdargs/examples/cdargs-bash.sh ]; then
 fi
 
 # Completion
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 
     if [ -f $PWORKSPACE/env/setup ]; then
@@ -132,9 +132,14 @@ function __install-repo-key() {
     wget $1 -O- | apt-key add -
 }
 
-# disabling XOFF
-stty ixany
-stty ixoff -ixon
+# interactive shell
+if [[ $(echo $- | egrep -o 'i') -eq "i" ]]; then
+    # disabling XOFF
+    if [[ -t 0 ]]; then
+        stty ixany
+        stty ixoff -ixon
+    fi
+fi
 
 if [[ $(hostname) == $BASEHOST ]]; then
     alias upload-essential-configs="scp $ESSENTIALCONFIGS"
@@ -150,7 +155,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
             which sshfs
             if [[ $? -ne 0 ]]; then
                 echo "sshfs not available, installing"
-                ainstall-dont-ask sshfs
+                ainstall sshfs -t squeeze
             fi
             alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
             shopt -s expand_aliases 
