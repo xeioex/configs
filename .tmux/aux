@@ -1,6 +1,6 @@
 tmux has-session -t aux
 if [ $? != 0 ]; then
-
+reload-ssh-agent
 tmux new-session -s aux -n pyconsole -d
 tmux send-keys -t aux:1 'python' C-m
 
@@ -21,6 +21,15 @@ tmux send-keys -t aux:6 'cd $DEVNIXPATH' C-m
 tmux new-window -n nix-edit -t aux
 tmux send-keys -t aux:7 'cd $DEVNIXPATH' C-m
 tmux send-keys -t aux:7 'vim ./pkgs/top-level/all-packages.nix' C-m
+
+tmux new-window -n pl-ffmpeg -t aux
+tmux send-keys -t aux:8 'cd $SRCROOT/pl-ffmpeg/' C-m
+
+tmux new-window -n pynptv -t aux
+tmux send-keys -t aux:9 'cd $SRCROOT/pynptv' C-m
+
+tmux new-window -n py-spif2 -t aux
+tmux send-keys -t aux:10 'cd $SRCROOT/py-spif2' C-m
 
 tmux select-window -t aux:1
 fi
