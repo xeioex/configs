@@ -1,6 +1,5 @@
 tmux has-session -t dev
 if [ $? != 0 ]; then
-reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
 tmux new-window -n build-env-shell -t dev

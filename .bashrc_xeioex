@@ -18,16 +18,29 @@ export HISTTIMEFORMAT='%F %T '
 export HISTSIZE=100000
 export HISTIGNORE="&:ls:cd:[bf]g:exit:pwd:[ \t]*:ss"
 
-export PS1HOST="\[\e[1;31m\] $HOSTIP\[\e[31;1m\]"
+#Colors aliases
+# Reset
+Color_Off="\[\e[0m\]"       # Text Reset
+
+# Bold Regular Colors
+Red="\[\033[1;31m\]"
+Green="\[\033[1;32m\]"
+Yellow="\[\033[1;33m\]"
+Blue="\[\033[1;34m\]"
+Purple="\[\033[1;35m\]"
+Cyan="\[\033[1;36m\]"
+White="\[\033[1;37m\]"
+
+export PS1HOST="$Red $HOSTIP $Color_Off"
 if [[ $HOSTIP == $BASEHOSTIP ]]; then
     export HOSTIP='HOME'
-    export PS1HOST="\[\e[1;32m\] $HOSTIP\[\e[31;1m\]"
+    export PS1HOST="$Green $HOSTIP $Color_Off"
 fi
 
 export SHELLRC="~/.bashrc_$USER"
 export SHELLCMD="bash --rcfile $SHELLRC -i"
 
-export PS1="\[\e[33;1m\] [\@] \[\e[31;1m\]\#\[\e[33;1m\] $PS1HOST \[\e[34;1m\]\u@\h\[\e[33;1m\] \w\n\[\e[0m\]\$ "
+export PS1="$(__git_ps1 " (%s)") $Yellow [\@] $Red\#$Red $PS1HOST $Blue\u@\h$Yellow \w\n$Color_Off\$ "
 
 # AUX
 export SSHRTUNNELPORT='11111'
@@ -46,9 +59,10 @@ fi
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 
-    if [ -f $PWORKSPACE/env/setup ]; then
-        . $PWORKSPACE/env/setup
-    fi
+    # TODO
+    #if [ -f $PWORKSPACE/env/setup ]; then
+         #$PWORKSPACE/env/setup
+    #fi
 fi
 
 # NIX
@@ -109,6 +123,9 @@ alias force-reboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
+# Temporarily
+alias monitor-sdigra-io="strace -ttt -T -p $(pstree -p $(pidof .sdigra-wrapped) 2>&1 | tail -n1 | grep -o '[0-9]+') -e ioctl 2>&1"
+
 # prefix name
 function __declare-service-aliases() {
     export "$1_log_path"="/storage/log/$2/current"
@@ -158,7 +175,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
                 ainstall sshfs -t squeeze
             fi
             alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
-            shopt -s expand_aliases 
+            shopt -s expand_aliases
             RES=$(__mntws)
             if [[ $RES -ne 0 ]]; then
                 echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
@@ -364,4 +381,3 @@ if [[ $(hostname) == $BASEHOST ]]; then
         fi
     fi
 fi
-
