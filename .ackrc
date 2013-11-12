@@ -1,12 +1,12 @@
 --type-set=lisp=.podsl
 --type-set=lisp=.nu
---type-set=javascript=.coffee
+--type-set=txt=.coffee
 --type-set=c=.cu
 --type-set=txt=.nix
+--type-set=txt=.jade
 
 --nohtml
 --nojs
---nojavascript
 
 --ignore-dir=webface
 --ignore-dir=libpcre

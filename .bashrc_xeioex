@@ -40,7 +40,7 @@ fi
 export SHELLRC="~/.bashrc_$USER"
 export SHELLCMD="bash --rcfile $SHELLRC -i"
 
-export PS1="$(__git_ps1 " (%s)") $Yellow [\@] $Red\#$Red $PS1HOST $Blue\u@\h$Yellow \w\n$Color_Off\$ "
+export PS1="$(__git_ps1 " (%s)") $Yellow[\@] $Red\#$Red$PS1HOST$Blue\u@\h$Yellow \w\n$Color_Off\$ "
 
 # AUX
 export SSHRTUNNELPORT='11111'
@@ -211,7 +211,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
 
     alias mount-workspace="__mount-workspace"
     alias mount-rw-nix="__mount-rw-nix"
-    alias prepare-workspace="mount-workspace; mount-rw-nix; cd $PWORKSPACE; __prepare-playout-env"
+    alias prepare-workspace="mount-workspace; cd $PWORKSPACE; __prepare-playout-env"
 
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
