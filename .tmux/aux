@@ -31,6 +31,9 @@ tmux send-keys -t aux:9 'cd $SRCROOT/pynptv' C-m
 tmux new-window -n py-spif2 -t aux
 tmux send-keys -t aux:10 'cd $SRCROOT/py-spif2' C-m
 
+tmux new-window -n vifm -t aux
+tmux send-keys -t aux:11 'vifm' C-m
+
 tmux select-window -t aux:1
 fi
 
