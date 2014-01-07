@@ -223,7 +223,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
     __declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
     __declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
     __declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
-    __declare-service-aliases "blue7" "playout-blue7-0" "playout-blue7/playout-blue7-0.podsl"
+    __declare-service-aliases "blue7" "blue7" "blue7/input.podsl"
     __declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
     __declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
     __declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
@@ -301,10 +301,10 @@ function __prepare-nix-env() {
     which nix-build
     if [[ $? -ne 0 ]]; then
         echo 'nix-env not available, installing'
-        wget http://hydra.nixos.org/build/3668881/download/1/nix_1.3-1_amd64.deb
-        sudo dpkg -i ./nix_1.3-1_amd64.deb
+        wget http://hydra.nixos.org/build/6695717/download/1/nix_1.6.1-1_amd64.deb
+        sudo dpkg -i ./nix_1.6.1-1_amd64.deb
         sudo apt-get -y -f install
-        sudo nix-channel --add http://nix.undev.cc/channel
+        sudo nix-channel --add $LOCAL_NIX_CHANNEL
         sudo nix-channel --update
     fi
 
@@ -313,7 +313,7 @@ function __prepare-nix-env() {
     sudo pkill nix-daemon
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
-    nix-build --run-env --command "$SHELLCMD" -A $1 $2
+    nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
 }
 
 
@@ -344,7 +344,7 @@ function __netem-clear-qdisc() {
 alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
-alias vim-enter-dev='vim -S'
+alias vim-enter-dev='vim --servername dev -S'
 
 alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
 alias prepare-nix-env='__prepare-nix-env'

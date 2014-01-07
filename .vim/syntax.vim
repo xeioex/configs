@@ -24,3 +24,8 @@ au FileType json set formatoptions=tcq2l
 au FileType json set foldmethod=syntax
 augroup END
 
+au BufRead,BufNewFile *.wiki                set filetype=mediawiki
+au BufRead,BufNewFile *.wikipedia.org*      set filetype=mediawiki
+au BufRead,BufNewFile *.wikibooks.org*      set filetype=mediawiki
+au BufRead,BufNewFile *.wikimedia.org*      set filetype=mediawiki
+au BufRead,BufNewFile *wiki.undev*          set filetype=mediawiki

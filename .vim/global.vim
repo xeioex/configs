@@ -45,6 +45,9 @@ set history=15000
 
 set mouse=v
 
+" put all yanks to system register
+set clipboard=unnamed,unnamedplus
+
 set backspace=indent,eol,start
 
 " search and regexp

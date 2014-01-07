@@ -1,6 +1,6 @@
 #! /bin/bash
 
-SKIPLIST=( '.gitconfigprivate' '.bash_history' '.viminfo' '..' '.' )
+SKIPLIST=( '.gitconfigprivate' '.gitconfig' '.bash_history' '.viminfo' '.ssh' '..' '.' )
 
 if [ "$2" = "skipcheck" ]; then
         if [ "$1" = "install" ]; then

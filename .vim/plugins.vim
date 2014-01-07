@@ -64,6 +64,11 @@ Bundle 'tpope/vim-repeat'
 " one replace command
 " :%S/facilit{y,ies}/building{,s}/g
 Bundle 'tpope/vim-abolish'
+
+":h yankring.txt
+":h yankring-tutorial
+Bundle 'vim-scripts/YankRing.vim'
+
 " implements some of TextMate's snippets features in Vim. A snippet is a piece
 " of often-typed text that you can insert into your document using a trigger
 " word followed by a <tab>. 

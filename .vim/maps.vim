@@ -68,3 +68,6 @@ noremap <Leader>m :!man 2 <cword><cr>
 
 " file history
 noremap <Leader>fh :Git lg %<cr>
+
+" paste current file to paste.*.cc
+noremap <Leader>p :!puc %<CR>
