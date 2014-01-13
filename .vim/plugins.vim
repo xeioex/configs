@@ -42,8 +42,6 @@ Bundle 'vim-scripts/errormarker.vim'
 Bundle 'vim-scripts/ifdef-highlighting'
 " switch between source and header files
 Bundle 'derekwyatt/vim-fswitch'
-" Mac OS X native vim GUI implementation in Cocoa
-Bundle 'jjgod/vim-cocoa'
 " integrates the LanguageTool grammar checker into Vim
 Bundle 'vim-scripts/LanguageTool'
 " perform Google searches from the command line

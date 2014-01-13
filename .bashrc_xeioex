@@ -13,17 +13,20 @@ function __create-if-not-exist() {
     fi
 }
 
+function __is-exist() {
+    which $1 2>/dev/null
+}
+
 # Customization
 USERPROFILERC=~/.bashrc_user_profile
 __source-if-exist $USERPROFILERC
 
-export HOSTIP=$(ip addr|grep inet.*eth0|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
+export HOSTIP=$(ip addr|grep 'inet.*eth0'|grep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
 export ESSENTIALCONFIGS="$USERPROFILERC $ESSENTIALCONFIGS"
 
 #Colors aliases
 # Reset
-Color_Off="\[\e[0m\]"       # Text Reset
-
+Color_Off="\[\e[0m\]"
 # Bold Regular Colors
 Red="\[\033[1;31m\]"
 Green="\[\033[1;32m\]"
@@ -42,8 +45,11 @@ fi
 export SHELLRC="~/.bashrc_$USER"
 export SHELLCMD="bash --rcfile $SHELLRC -i"
 
-__source-if-exist /usr/share/git/git-prompt.sh
-export PS1="\$(__git_ps1) $Yellow[\@] $Red\#$Red$PS1HOST$Blue\u@\h$Yellow \w\n$Color_Off\$ "
+export PS1="$Yellow[\@] $Red\#$Red$PS1HOST$Blue\u@\h$Yellow \w\n$Color_Off\$ "
+
+if [ -n "$(type __git_ps1 2>/dev/null)" ]; then
+    export PS1="\$(__git_ps1) $PS1"
+fi
 
 # AUX
 export SSHRTUNNELPORT='11111'
@@ -77,6 +83,7 @@ alias ss="source $SHELLRC"
 # Generic
 alias ainstall='sudo apt-get install'
 alias ainstall-dont-ask='sudo apt-get install -y --force-yes'
+alias dpkgi='sudo dpkg -i'
 alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
 alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
@@ -96,10 +103,23 @@ alias kill-service='pkill -9 -f'
 alias kill-all-playout='pkill -9 -f playout'
 alias kill-current-tty-playout="pkill -KILL -t $(tty | sed 's/\/dev\///') -f playout"
 
+# X11
+function __switch_x11_to() {
+    WID=$(xdotool search $1 2>/dev/null)
+    xdotool windowfocus $WID
+    xdotool windowactivate $WID
+}
+alias switch-to-dev="__switch_x11_to dev"
+alias switch-to-aux="__switch_x11_to aux"
+
 # remote server helpers
+function __copy-home() {
+    scp $1 $USER@$BASEHOSTIP:/tmp
+}
 alias force-reboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
+alias copy-home='__copy-home'
 
 # prefix name
 function __declare-service-aliases() {
@@ -124,8 +144,14 @@ function __install-repo-key() {
     wget $1 -O- | apt-key add -
 }
 
-# interactive shell
-if [[ $(echo $- | egrep -o 'i') -eq "i" ]]; then
+# Interactive
+# It's best if there's no output to stdout from login rc files such as ~/.bash_profile
+# or ~/.profile since it can interfere with the proper operation of rsync for example.
+if [[ $- == *i* ]]; then
+    if [ -n "$(__is-exist keychain)" ]; then
+        keychain -q --eval --agents ssh -Q --quiet id_rsa
+    fi
+
     # disabling XOFF
     if [[ -t 0 ]]; then
         stty ixany
@@ -195,7 +221,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
     alias stop-all="sv restart /etc/sv/*"
 
     __declare-service-aliases "sdi" "sdi_grabber" "sdi-grabber/sdi_input.podsl"
-    __declare-service-aliases "m2l" "m2l-transcoder" "m2l-transcoder/m2l-transcoder.podsl"
+    __declare-service-aliases "tcode" "transcoder" "transcoder/transcoder.podsl"
     __declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
     __declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
     __declare-service-aliases "blue7" "blue7" "blue7/input.podsl"
@@ -232,7 +258,7 @@ alias host-enter-dbg='__host-enter 1'
 
 # TMUX
 # reload environment
-if [ -n "$(which tmux 2>/dev/null)" ]; then
+if [ -n "$(__is-exist tmux)" ]; then
     function tmux() {
     local tmux=$(type -fp tmux)
     case "$1" in
@@ -319,7 +345,8 @@ function __netem-clear-qdisc() {
 alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
-alias vim-enter-dev='vim --servername dev -S'
+alias vim-enter-dev='vim --servername dev -S ~/.vimrc'
+alias vim-enter-clean-dev="rm -fr ~/.vim/sessions/$USER-dev-session.vim; vim-enter-dev"
 
 alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
 alias prepare-nix-env='__prepare-nix-env'
@@ -349,10 +376,15 @@ alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//
 if [[ $(hostname) == $BASEHOST ]]; then
     alias prepare-workspace="cd $PWORKSPACE; __prepare-playout-env"
     if [[ $(whoami) == $USER ]]; then
-        if [[ -z $TMUX ]]; then
-            echo "tmux-enter-dev - to enter development session"
-            echo "tmux-enter-aux - to enter aux session"
-            echo "WORKSPACE $WORKSPACE"
+        # Interactive
+        # It's best if there's no output to stdout from login rc files such as ~/.bash_profile
+        # or ~/.profile since it can interfere with the proper operation of rsync for example.
+        if [[ $- == *i* ]]; then
+            if [[ -z $TMUX ]]; then
+                echo "tmux-enter-dev - to enter development session"
+                echo "tmux-enter-aux - to enter aux session"
+                echo "WORKSPACE $WORKSPACE"
+            fi
         fi
     fi
 fi
