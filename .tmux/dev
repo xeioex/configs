@@ -11,6 +11,7 @@ tmux send-keys -t dev:3 'vim-enter-dev' C-m
 
 tmux new-window -n testing-env -t dev
 tmux send-keys -t dev:4 'prepare-testing-workspace' C-m
+tmux send-keys -t dev:4 'deploy-testing-workspace' C-m
 
 tmux new-window -n test-1 -t dev
 tmux send-keys -t dev:5 'host-enter root@192.168.215.53' C-m
