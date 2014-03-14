@@ -115,6 +115,8 @@ Bundle 'jnwhiteh/vim-golang'
 
 "Bundle 'vim-scripts/slimv.vim'
 
+Bundle 'Shirk/vim-gas'
+
 " Conveniently shows loaded bundles and plugins
 "Bundle 'mbadran/headlights'
 
