@@ -71,3 +71,6 @@ noremap <Leader>fh :Git lg %<cr>
 
 " paste current file to paste.*.cc
 noremap <Leader>p :!puc %<CR>
+
+" Allow saving of files as sudo
+cmap w!! w !sudo tee > /dev/null %

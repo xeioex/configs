@@ -1,4 +1,5 @@
 --totals
 --languages=-javascript
+--languages=+c,c++,ObjectiveC,Lisp,Python,vim
 --exclude=.git
 -R

@@ -1,6 +1,9 @@
+#!/usr/bin/env bash
+
+source ~/.bashrc
 tmux has-session -t aux
 if [ $? != 0 ]; then
-reload-ssh-agent
+#reload-ssh-agent
 tmux new-session -s aux -n pyconsole -d
 tmux send-keys -t aux:1 'python' C-m
 
@@ -28,8 +31,8 @@ tmux send-keys -t aux:8 'cd $SRCROOT/pl-ffmpeg/' C-m
 tmux new-window -n pynptv -t aux
 tmux send-keys -t aux:9 'cd $SRCROOT/pynptv' C-m
 
-tmux new-window -n py-spif2 -t aux
-tmux send-keys -t aux:10 'cd $SRCROOT/py-spif2' C-m
+tmux new-window -n py-spif-tools -t aux
+tmux send-keys -t aux:10 'cd $SRCROOT/py-spif-tools' C-m
 
 tmux new-window -n vifm -t aux
 tmux send-keys -t aux:11 'vifm' C-m

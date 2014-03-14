@@ -9,19 +9,22 @@ tmux new-window -n ide-env -t dev
 tmux send-keys -t dev:3 'prepare-workspace' C-m
 tmux send-keys -t dev:3 'vim-enter-dev' C-m
 
+tmux new-window -n testing-env -t dev
+tmux send-keys -t dev:4 'prepare-testing-workspace' C-m
+
 tmux new-window -n test-1 -t dev
-tmux send-keys -t dev:4 'host-enter root@10.40.26.253' C-m
-tmux send-keys -t dev:4 'prepare-workspace' C-m
+tmux send-keys -t dev:5 'host-enter root@192.168.215.53' C-m
+tmux send-keys -t dev:5 'prepare-workspace' C-m
 
 tmux new-window -n test-1_2 -t dev
-tmux send-keys -t dev:5 'host-enter root@10.40.26.253' C-m
+tmux send-keys -t dev:6 'host-enter root@192.168.215.53' C-m
 
 tmux new-window -n test-nvenc -t dev
-tmux send-keys -t dev:6 'host-enter root@10.40.25.195' C-m
-tmux send-keys -t dev:6 'prepare-workspace' C-m
+tmux send-keys -t dev:7 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:7 'prepare-workspace' C-m
 
 tmux new-window -n test-nvenc_2 -t dev
-tmux send-keys -t dev:7 'host-enter root@10.40.25.195' C-m
+tmux send-keys -t dev:8 'host-enter root@192.168.215.212' C-m
 
 tmux select-window -t dev:3
 fi

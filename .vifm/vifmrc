@@ -109,7 +109,7 @@ COMMAND=gz=tar -cvzf %a.tgz %f
 # The command macros %f, %F, %d, %F may be used in the commands.
 # The %a macro is ignored.  To use a % you must put %%.
 
-FILETYPE=Image=png,jpg,jpeg,gif,bmp,tiff=mirage %f &
+FILETYPE=Image=png,jpg,jpeg,gif,bmp,tiff=eog %f &
 FILETYPE=Video=avi,mpg,mpeg,mkv,wmv,mp4,ts,m2ts=vlc %f &
 FILETYPE=Pdf=pdf=evince %f &
 FILETYPE=Web=html,htm,shtml=elink %f &

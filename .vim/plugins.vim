@@ -111,6 +111,8 @@ Bundle 'vim-scripts/Rainbow-Parenthesis'
 "  for CoffeeScript in Haml and HTML.
 Bundle 'kchmck/vim-coffee-script'
 
+Bundle 'jnwhiteh/vim-golang'
+
 "Bundle 'vim-scripts/slimv.vim'
 
 " Conveniently shows loaded bundles and plugins

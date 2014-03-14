@@ -17,11 +17,16 @@ function __is-exist() {
     which $1 2>/dev/null
 }
 
+function __dir_is-accessable() {
+    (cd ${1:?pathname expected} 2>/dev/null) || return
+}
+
 # Customization
 USERPROFILERC=~/.bashrc_user_profile
 __source-if-exist $USERPROFILERC
+__source-if-exist ~/.bashrc_private
 
-export HOSTIP=$(ip addr|grep 'inet.*eth0'|grep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
+export HOSTIP=$(ip addr|egrep 'inet.*eth0'|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
 export ESSENTIALCONFIGS="$USERPROFILERC $ESSENTIALCONFIGS"
 
 #Colors aliases
@@ -112,14 +117,24 @@ function __switch_x11_to() {
 alias switch-to-dev="__switch_x11_to dev"
 alias switch-to-aux="__switch_x11_to aux"
 
+# Python
+function __venv_activate() {
+    DIR=venv
+    __create-if-not-exist $DIR
+    virtualenv $DIR
+    source $DIR/bin/activate
+}
+alias vactivate="__venv_activate"
+
 # remote server helpers
 function __copy-home() {
-    scp $1 $USER@$BASEHOSTIP:/tmp
+    scp $2 $USER@$BASEHOSTIP:$1
 }
 alias force-reboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
-alias copy-home='__copy-home'
+alias copy-home='__copy-home /tmp/'
+alias copy-home-to='__copy-home'
 
 # prefix name
 function __declare-service-aliases() {
@@ -159,38 +174,8 @@ if [[ $- == *i* ]]; then
     fi
 fi
 
-if [[ $(hostname) == $BASEHOST ]]; then
-    alias upload-essential-configs="scp $ESSENTIALCONFIGS"
-    alias upload-all-configs="scp -r $ESSENTIALCONFIGS ~/.vim/"
-
-    alias elecard-open="DISPLAY=:0.0 xtightvncviewer $ELECARD_SERVER"
-fi
-
 if [[ $(hostname) != $BASEHOST ]]; then
     export DISPLAY=":0.0"
-    function __mount-workspace() {
-        if [ ! -f $PWORKSPACE ]; then
-            which sshfs
-            if [[ $? -ne 0 ]]; then
-                echo "sshfs not available, installing"
-                ainstall sshfs -t squeeze
-            fi
-            alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
-            shopt -s expand_aliases
-            RES=$(__mntws)
-            if [[ $RES -ne 0 ]]; then
-                echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
-                umount -l $RWORKSPACE
-                $(__mntws)
-            fi
-
-            RES=$(cd $PWORKSPACE)
-            if [[ $RES -ne 0 ]]; then
-                echo "Can't mount $PWORKSPACE"
-            fi
-        fi
-    }
-
     function __mount-rw-nix() {
         export RW_NIX="/tmp/$USER-nix/"
         mkdir -p $RW_NIX
@@ -210,9 +195,7 @@ if [[ $(hostname) != $BASEHOST ]]; then
 
     alias vim="vim -S ~/.vimrc_$USER"
 
-    alias mount-workspace="__mount-workspace"
     alias mount-rw-nix="__mount-rw-nix"
-    alias prepare-workspace="mount-workspace; cd $PWORKSPACE; __prepare-playout-env"
 
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
@@ -232,9 +215,34 @@ if [[ $(hostname) != $BASEHOST ]]; then
     __declare-service-aliases "sdigra3" "sdigra-3" "sdigra3"
 fi
 
+alias mount-workspace="__mount-workspace-if-needed"
+function __mount-workspace-if-needed() {
+    __dir_is-accessable $PWORKSPACE
+    if [[ $? -ne 0 ]]; then
+        echo "Can't detect workspace at: $PWORKSPACE, mounting"
+        which sshfs
+        if [[ $? -ne 0 ]]; then
+            echo "sshfs not available, installing"
+            ainstall sshfs -t squeeze
+        fi
+        alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
+        shopt -s expand_aliases
+        RES=$(__mntws)
+        if [[ $RES -ne 0 ]]; then
+            echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
+            umount -l $RWORKSPACE
+            $(__mntws)
+        fi
+
+        RES=$(cd $PWORKSPACE)
+        if [[ $RES -ne 0 ]]; then
+            echo "Can't mount $PWORKSPACE"
+        fi
+    fi
+}
+
 function __host-prepare() {
-    ssh-copy-id $2
-    upload-essential-configs $2:~/
+    scp $ESSENTIALCONFIGS $2:~/
 
     scp  ~/.vimrc_minimal $2:~/.vimrc_$USER
 
@@ -317,17 +325,24 @@ function __prepare-nix-env() {
     nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
 }
 
+function __prepare-dev-env() {
+    if [ -n "$1" ]; then
+        export LD_LIBRARY_PATH=$1
+    fi
+    __enable-cores
+    __prepare-nix-env $2 $DEVNIXPATH
+}
 
 function __prepare-playout-env() {
-    export LD_LIBRARY_PATH=./build/MLFoundation/:./build/MLStreams/:./build/Playout
-    __enable-cores
-    __prepare-nix-env playout-develop $DEVNIXPATH
+    __prepare-dev-env "./build/MLFoundation/:./build/MLStreams/:./build/Playout" playout-develop
 }
 
 function __prepare-deligra-env() {
-    export LD_LIBRARY_PATH=./lib
-    __enable-cores
-    __prepare-nix-env deligra-develop $DEVNIXPATH
+    __prepare-dev-env "./lib" deligra-develop
+}
+
+function __prepare-ptest-env() {
+    __prepare-dev-env "" testing-playout-develop
 }
 
 function __netem-activate() {
@@ -348,7 +363,7 @@ alias netem-clear="__netem-clear-qdisc"
 alias vim-enter-dev='vim --servername dev -S ~/.vimrc'
 alias vim-enter-clean-dev="rm -fr ~/.vim/sessions/$USER-dev-session.vim; vim-enter-dev"
 
-alias prepare-playout-env="__prepare-playout-env playout-develop $DEVNIXPATH"
+alias prepare-playout-env="__prepare-playout-env"
 alias prepare-nix-env='__prepare-nix-env'
 
 alias playout-run-with-clean-env='kill-current-tty-playout; sleep 1 &&'
@@ -372,9 +387,13 @@ alias ssh-reverse-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhos
 
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
+# API
+alias prepare-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-playout-env"
+alias prepare-testing-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-ptest-env"
+
 # HOST only
 if [[ $(hostname) == $BASEHOST ]]; then
-    alias prepare-workspace="cd $PWORKSPACE; __prepare-playout-env"
+    alias elecard-open="DISPLAY=:0.0 xtightvncviewer $ELECARD_SERVER"
     if [[ $(whoami) == $USER ]]; then
         # Interactive
         # It's best if there's no output to stdout from login rc files such as ~/.bash_profile
