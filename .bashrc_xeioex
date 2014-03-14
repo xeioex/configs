@@ -333,6 +333,10 @@ function __prepare-dev-env() {
     __prepare-nix-env $2 $DEVNIXPATH
 }
 
+function __deploy-nix-derivation() {
+    nix-build -A $1  $DEVNIXPATH
+}
+
 function __prepare-playout-env() {
     __prepare-dev-env "./build/MLFoundation/:./build/MLStreams/:./build/Playout" playout-develop
 }
@@ -343,6 +347,10 @@ function __prepare-deligra-env() {
 
 function __prepare-ptest-env() {
     __prepare-dev-env "" testing-playout-develop
+}
+
+function __deploy-ptest-env() {
+    __deploy-nix-derivation testing-playout-develop
 }
 
 function __netem-activate() {
@@ -377,8 +385,6 @@ alias playout-tree='pstree -plH $(pidof playout)'
 alias nix-check-derivations='nix-env --show-trace -f default.nix -qa \*'
 alias nix-find-derivation='nix-env  -qa '
 
-alias prepare-deligra-env="cd $DWORKSPACE;__prepare-deligra-env"
-
 alias gdb-run='gdb --args'
 
 alias ps-search='ps aux | grep'
@@ -388,7 +394,9 @@ alias ssh-reverse-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhos
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # API
+alias prepare-deligra-env="__mount-workspace-if-needed; cd $DWORKSPACE;__prepare-deligra-env"
 alias prepare-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-playout-env"
+alias deploy-testing-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __deploy-ptest-env"
 alias prepare-testing-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-ptest-env"
 
 # HOST only
