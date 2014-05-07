@@ -12,9 +12,14 @@ filetype plugin indent on
 "vundle (plugin manager/updater)
 filetype off  " required!
 
-set rtp+=~/.vim/vundle.git/
-call vundle#rc()
-Bundle 'vundle'
+set rtp+=~/.vim/bundle/Vundle.vim
+
+" hack for slimv
+set rtp+=~/.vim/bundle/slimv.vim
+
+call vundle#begin()
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
 
 " :scriptsname - shows all loaded plugins
 
@@ -23,66 +28,66 @@ Bundle 'vundle'
 "
 
 " used for fuzzyFinder
-Bundle 'L9'
+Plugin 'L9'
 " find files, tags, buffers, etc by fuzzy patterns
 " example 1: Fufile **/RTSP will find all files with filenames whicn contain "RTSP" substring
 " in all vim path diretories
-Bundle 'FuzzyFinder'
+Plugin 'FuzzyFinder'
 " file manager
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 " visualize changes as tree
-Bundle 'sjl/gundo.vim'
-"Bundle 'vim-scripts/GdbFromVim'
-Bundle 'vim-scripts/JSON.vim'
+Plugin 'sjl/gundo.vim'
+"Plugin 'vim-scripts/GdbFromVim'
+Plugin 'vim-scripts/JSON.vim'
 " Hooks the make quickfix command and converts all compiler errors into signs
 " that are placed next to the line with the error
-Bundle 'vim-scripts/errormarker.vim'
+Plugin 'vim-scripts/errormarker.vim'
 " Provides highlighting for  #ifdef  #ifndef  #else  #endif  blocks, with the
 " ability to mark a symbol as defined or undefined
-Bundle 'vim-scripts/ifdef-highlighting'
+Plugin 'vim-scripts/ifdef-highlighting'
 " switch between source and header files
-Bundle 'derekwyatt/vim-fswitch'
+Plugin 'derekwyatt/vim-fswitch'
 " integrates the LanguageTool grammar checker into Vim
-Bundle 'vim-scripts/LanguageTool'
+Plugin 'vim-scripts/LanguageTool'
 " perform Google searches from the command line
 " :Goog <query>
-Bundle 'danchoi/goog'
+Plugin 'danchoi/goog'
 " plugins runtime reload
-Bundle 'xolox/vim-reload'
-Bundle 'xolox/vim-misc'
+Plugin 'xolox/vim-reload'
+Plugin 'xolox/vim-misc'
 
 " git wrapper
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " handling surrounds: example cs"' inside "phase inside quote" convert it to 'phrase inside quote'
-Bundle 'tpope/vim-surround'
+Plugin 'tpope/vim-surround'
 " Repeat.vim remaps . in a way that plugins can tap into it
-Bundle 'tpope/vim-repeat'
+Plugin 'tpope/vim-repeat'
 " supercharged substitute command
 " example 1:%S/{man,dog}/{dog,man}/g will replace man -> dog and dog -> man in
 " one replace command
 " :%S/facilit{y,ies}/building{,s}/g
-Bundle 'tpope/vim-abolish'
+Plugin 'tpope/vim-abolish'
 
 ":h yankring.txt
 ":h yankring-tutorial
-Bundle 'vim-scripts/YankRing.vim'
+Plugin 'vim-scripts/YankRing.vim'
 
 " implements some of TextMate's snippets features in Vim. A snippet is a piece
 " of often-typed text that you can insert into your document using a trigger
 " word followed by a <tab>. 
-Bundle 'msanders/snipmate.vim'
+Plugin 'msanders/snipmate.vim'
 " help edit XML documents. It includes tag completion and tag jumping
-Bundle 'sukima/xmledit'
+Plugin 'sukima/xmledit'
 " camelCaseMotions
-Bundle 'bkad/CamelCaseMotion'
+Plugin 'bkad/CamelCaseMotion'
 " allows you to run interactive programs, such as bash on linux or
 " powershell.exe on Windows, inside a Vim buffer
-Bundle 'vim-scripts/Conque-Shell'
+Plugin 'vim-scripts/Conque-Shell'
 " using ack instead of grep from vim
-Bundle 'mileszs/ack.vim'
+Plugin 'mileszs/ack.vim'
 " create a temporary scratch buffer to store
 " and edit text that will be discarded when you quit/exit vim
-Bundle 'vim-scripts/scratch.vim'
+Plugin 'vim-scripts/scratch.vim'
 " aligning text
 " example 1: Tabularize /,
 "     Some short phrase,some other phrase
@@ -90,37 +95,36 @@ Bundle 'vim-scripts/scratch.vim'
 "
 "     Some short phrase         , some other phrase
 "     A much longer phrase here , and another long phrase
-Bundle 'godlygeek/tabular'
+Plugin 'godlygeek/tabular'
 " Buffer explorer
-Bundle 'corntrace/bufexplorer'
+Plugin 'corntrace/bufexplorer'
 " Syntastic is a syntax checking plugin that runs files through external
 " syntax checkers and displays any resulting errors to the user. This can be
 " done on demand, or automatically as files are saved
-Bundle 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic'
 " Files with ANSI escape sequences look good when dumped onto a terminal that
 " accepts them, but have been a distracting clutter when edited via vim
-Bundle 'vim-scripts/AnsiEsc.vim'
+Plugin 'vim-scripts/AnsiEsc.vim'
 " using * for search for current visual selection
-Bundle 'vim-scripts/visualstar.vim'
+Plugin 'vim-scripts/visualstar.vim'
 " populated arglist with quickfix list files
-Bundle 'nelstrom/vim-qargs'
+Plugin 'nelstrom/vim-qargs'
 " Highlight matching parens in a rainbow of colors
-Bundle 'vim-scripts/Rainbow-Parenthesis'
+Plugin 'vim-scripts/Rainbow-Parenthesis'
 
 "  It handles syntax, indenting, compiling, and more. Also included is support
 "  for CoffeeScript in Haml and HTML.
-Bundle 'kchmck/vim-coffee-script'
+Plugin 'kchmck/vim-coffee-script'
 
-Bundle 'jnwhiteh/vim-golang'
+Plugin 'jnwhiteh/vim-golang'
 
-"Bundle 'vim-scripts/slimv.vim'
-
-Bundle 'Shirk/vim-gas'
+Plugin 'vim-scripts/slimv.vim'
 
 " Conveniently shows loaded bundles and plugins
-"Bundle 'mbadran/headlights'
+"Plugin 'mbadran/headlights'
 
 " non github repos
-Bundle 'git://git.wincent.com/command-t.git'
+Plugin 'git://git.wincent.com/command-t.git'
 
+call vundle#end()             " required
 filetype plugin indent on     " required!

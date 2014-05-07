@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Bash snippets
+# for i in {1..500};do time ls ;done
+
 # Generic routines
 function __source-if-exist() {
     if [ -f $1 ]; then
@@ -368,8 +371,17 @@ function __netem-clear-qdisc() {
 alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
-alias vim-enter-dev='vim --servername dev -S ~/.vimrc'
-alias vim-enter-clean-dev="rm -fr ~/.vim/sessions/$USER-dev-session.vim; vim-enter-dev"
+# Console
+function vim-enter-session() {
+    vim --servername $1 -S ~/.vimrc
+}
+
+function vim-enter-clean-session() {
+    rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1-session.vim; vim-enter-session $1
+}
+
+alias vim-enter-dev='vim-enter-session dev'
+alias vim-enter-clean-dev='vim-enter-clean-session dev'
 
 alias prepare-playout-env="__prepare-playout-env"
 alias prepare-nix-env='__prepare-nix-env'
@@ -381,17 +393,32 @@ alias playout-deb-version='dpkg -l| grep playout'
 alias playout-deb-upgrade='apt-get update && apt-get install playout playout-dbg'
 
 alias playout-tree='pstree -plH $(pidof playout)'
+alias playout-pidof-worker-1="playout-tree | egrep -o 'playout\([0-9]+\)' | egrep -o '[0-9]+'"
 
 alias nix-check-derivations='nix-env --show-trace -f default.nix -qa \*'
 alias nix-find-derivation='nix-env  -qa '
 
-alias gdb-run='gdb --args'
-
-alias ps-search='ps aux | grep'
-
 alias ssh-reverse-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhost"
-
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
+
+# Application
+alias pprof-name="perl -e '(\$base, \$rev) = shift() =~ /(prof-[^.]+).*(0[0-9]{3})/; \$part = shift(); if (\$part == 1) {print \$base;} if (\$part == 2) {print \$rev;}'"
+
+function __pprof-diff() {
+    PPROFMAIN=$1
+    PPROFMAINREV=$(pprof-name $PPROFMAIN 2)
+    if [[ -n $2 ]]; then
+        PPROFBASE=$2
+    else
+        PPROFBASE=$(echo $PPROFMAIN|sed -r 's/0[0-9]{3}/0001/')
+    fi
+    PPROFBASEREV=$(pprof-name $PPROFBASE 2)
+    PPROFNAME="$(pprof-name $PPROFMAIN 1)-$PPROFBASEREV-$PPROFMAINREV-diff.pdf"
+    google-pprof --base=$PPROFBASE ./build/playout $PPROFMAIN --pdf > $PPROFNAME
+    echo "generated:$PPROFNAME"
+}
+
+alias pprof-diff="__pprof-diff"
 
 # API
 alias prepare-deligra-env="__mount-workspace-if-needed; cd $DWORKSPACE;__prepare-deligra-env"
