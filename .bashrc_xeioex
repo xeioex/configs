@@ -120,6 +120,11 @@ function __switch_x11_to() {
 alias switch-to-dev="__switch_x11_to dev"
 alias switch-to-aux="__switch_x11_to aux"
 
+function __xclip-strip-trailing() {
+    xclip -o -sel $1 | sed -e 's/ \+/ /g' | xclip -i -sel $1
+}
+alias xclipboard-strip-trailing="__xclip-strip-trailing clipboard"
+
 # Python
 function __venv_activate() {
     DIR=venv
@@ -341,7 +346,7 @@ function __deploy-nix-derivation() {
 }
 
 function __prepare-playout-env() {
-    __prepare-dev-env "./build/MLFoundation/:./build/MLStreams/:./build/Playout" playout-develop
+    __prepare-dev-env "./build/MLFoundation/:./build/MLStreams/:./build/Playout" $1
 }
 
 function __prepare-deligra-env() {
@@ -383,7 +388,7 @@ function vim-enter-clean-session() {
 alias vim-enter-dev='vim-enter-session dev'
 alias vim-enter-clean-dev='vim-enter-clean-session dev'
 
-alias prepare-playout-env="__prepare-playout-env"
+alias prepare-playout-env="__prepare-playout-env playout-develop"
 alias prepare-nix-env='__prepare-nix-env'
 
 alias playout-run-with-clean-env='kill-current-tty-playout; sleep 1 &&'
@@ -419,12 +424,6 @@ function __pprof-diff() {
 }
 
 alias pprof-diff="__pprof-diff"
-
-# API
-alias prepare-deligra-env="__mount-workspace-if-needed; cd $DWORKSPACE;__prepare-deligra-env"
-alias prepare-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-playout-env"
-alias deploy-testing-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __deploy-ptest-env"
-alias prepare-testing-workspace="__mount-workspace-if-needed; cd $PWORKSPACE; __prepare-ptest-env"
 
 # HOST only
 if [[ $(hostname) == $BASEHOST ]]; then

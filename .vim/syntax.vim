@@ -7,7 +7,6 @@ set matchpairs+=,:,
 
 " set syntax hightlight for certain file types
 au BufNewFile,BufRead *.nu set filetype=lisp
-
 au BufNewFile,BufRead *.podsl set filetype=lisp
 
 au BufNewFile,BufRead *.plist set filetype=xml
