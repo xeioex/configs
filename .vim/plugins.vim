@@ -53,6 +53,8 @@ Plugin 'danchoi/goog'
 Plugin 'xolox/vim-reload'
 Plugin 'xolox/vim-misc'
 
+Plugin 'xolox/vim-session'
+
 " git wrapper
 Plugin 'tpope/vim-fugitive'
 " handling surrounds: example cs"' inside "phase inside quote" convert it to 'phrase inside quote'
