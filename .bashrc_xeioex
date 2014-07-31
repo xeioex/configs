@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Bash snippets
-# for i in {1..500};do time ls ;done
+# for i in {1..500}; do curl 'url' > /dev/null & done
 
 # Generic routines
 function __source-if-exist() {

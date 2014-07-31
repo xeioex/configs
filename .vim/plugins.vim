@@ -119,6 +119,8 @@ Plugin 'jnwhiteh/vim-golang'
 
 Plugin 'vim-scripts/slimv.vim'
 
+Plugin 'vim-scripts/functionlist.vim'
+
 " Conveniently shows loaded bundles and plugins
 "Plugin 'mbadran/headlights'
 

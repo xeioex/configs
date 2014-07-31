@@ -25,8 +25,8 @@ tmux new-window -n nix-edit -t aux
 tmux send-keys -t aux:7 'cd $DEVNIXPATH' C-m
 tmux send-keys -t aux:7 'vim ./pkgs/top-level/all-packages.nix' C-m
 
-tmux new-window -n pl-ffmpeg -t aux
-tmux send-keys -t aux:8 'cd $SRCROOT/pl-ffmpeg/' C-m
+tmux new-window -n ffmpeg22 -t aux
+tmux send-keys -t aux:8 'cd $SRCROOT/ffmpeg21/' C-m
 
 tmux new-window -n pynptv -t aux
 tmux send-keys -t aux:9 'cd $SRCROOT/pynptv' C-m

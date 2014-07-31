@@ -7,8 +7,8 @@ set smarttab
 set expandtab
 
 " Syntax of these languages is fussy over bs Vs spaces
+au FileType c,objc setlocal cinoptions=l1,:0,(0 ts=8 sts=8 sw=8 expandtab
 au FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
-au FileType objc setlocal ts=8 sts=8 sw=8 expandtab
 au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 au FileType json setlocal ts=8 sts=2 sw=2 expandtab
 
