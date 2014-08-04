@@ -2,12 +2,13 @@ tmux has-session -t dev
 if [ $? != 0 ]; then
 tmux new-session -s dev -n shell -d
 
-tmux new-window -n build-env-shell -t dev
-tmux send-keys -t dev:2 'prepare-workspace' C-m
+tmux new-window -n po-0.8-dev -t dev
+tmux send-keys -t dev:2 'prepare-workspace-08' C-m
+tmux send-keys -t dev:2  'vim-enter-session playout-0.8' C-m
 
-tmux new-window -n ide-env -t dev
+tmux new-window -n po-dev -t dev
 tmux send-keys -t dev:3 'prepare-workspace' C-m
-tmux send-keys -t dev:3 'vim-enter-dev' C-m
+tmux send-keys -t dev:3  'vim-enter-session develop' C-m
 
 tmux new-window -n testing-env -t dev
 tmux send-keys -t dev:4 'prepare-testing-workspace' C-m
