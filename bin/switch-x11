@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source ~/.bashrc
+
+__switch_x11_to $1

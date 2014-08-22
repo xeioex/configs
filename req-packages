@@ -1,4 +1,4 @@
-sudo apt-get install pip ctags elinks ack-grep
+sudo apt-get install pip ctags elinks ack-grep sshpass xclip
 
 additional repos:
 https://github.com/skibyte/gdblib
