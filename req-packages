@@ -1,4 +1,4 @@
-sudo apt-get install pip etags elinks ack-grep
+sudo apt-get install pip ctags elinks ack-grep
 
 additional repos:
 https://github.com/skibyte/gdblib
