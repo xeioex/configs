@@ -1,5 +1,7 @@
 tmux has-session -t dev
+source ~/.bashrc
 if [ $? != 0 ]; then
+reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
 tmux new-window -n po-0.8-dev -t dev

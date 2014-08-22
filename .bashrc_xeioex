@@ -318,6 +318,7 @@ function __prepare-nix-env() {
     which nix-build
     if [[ $? -ne 0 ]]; then
         echo 'nix-env not available, installing'
+        # TODO: check system type before loading
         wget http://hydra.nixos.org/build/6695717/download/1/nix_1.6.1-1_amd64.deb
         sudo dpkg -i ./nix_1.6.1-1_amd64.deb
         sudo apt-get -y -f install
