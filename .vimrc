@@ -29,6 +29,7 @@ source ~/.vim/language-tool.vim
 source ~/.vim/fswitch.vim
 
 source ~/.vim/swank.vim
+source ~/.vim/snippets.vim
 
 " INFO
 ":abbreviate   - list abbreviations

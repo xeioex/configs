@@ -9,8 +9,8 @@
         return "\<c-n>"
     endif
  endfunction
- inoremap <tab> <c-r>=InsertTabWrapper ("forward")<cr>
- inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
+ "inoremap <tab> <c-r>=InsertTabWrapper ("forward")<cr>
+ "inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
 
  set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 

@@ -1,4 +1,5 @@
-sudo apt-get install pip ctags elinks ack-grep sshpass xclip xdotool
+sudo apt-get install pip ctags elinks sshpass xclip xdotool ssh
+curl http://beyondgrep.com/ack-2.12-single-file > /usr/local/bin/ack &&  chmod 0755 /usr/local/bin/ack
 
 additional repos:
 https://github.com/skibyte/gdblib

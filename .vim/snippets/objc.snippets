@@ -190,3 +190,18 @@ snippet cl
 	@class ${1:Foo};${2}
 snippet color
 	[[NSColor ${1:blackColor}] set];
+
+# Backtraced retain/release pair
+snippet btrr
+	-(id)retain
+	{
+		MLPrintBacktrace(LOG_FATAL);
+		MLLog(LOG_FATAL, "before retain:%lu", [self retainCount]);
+		return [super retain];
+	}
+	-(oneway void)release
+	{
+		MLPrintBacktrace(LOG_ALERT);
+		MLLog(LOG_ALERT, "before release:%lu", [self retainCount]);
+		[super release];
+	}
