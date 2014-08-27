@@ -109,7 +109,7 @@ Plugin 'vim-scripts/visualstar.vim'
 " populated arglist with quickfix list files
 Plugin 'nelstrom/vim-qargs'
 " Highlight matching parens in a rainbow of colors
-Plugin 'vim-scripts/Rainbow-Parenthesis'
+Plugin 'kien/rainbow_parentheses.vim'
 
 "  It handles syntax, indenting, compiling, and more. Also included is support
 "  for CoffeeScript in Haml and HTML.
