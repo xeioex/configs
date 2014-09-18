@@ -1,4 +1,4 @@
-sudo apt-get install pip ctags elinks sshpass xclip xdotool ssh
+sudo apt-get install pip ctags elinks sshpass xclip xdotool ssh cups conky dzen2 xmonad
 curl http://beyondgrep.com/ack-2.12-single-file > /usr/local/bin/ack &&  chmod 0755 /usr/local/bin/ack
 
 additional repos:
