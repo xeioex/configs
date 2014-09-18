@@ -15,7 +15,7 @@ snippet o
 	${1:NSObject} *${2:foo} = [${3:$1 alloc}]${4};${5}
 # MLLog(...)
 snippet log
-	MLLog(${3:LOG_INFO},"${1:%@}",${2});${4}
+	MLLog(${3:LOG_FATAL},"${1:%@}",${2});${4}
 # Class
 snippet objc
 	@interface ${1:`Filename('', 'someClass')`} : ${2:NSObject}
@@ -204,4 +204,14 @@ snippet btrr
 		MLPrintBacktrace(LOG_ALERT);
 		MLLog(LOG_ALERT, "before release:%lu", [self retainCount]);
 		[super release];
+	}
+
+snippet dea
+	- (void)dealloc
+	{
+		ML_LOG_DEALLOC();
+
+		${1}
+
+		[super dealloc];
 	}

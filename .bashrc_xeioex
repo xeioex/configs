@@ -71,6 +71,9 @@ __source-if-exist /usr/share/doc/cdargs/examples/cdargs-bash.sh
 __source-if-exist /etc/bash_completion
 __source-if-exist /etc/profile.d/nix.sh
 
+
+PATH=$PATH:~/bin/
+
 if [[ -n $stdenv && -f $stdenv/setup &&  -n $NIX_ENV ]]; then
     p=$PATH
     . $stdenv/setup
