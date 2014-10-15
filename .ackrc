@@ -13,4 +13,7 @@
 --ignore-dir=build
 
 --ignore-file=is:tags
+--ignore-file=is:TAGS
+--ignore-file=is:config.log
+--ignore-file=is:cscope.out
 --ignore-file=is:*.bak*

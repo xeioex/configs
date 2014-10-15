@@ -221,9 +221,6 @@ if [[ $(hostname) != $BASEHOST ]]; then
     __declare-service-aliases "blue7" "blue7" "blue7/input.podsl"
     __declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
     __declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
-    __declare-service-aliases "sdigra1" "sdigra-1" "sdigra1"
-    __declare-service-aliases "sdigra2" "sdigra-2" "sdigra2"
-    __declare-service-aliases "sdigra3" "sdigra-3" "sdigra3"
 fi
 
 alias mount-workspace="__mount-workspace-if-needed"
@@ -381,13 +378,25 @@ alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
 # Console
+function __ctags-populate-with-system-headers() {
+    rm -fr tags TAGS
+    source $(which clang) 2>/dev/null
+    ctags --options=$HOME/.vim/ctags-options
+    export INCPATHS=$(echo $ON_COMPILE_FLAGS | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
+    export VIMINCPATHS=$(echo $INCPATHS| tr '\n' ' ' | sed 's/ /**,/g')
+    echo $INCPATHS | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>/dev/null
+}
+
 function vim-enter-session() {
+    __ctags-populate-with-system-headers
+    source cscope_gen.sh "$USER-$1"
     vim --servername $1 -S ~/.vimrc
 }
 
 function vim-enter-clean-session() {
     rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1-session.vim; vim-enter-session $1
 }
+
 
 alias vim-enter-dev='vim-enter-session dev'
 alias vim-enter-clean-dev='vim-enter-clean-session dev'
@@ -423,11 +432,20 @@ function __pprof-diff() {
     fi
     PPROFBASEREV=$(pprof-name $PPROFBASE 2)
     PPROFNAME="$(pprof-name $PPROFMAIN 1)-$PPROFBASEREV-$PPROFMAINREV-diff.pdf"
-    google-pprof --base=$PPROFBASE ./build/playout $PPROFMAIN --pdf > $PPROFNAME
-    echo "generated:$PPROFNAME"
+    pprof --base=$PPROFBASE ./build/playout $PPROFMAIN --pdf > $PPROFNAME
+    echo "generated: $PPROFNAME"
+}
+
+function __pprof-pdf() {
+    PPROFBIN=$1
+    PPROFFILE=$2
+    PPROFNAME="$(basename $PPROFFILE).pdf"
+    pprof  ./build/playout $PPROFFILE --pdf > $PPROFNAME
+    echo "generated: $PPROFNAME"
 }
 
 alias pprof-diff="__pprof-diff"
+alias pprof-pdf="__pprof-pdf"
 
 # HOST only
 if [[ $(hostname) == $BASEHOST ]]; then

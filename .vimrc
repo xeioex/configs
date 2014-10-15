@@ -1,6 +1,7 @@
 set nocompatible
 source ~/.vim/global.vim
 source ~/.vim/maps.vim
+source ~/.vim/paths.vim
 
 source ~/.vim/edit.vim
 source ~/.vim/tags.vim

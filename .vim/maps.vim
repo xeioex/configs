@@ -60,6 +60,10 @@ nnoremap <leader>cl :!rm -fr ./build/ && rm -fr .scon*<CR>
 noremap <Leader>a :Ack <cword><cr>
 noremap <Leader>A :Ack <cWORD><cr>
 
+" search word under cursor using cscope
+" before first search !cscope_gen.sh required
+noremap <Leader>c :cs find s <C-R>=expand("<cword>")<CR><CR>
+
 " open file's directory
 noremap <Leader>d :e %:h<cr>
 
