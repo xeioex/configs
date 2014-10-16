@@ -1,5 +1,6 @@
 "path variable
-set path+=.,,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams/MLFoundation/Sources/**,MLStreams/MLFoundation/Headers/**,/usr/include/GNUstep/**
+set path+=.,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams/MLFoundation/Sources/**,MLStreams/MLFoundation/Headers/**
+set path-=/usr/include
 
 " UTF-8 is the only format
 set encoding=utf-8

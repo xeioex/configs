@@ -35,14 +35,34 @@ export ESSENTIALCONFIGS="$USERPROFILERC $ESSENTIALCONFIGS"
 #Colors aliases
 # Reset
 Color_Off="\[\e[0m\]"
+Color_OffE="\e[0m"
 # Bold Regular Colors
 Red="\[\033[1;31m\]"
+RedE="\033[1;31m"
 Green="\[\033[1;32m\]"
+GreenE="\033[1;32m"
 Yellow="\[\033[1;33m\]"
+YellowE="\033[1;33m"
 Blue="\[\033[1;34m\]"
+BlueE="\033[1;34m"
 Purple="\[\033[1;35m\]"
+PurpleE="\033[1;35m"
 Cyan="\[\033[1;36m\]"
+CyanE="\033[1;36m"
 White="\[\033[1;37m\]"
+WhiteE="\033[1;37m"
+
+function info-message () {
+    echo -e "${GreenE}$1${Color_OffE}"
+}
+
+function important-message () {
+    echo -e "${YellowE}$1${Color_OffE}"
+}
+
+function warning-message () {
+    echo -e "${RedE}$1${Color_OffE}"
+}
 
 export PS1HOST="$Red $HOSTIP $Color_Off"
 if [[ $HOSTIP == $BASEHOSTIP ]]; then
@@ -317,7 +337,7 @@ function __enable-cores() {
 function __prepare-nix-env() {
     which nix-build
     if [[ $? -ne 0 ]]; then
-        echo 'nix-env not available, installing'
+        info-message "nix-env not available, installing"
         # TODO: check system type before loading
         wget http://hydra.nixos.org/build/6695717/download/1/nix_1.6.1-1_amd64.deb
         sudo dpkg -i ./nix_1.6.1-1_amd64.deb
@@ -329,6 +349,7 @@ function __prepare-nix-env() {
     export NIX_ENV=$1
     export NIX_REMOTE=daemon
     sudo pkill nix-daemon
+    important-message "updating nix channel..."
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
     nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
@@ -378,18 +399,44 @@ alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
 # Console
-function __ctags-populate-with-system-headers() {
+function ctags-populate-with-include-headers() {
     rm -fr tags TAGS
+    important-message "gathering include dirs..."
+    # to get $ON_COMPILE_FLAGS
     source $(which clang) 2>/dev/null
-    ctags --options=$HOME/.vim/ctags-options
+    important-message "scaning sources for tags..."
+    ctags --options=$HOME/.vim/ctags-options 2>&1 | grep -v 'ignoring null|No such file or directory'
     export INCPATHS=$(echo $ON_COMPILE_FLAGS | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
+    important-message "populating tags with nix include paths..."
+    echo $INCPATHS | sed 's/ /\n/g' | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>&1 | grep -v 'ignoring null'
     export VIMINCPATHS=$(echo $INCPATHS| tr '\n' ' ' | sed 's/ /**,/g')
-    echo $INCPATHS | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>/dev/null
+}
+
+function cscope-populate-with-include-headers() {
+important-message "populating cscope database..."
+find . -name '*.py' \
+    -o -iname '*.[chm]' \
+    -o -name '*.cpp' \
+    -o -name '*.cc' \
+    -o -name '*.hpp'  \
+    -o -name 'SConscript'  \
+    -o -name '*.nu'  \
+    -o -name '*.podsl'  \
+    > cscope.files
+
+export CSCOPE_DB=/tmp/cscope-$1.out
+if [ -n "$NIX_CFLAGS_COMPILE" ]; then
+    INCFLAGS=$(echo $NIX_CFLAGS_COMPILE  | sed 's/ /\n/g' | grep  'include' | sort -u | sed -r 's/(.+)/-I\1/g' | tr '\n' ' ')
+fi
+# -b: just build
+# -q: create inverted index
+cscope -R -b -q $INCFLAGS -f $CSCOPE_DB
 }
 
 function vim-enter-session() {
-    __ctags-populate-with-system-headers
-    source cscope_gen.sh "$USER-$1"
+    ctags-populate-with-include-headers
+    cscope-populate-with-include-headers "$USER-$1"
+    info-message "Running vim..."
     vim --servername $1 -S ~/.vimrc
 }
 
