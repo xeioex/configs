@@ -4,37 +4,29 @@ if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
-tmux new-window -n po-0.8-dev -t dev
-tmux send-keys -t dev:2 'prepare-workspace-08' C-m
-tmux send-keys -t dev:2  'vim-enter-session playout-0.8' C-m
-
 tmux new-window -n po-dev -t dev
-tmux send-keys -t dev:3 'prepare-workspace' C-m
-tmux send-keys -t dev:3  'vim-enter-session develop' C-m
-
-tmux new-window -n testing-env -t dev
-tmux send-keys -t dev:4 'prepare-testing-workspace' C-m
-tmux send-keys -t dev:4 'deploy-testing-workspace' C-m
+tmux send-keys -t dev:2 'prepare-workspace' C-m
+tmux send-keys -t dev:2  'vim-enter-session develop' C-m
 
 tmux new-window -n test-1 -t dev
 reload-ssh-agent
-tmux send-keys -t dev:5 'host-enter root@192.168.215.53' C-m
-tmux send-keys -t dev:5 'prepare-workspace' C-m
+tmux send-keys -t dev:3 'host-enter root@192.168.215.53' C-m
+tmux send-keys -t dev:3 'prepare-workspace' C-m
 
 tmux new-window -n test-1_2 -t dev
 reload-ssh-agent
-tmux send-keys -t dev:6 'host-enter root@192.168.215.53' C-m
+tmux send-keys -t dev:4 'host-enter root@192.168.215.53' C-m
 
 tmux new-window -n test-nvenc -t dev
 reload-ssh-agent
-tmux send-keys -t dev:7 'host-enter root@192.168.215.212' C-m
-tmux send-keys -t dev:7 'prepare-workspace' C-m
+tmux send-keys -t dev:5 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:5 'prepare-workspace' C-m
 
 tmux new-window -n test-nvenc_2 -t dev
 reload-ssh-agent
-tmux send-keys -t dev:8 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:6 'host-enter root@192.168.215.212' C-m
 
-tmux select-window -t dev:3
+tmux select-window -t dev:2
 fi
 
 tmux attach -t dev
