@@ -1,11 +1,3 @@
-"pathogen (runtime path manipulator)
-
-filetype off
-
-call pathogen#infect()
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
-
 filetype plugin on
 filetype plugin indent on
 
@@ -54,6 +46,7 @@ Plugin 'xolox/vim-reload'
 Plugin 'xolox/vim-misc'
 
 Plugin 'xolox/vim-session'
+Plugin 'xolox/vim-shell'
 
 " git wrapper
 Plugin 'tpope/vim-fugitive'

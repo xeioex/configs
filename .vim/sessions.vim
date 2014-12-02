@@ -1,7 +1,8 @@
 let g:session_autosave = 'no'
 let g:session_autoload = 'no'
-let uname = expand("$USERNAME")
-let g:session = uname . '-' . v:servername
+let uname = expand("$USER")
+let g:session = tolower(uname . '-' . v:servername)
+
 fu! SaveCurrentSession()
     if v:servername != ''
         execute ':SaveSession! ' . g:session
