@@ -167,25 +167,6 @@ alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 alias copy-home='__copy-home /tmp/'
 alias copy-home-to='__copy-home'
 
-# prefix name
-function __declare-service-aliases() {
-    export "$1_log_path"="/storage/log/$2/current"
-    alias $1-log="tailf \$$1_log_path"
-    alias $1-log-list="'less -R \$$1_log_path"
-    alias $1-log-open="vim \$$1_log_path"
-
-    export "$1_cfg_path"="/etc/platform/$3"
-    alias $1-cfg="vim \$$1_cfg_path"
-    alias $1-cfg-path="echo \$$1_cfg_path"
-
-    export "$1_run_path"="/etc/sv/$2/"
-    alias $1-run="cat \$$1_run_path/run"
-    alias $1-run-open="vim \$$1_run_path/run"
-    alias $1-restart="sv restart \$$1_run_path"
-    alias $1-start="sv start \$$1_run_path"
-    alias $1-stop="sv stop \$$1_run_path"
-}
-
 function __install-repo-key() {
     wget $1 -O- | apt-key add -
 }
@@ -230,17 +211,6 @@ if [[ $(hostname) != $BASEHOST ]]; then
 
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
-
-    alias restart-all="sv restart /etc/sv/*"
-    alias stop-all="sv restart /etc/sv/*"
-
-    __declare-service-aliases "sdi" "sdi_grabber" "sdi-grabber/sdi_input.podsl"
-    __declare-service-aliases "tcode" "transcoder" "transcoder/transcoder.podsl"
-    __declare-service-aliases "rtsp" "rtsp-grabber" "rtsp_grabber/rtsp-grabber.podsl"
-    __declare-service-aliases "ts" "ts-streamer-0" "ts_streamer/ts-0.podsl"
-    __declare-service-aliases "blue7" "blue7" "blue7/input.podsl"
-    __declare-service-aliases "rtmp" "rtmp-streamer-0" "rtmp_streamer/rtmp-0.podsl"
-    __declare-service-aliases "sdigra0" "sdigra-0" "sdigra0"
 fi
 
 alias mount-workspace="__mount-workspace-if-needed"
@@ -441,7 +411,7 @@ function vim-enter-session() {
 }
 
 function vim-enter-clean-session() {
-    rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1-session.vim; vim-enter-session $1
+    rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1.vim; vim-enter-session $1
 }
 
 
