@@ -421,6 +421,8 @@ alias vim-enter-clean-dev='vim-enter-clean-session dev'
 alias prepare-playout-env="__prepare-playout-env playout-develop"
 alias prepare-nix-env='__prepare-nix-env'
 
+alias prepare-po-workspace="mount-workspace; cd $PWORKSPACE;prepare-playout-env"
+
 alias playout-run-with-clean-env='kill-current-tty-playout; sleep 1 &&'
 
 alias playout-nix-version="nix-find-derivation playout"

@@ -9,3 +9,6 @@ if [[ $TMUX ]]; then
         source $BASHRC
     fi
 fi
+
+export SSH_AUTH_SOCK="$GNOME_KEYRING_CONTROL/ssh"
+

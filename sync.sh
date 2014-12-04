@@ -54,12 +54,15 @@ do
 
         diff "$SRC_DIR$d" "$DEST_DIR$d" 2>/dev/null >/dev/null
         RES=$?
+        echo "Comparing: $SRC_DIR$d vs $DEST_DIR$d res:$RES"
 
-        if [[ $RES -eq 0 || $RES -eq 2 ]]; then
+        # 0   - no difference
+        # > 1 - error occured
+        if [[ $RES -eq 0 || $RES -gt 1 ]]; then
                 continue
         fi
-        echo ""
-        echo "installing $d:"
+
+        echo "\ninstalling $d:"
         echo "===== diff start ====="
         colordiff "$DEST_DIR$d" "$SRC_DIR$d" 2>/dev/null
         echo "===== diff stop ====="

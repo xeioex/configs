@@ -73,6 +73,7 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("M-k"         ,  spawn "skype")                   -- spawn Skype
     , ("M-v"         ,  spawn "vlc")                     -- spawn Vlc
     , ("M-e"         ,  spawn "evince")                  -- spawn Evince
+    , ("M-d"         ,  spawn "deadbeef")                -- spawn Deadbeef
     , ("M-s"         ,  search)                          -- search websites, uses Search & Submap
     , ("M-S-c"       ,  kill)                            -- kill window
     , ("M-<Space>"   ,  sendMessage NextLayout)          -- next layout
@@ -93,6 +94,9 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("M-C-q"       ,  broadcastMessage ReleaseResources
                         >> restart "xmonad" True)        -- restart xmonad
     , ("C-S-q"       ,  io (exitWith ExitSuccess))       -- exit xmonad
+    , ("C-S-<Up>"    , spawn "pulseaudio-ctl plus")        -- volume up
+    , ("C-S-<Down>"  , spawn "pulseaudio-ctl minus")       -- volume down
+    , ("C-S-m"       , spawn "pulseaudio-ctl mutetoggle")  -- volume mute toggle
     ] ++
     -- mod-[1..9], Switch to workspace N
     -- mod-shift-[1..9], Move client to workspace N
@@ -159,6 +163,7 @@ myFloatHook = composeAll
     , className =? "Evince"                --> moveToReading
     , className =? "Gnome-terminal"        --> moveToDev
     , className =? "MPlayer"               --> moveToMedia
+    , className =? "Deadbeef"              --> moveToMedia
     , className =? "Vlc"                   --> doFloat
     , className =? "Skype"                 --> moveToChat
     , classNotRole ("Skype", "MainWindow") --> doFloat
@@ -222,6 +227,7 @@ myStartupHook = do
         spawnOn "2.chat" "skype"
         spawnOn "3.dev" myTerminal
         spawnOn "4.aux" myTerminal
+        spawnOn "5.media" "deadbeef"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
