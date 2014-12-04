@@ -16,8 +16,7 @@ if [ "$2" = "skipcheck" ]; then
                 exit 0
 fi
 
-function __contains ()
-{
+function __contains () {
         param=$1;
         #echo "compare $1"
         shift;
