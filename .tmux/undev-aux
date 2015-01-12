@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+source ~/.bashrc
+tmux has-session -t aux
+if [ $? != 0 ]; then
+reload-ssh-agent
+tmux new-session -s aux -n pyconsole -d
+tmux send-keys -t aux:1 'python' C-m
+
+tmux new-window -n curl -t aux
+
+tmux new-window -n htop -t aux
+tmux send-keys -t aux:3 'htop' C-m
+
+tmux new-window -n cfgs -t aux
+tmux send-keys -t aux:4 'cdb 0' C-m
+
+tmux new-window -n root-shell -t aux
+tmux send-keys -t aux:5 'sudo -i' C-m
+
+tmux new-window -n nix-console -t aux
+tmux send-keys -t aux:6 'cd $DEVNIXPATH' C-m
+
+tmux new-window -n nix-edit -t aux
+tmux send-keys -t aux:7 'cd $DEVNIXPATH' C-m
+tmux send-keys -t aux:7 'vim ./pkgs/top-level/all-packages.nix' C-m
+
+tmux new-window -n ffmpeg22 -t aux
+tmux send-keys -t aux:8 'cd $SRCROOT/ffmpeg-2.3/' C-m
+
+tmux new-window -n pynptv -t aux
+tmux send-keys -t aux:9 'cd $SRCROOT/pynptv' C-m
+
+tmux new-window -n py-spif-tools -t aux
+tmux send-keys -t aux:10 'cd $SRCROOT/py-spif-tools' C-m
+
+tmux new-window -n vifm -t aux
+tmux send-keys -t aux:11 'vifm' C-m
+
+tmux select-window -t aux:1
+fi
+
+tmux attach -t aux

@@ -291,8 +291,14 @@ if [ -n "$(__is-exist tmux)" ]; then
 }
 fi
 
-alias tmux-enter-dev='~/.tmux/dev'
-alias tmux-enter-aux='~/.tmux/aux'
+if [[ -n $PROJECT ]]; then
+    PROJECTPREFIX="${PROJECT}-"
+else
+    PROJECTPREFIX=""
+fi
+
+alias tmux-enter-dev="~/.tmux/${PROJECTPREFIX}dev"
+alias tmux-enter-aux="~/.tmux/${PROJECTPREFIX}aux"
 alias tmux-kill-dev='tmux kill-session -t dev'
 alias tmux-kill-aux='tmux kill-session -t aux'
 

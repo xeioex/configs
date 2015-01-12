@@ -1,0 +1,13 @@
+source ~/.bashrc
+tmux has-session -t dev
+if [ $? != 0 ]; then
+reload-ssh-agent
+tmux new-session -s dev -n shell -d
+
+tmux new-window -n po-dev -t dev
+tmux send-keys -t dev:2  'vim-enter-session develop' C-m
+
+tmux select-window -t dev:2
+fi
+
+tmux attach -t dev
