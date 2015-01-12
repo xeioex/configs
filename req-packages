@@ -1,4 +1,5 @@
-sudo apt-get install exuberant-ctags elinks sshpass xclip xdotool ssh cups conky dzen2 xmonad colordiff cscope
+sudo apt-get install exuberant-ctags elinks sshpass xclip xdotool ssh cups conky dzen2 xmonad colordiff cscope curl dpkg-dev cdargs
+sudo apt-get install git subversion mercurial
 curl http://beyondgrep.com/ack-2.12-single-file > /usr/local/bin/ack &&  chmod 0755 /usr/local/bin/ack
 
 additional repos:
