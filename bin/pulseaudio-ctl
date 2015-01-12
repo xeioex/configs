@@ -4,6 +4,7 @@ DEFAULT_SINK_NAME="alsa_output.usb-ESI_Audiotechnik_GmbH_Dr._DAC_nano-01-nano.an
 
 DEFAULT_SINK_INDEX=$(pacmd list-sinks | grep -B 1 $DEFAULT_SINK_NAME | awk '/.*index: ([0-9]+)/{print $3}')
 DEFAULT_SINK_MUTE_STATE=$(pacmd dump | grep 'set-sink-mute' | grep $DEFAULT_SINK_NAME | cut -d' ' -f 3)
+DEFAULT_SINK_VOLUME=$(pacmd list-sinks | grep -A 10 $DEFAULT_SINK_NAME | grep volume -m1 | egrep -o '[0-9]+%' | egrep -m1 -o '[0-9]+')
 
 CURRENT_SINK_NAME=$(pacmd dump | perl -a -n -e 'print $F[1] if /set-default-sink/')
 
@@ -26,6 +27,12 @@ function mutetoggle() {
                 pactl set-sink-mute $DEFAULT_SINK_NAME 0
         fi
 }
+
+function mutestatus() {
+        if [ $DEFAULT_SINK_MUTE_STATE = yes ]; then
+                echo MUTED
+        fi
+}
  
 case "$1" in
         plus)
@@ -36,6 +43,12 @@ case "$1" in
         ;;
         mutetoggle)
                 mutetoggle
+        ;;
+        mutestatus)
+                mutestatus
+        ;;
+        volume)
+                echo $DEFAULT_SINK_VOLUME
         ;;
         *)
             echo "Unknown command: $1"
