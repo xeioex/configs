@@ -1,3 +1,4 @@
+-- 'xmonad --recompile' to rebuild
 import XMonad
 import XMonad.Operations
 
@@ -71,6 +72,7 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("M-p"         ,  shellPrompt xpc)                 -- spawn menu program, uses Shell
     , ("M-w"         ,  spawn "x-www-browser")           -- spawn Google Chrome
     , ("M-k"         ,  spawn "skype")                   -- spawn Skype
+    , ("M-c"         ,  spawn "unity-control-center")    -- spawn unity-control-center
     , ("M-v"         ,  spawn "vlc")                     -- spawn Vlc
     , ("M-e"         ,  spawn "evince")                  -- spawn Evince
     , ("M-d"         ,  spawn "deadbeef")                -- spawn Deadbeef
