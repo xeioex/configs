@@ -4,7 +4,8 @@ if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
-tmux new-window -n po-dev -t dev
+tmux new-window -n nginx-dev -t dev
+tmux send-keys -t dev:2 'cd $NWORKSPACE' C-m
 tmux send-keys -t dev:2  'vim-enter-session develop' C-m
 
 tmux select-window -t dev:2
