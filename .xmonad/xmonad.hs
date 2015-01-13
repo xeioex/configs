@@ -47,10 +47,12 @@ myFocusFollowsMouse = True
 myBorderWidth   = 2
 
 myModMask       = mod4Mask
-myWorkspaces    = ["1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading" ] ++ map show [7..9]
+myWorkspaces    = [ "1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading" ] ++ map show [7..9]
+-- Conky
+myStatusBar = "conky -c ~/.conkyrc"
 -- Dzen/Conky
 myXmonadBar = "dzen2 -x '1440' -y '0' -h '24' -w '640' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
-myStatusBar = "conky -c ~/.xmonad/conky_dzen | dzen2 -x '2800' -y '1176' -w '1040' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'"
+-- myStatusBar = "conky -c ~/.xmonad/conky_dzen | dzen2 -x '1920' -y '1176' -w '1040' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'"
 myBitmapsDir = "~/.xmonad/dzen2"
 
 myNormalBorderColor  = "#dddddd"
@@ -227,6 +229,7 @@ myLogHook h = dynamicLogWithPP $ defaultPP
 myStartupHook = do
         spawnOn "1.web" "x-www-browser"
         spawnOn "2.chat" "skype"
+        spawnOn "2.chat" "thunderbird"
         spawnOn "3.dev" myTerminal
         spawnOn "4.aux" myTerminal
         spawnOn "5.media" "deadbeef"
