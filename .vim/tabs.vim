@@ -1,7 +1,15 @@
 "spaces number per \t
-set tabstop=8
-set shiftwidth=8
-set softtabstop=8
+
+"undev
+"set tabstop=8
+"set shiftwidth=8
+"set softtabstop=8
+
+"nginx
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+
 set smarttab
 "turn a tabs into spaces
 set expandtab
