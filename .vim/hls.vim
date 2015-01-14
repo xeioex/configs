@@ -17,6 +17,14 @@ au Syntax lisp RainbowParenthesesLoadRound
 au BufEnter *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 au BufLeave *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 
+au FileType c call HighlightLongLines()
+au  BufEnter *.h call HighlightLongLines()
+
+function! HighlightLongLines()
+    :setlocal textwidth=80
+    :setlocal colorcolumn=+1
+endfunction
+
 let g:rbpt_loadcmd_toggle = 0
 let g:rbpt_colorpairs = [
     \ ['magenta',     'purple1'],

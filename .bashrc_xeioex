@@ -29,6 +29,8 @@ USERPROFILERC=~/.bashrc_user_profile
 __source-if-exist $USERPROFILERC
 __source-if-exist ~/.bashrc_private
 
+export PROJECT=$PROJECT
+
 export HOSTIP=$(ip addr|egrep 'inet.*eth0'|egrep -m 1 -o 'inet [0-9]+.[0-9]+.[0-9]+.[0-9]+' | sed 's/inet //')
 export ESSENTIALCONFIGS="$USERPROFILERC $ESSENTIALCONFIGS"
 

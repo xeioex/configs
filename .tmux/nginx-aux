@@ -21,6 +21,9 @@ tmux send-keys -t aux:5 'sudo -i' C-m
 tmux new-window -n vifm -t aux
 tmux send-keys -t aux:6 'vifm' C-m
 
+tmux new-window -n nginx-logs -t aux
+tmux send-keys -t aux:7 'vifm' C-m
+
 tmux select-window -t aux:1
 fi
 

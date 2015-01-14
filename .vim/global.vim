@@ -1,12 +1,5 @@
-"path variable
-set path+=.,Headers,Sources,MLStreams/Sources/**,MLStreams/Headers/**,MLStreams/MLFoundation/Sources/**,MLStreams/MLFoundation/Headers/**
-set path-=/usr/include
-
 " UTF-8 is the only format
 set encoding=utf-8
-
-" default
-set makeprg=scons
 
 "list chars
 set listchars=tab:▸-,eol:¬,trail:@,nbsp:=

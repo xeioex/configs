@@ -5,20 +5,26 @@ reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
 tmux new-window -n nginx-dev -t dev
-tmux send-keys -t dev:2 'cd $NWORKSPACE' C-m
-tmux send-keys -t dev:2  'vim-enter-session develop' C-m
+tmux send-keys -t dev:2 'cdb nginx-se' C-m
+tmux send-keys -t dev:2 'vim-enter-session develop' C-m
 
-tmux new-window -n ns.nginx.com -t dev
-tmux send-keys -t dev:3 'ssh ns.nginx.com' C-m
+tmux new-window -n run -t dev
+tmux send-keys -t dev:3 'cdb nginx-se' C-m
 
-tmux new-window -n dev.nginx.com -t dev
-tmux send-keys -t dev:4 'ssh dev.nginx.com' C-m
+tmux new-window -n tests -t dev
+tmux send-keys -t dev:4 'cdb nginx-tests' C-m
 
-tmux new-window -n nginx-build -t dev
-tmux send-keys -t dev:5 'cdb nginx-se' C-m
+tmux new-window -n ffmpeg -t dev
+tmux send-keys -t dev:5 'cdb ffmpeg' C-m
 
-tmux new-window -n nginx-tests -t dev
-tmux send-keys -t dev:6 'cdb nginx-tests' C-m
+tmux new-window -n mediadata -t dev
+tmux send-keys -t dev:6 'cdb mediadata' C-m
+
+tmux new-window -n ns-nginx-com -t dev
+tmux send-keys -t dev:7 'ssh ns.nginx.com' C-m
+
+tmux new-window -n dev-nginx-com -t dev
+tmux send-keys -t dev:8 'ssh dev.nginx.com' C-m
 
 tmux select-window -t dev:2
 fi

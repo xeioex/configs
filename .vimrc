@@ -32,6 +32,13 @@ source ~/.vim/fswitch.vim
 source ~/.vim/swank.vim
 source ~/.vim/snippets.vim
 
+"project setups
+let project = expand("$PROJECT")
+let g:projectcfg = tolower('~/.vim/projects/'. project . '.vim')
+if project != ''
+    execute ":source ".g:projectcfg
+endif
+
 " INFO
 ":abbreviate   - list abbreviations
 ":args         - argument list
