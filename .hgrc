@@ -1,2 +1,9 @@
+[ui]
+username = Dmitry Volyntsev <xeioex@nginx.com>
+
 [extensions]
+hgext.patchbomb =
 color =
+strip =
+
+%include ~/.hgrcprivate
