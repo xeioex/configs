@@ -1,9 +1,17 @@
 [ui]
 username = Dmitry Volyntsev <xeioex@nginx.com>
 
+[alias]
+blame = annotate --user --number
+
+[diff]
+showfunc = 1
+
 [extensions]
 hgext.patchbomb =
 color =
 strip =
+mq =
 
 %include ~/.hgrcprivate
+

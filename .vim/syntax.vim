@@ -14,6 +14,9 @@ au BufNewFile,BufRead *.rss set filetype=xml
 au BufNewFile,BufRead *.py set filetype=python
 au BufNewFile,BufRead SCons* set filetype=python
 au BufNewFile,BufRead *.json set filetype=json
+au BufNewFile,BufRead *.t set filetype=perl
+
+au BufRead /tmp/mutt-* set tw=72
 
 " per filetype custom setup
 augroup json_autocmd

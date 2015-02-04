@@ -179,7 +179,7 @@ alias copy-home='__copy-home /tmp/'
 alias copy-home-to='__copy-home'
 
 function __install-repo-key() {
-    wget $1 -O- | apt-key add -
+    wget $1 -O- | sudo apt-key add -
 }
 
 # Interactive

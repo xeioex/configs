@@ -60,6 +60,9 @@ Plugin 'tpope/vim-repeat'
 " :%S/facilit{y,ies}/building{,s}/g
 Plugin 'tpope/vim-abolish'
 
+" Mercurial wrapper
+Plugin 'ludovicchabant/vim-lawrencium'
+
 ":h yankring.txt
 ":h yankring-tutorial
 Plugin 'vim-scripts/YankRing.vim'
@@ -116,6 +119,11 @@ Plugin 'vim-scripts/functionlist.vim'
 
 " Conveniently shows loaded bundles and plugins
 "Plugin 'mbadran/headlights'
+
+" vim-codefmt
+Plugin 'google/vim-maktaba'
+Plugin 'google/vim-codefmtlib'
+Plugin 'google/vim-codefmt'
 
 " non github repos
 Plugin 'git://git.wincent.com/command-t.git'

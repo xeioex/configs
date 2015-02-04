@@ -17,4 +17,7 @@
 --ignore-file=is:config.log
 --ignore-file=is:cscope.out
 --ignore-file=is:cscope.files
---ignore-file=is:*.bak*
+--ignore-file=ext:bak
+--ignore-file=ext:patch
+--ignore-file=ext:orig,rej
+--ignore-file=ext:patch

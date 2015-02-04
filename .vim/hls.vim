@@ -17,7 +17,7 @@ au Syntax lisp RainbowParenthesesLoadRound
 au BufEnter *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 au BufLeave *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 
-au FileType c call HighlightLongLines()
+au FileType c,t call HighlightLongLines()
 au  BufEnter *.h call HighlightLongLines()
 
 function! HighlightLongLines()

@@ -27,8 +27,8 @@ color7 FFFF00
 color8 B22222
 
 TEXT
-${color8}CPU:${cpu cpu0}% ${cpugraph cpu0 24,64 ffffff ff0000 -l -t} \
-MEM:${memperc}% ${memgraph 24,64 ffff00 00ff00 -l -t}\
+${color8}CPU:${cpu cpu0}% ${cpugraph cpu0 24,64 ffffff ff0000 -t} \
+MEM:${memperc}% ${memgraph 24,64 00ff00 ffff00 -t}\
 ${if_existing /proc/net/route eth0} \
 NET: ${downspeedgraph eth0 24,64 ffffff 0000ff -l -t}\
 ${endif} \
@@ -38,4 +38,6 @@ ${endif} \
 DISK: ${diskiograph sda 24,64 ffffff 0000ff -l -t} ${color4}|${color0} \
 ${color6}volume: ${exec pulseaudio-ctl volume}% ${exec pulseaudio-ctl mutestatus} ${color4}|${color0} \
 ${color5}${time %d %m %Y} ${time %R} ${color4}|${color0} \
+${color0}${exec uptime -p} ${color4}| \
 ${color7}keyboard: ${color6}${exec xkb-switch}
+
