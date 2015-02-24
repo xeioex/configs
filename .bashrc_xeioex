@@ -431,8 +431,6 @@ function vim-enter-clean-session() {
     rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1.vim; vim-enter-session $1
 }
 
-
-alias vim-enter-dev='vim-enter-session dev'
 alias vim-enter-clean-dev='vim-enter-clean-session dev'
 
 alias prepare-playout-env="__prepare-playout-env playout-develop"
@@ -499,3 +497,15 @@ if [[ $(hostname) == $BASEHOST ]]; then
         fi
     fi
 fi
+
+function h2d() {
+    if [[ $1 == 0x* ]]; then
+        printf "%d\n" $1
+    else
+        printf "%d\n" "0x$1"
+    fi
+}
+
+function d2h() {
+    printf "%x\n" $1
+}
