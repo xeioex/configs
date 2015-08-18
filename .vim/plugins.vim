@@ -46,7 +46,6 @@ Plugin 'xolox/vim-reload'
 Plugin 'xolox/vim-misc'
 
 Plugin 'xolox/vim-session'
-Plugin 'xolox/vim-shell'
 
 " git wrapper
 Plugin 'tpope/vim-fugitive'
@@ -124,6 +123,8 @@ Plugin 'vim-scripts/functionlist.vim'
 Plugin 'google/vim-maktaba'
 Plugin 'google/vim-codefmtlib'
 Plugin 'google/vim-codefmt'
+
+Plugin 'rust-lang/rust.vim'
 
 " non github repos
 Plugin 'git://git.wincent.com/command-t.git'
