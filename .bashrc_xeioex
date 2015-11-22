@@ -388,17 +388,18 @@ function __netem-clear-qdisc() {
 alias netem-activate="__netem-activate"
 alias netem-clear="__netem-clear-qdisc"
 
-# Console
 function ctags-populate-with-include-headers() {
     rm -fr tags TAGS
     important-message "gathering include dirs..."
     # to get $ON_COMPILE_FLAGS
-    source $(which clang) 2>/dev/null
+    source $(which $COMPILER) 2>/dev/null
     important-message "scaning sources for tags..."
     ctags --options=$HOME/.vim/ctags-options 2>&1 | grep -v 'ignoring null|No such file or directory'
     export INCPATHS=$(echo $ON_COMPILE_FLAGS | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
     important-message "populating tags with nix include paths..."
-    echo $INCPATHS | sed 's/ /\n/g' | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>&1 | grep -v 'ignoring null'
+    echo $INCPATHS | sed 's/ /\n/g' | \
+        ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>&1 | \
+        grep -v 'ignoring null'
     export VIMINCPATHS=$(echo $INCPATHS| tr '\n' ' ' | sed 's/ /**,/g')
 }
 
@@ -414,13 +415,13 @@ find . -name '*.py' \
     -o -name '*.podsl'  \
     > cscope.files
 
-export CSCOPE_DB=/tmp/cscope-$1.out
-if [ -n "$NIX_CFLAGS_COMPILE" ]; then
-    INCFLAGS=$(echo $NIX_CFLAGS_COMPILE  | sed 's/ /\n/g' | grep  'include' | sort -u | sed -r 's/(.+)/-I\1/g' | tr '\n' ' ')
-fi
-# -b: just build
-# -q: create inverted index
-cscope -R -b -q $INCFLAGS -f $CSCOPE_DB
+    export CSCOPE_DB=/tmp/cscope-$1.out
+    if [ -n "$NIX_CFLAGS_COMPILE" ]; then
+        INCFLAGS=$(echo $NIX_CFLAGS_COMPILE  | sed 's/ /\n/g' | grep  'include' | sort -u | sed -r 's/(.+)/-I\1/g' | tr '\n' ' ')
+    fi
+    # -b: just build
+    # -q: create inverted index
+    cscope -R -b -q $INCFLAGS -f $CSCOPE_DB
 }
 
 function vim-enter-session() {

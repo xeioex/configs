@@ -1,6 +1,7 @@
 #!/bin/bash
 DATE=`date +%Y-%m-%d_%H-%M-%S`
+FNAME="$HOME/Dropbox/Public/screenshots/$DATE.png"
 
-shutter -e -C -s -o "/var/www/screenshots/$DATE.png"
+shutter -e -C -s -o $FNAME
 
-echo "http://192.168.215.220/screenshots/$DATE.png" | xclip -selection clipboard
+dropbox puburl $FNAME | xclip -selection clipboard
