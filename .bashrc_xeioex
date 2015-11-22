@@ -270,6 +270,7 @@ function __host-enter() {
     ssh -t -X -R $SSHRTUNNELPORT:localhost:22 $2 $SHELLCMD
 }
 
+
 alias host-enter='__host-enter 0'
 alias host-enter-dbg='__host-enter 1'
 
@@ -339,6 +340,8 @@ function __prepare-nix-env() {
     important-message "updating nix channel..."
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
+    important-message "nix-build ..."
+    info-message "nix-build --show-trace --fallback  --keep-failed --run-env --command \"$SHELLCMD\" -A $1 $2"
     nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
 }
 
