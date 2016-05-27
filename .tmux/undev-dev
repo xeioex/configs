@@ -9,13 +9,13 @@ tmux send-keys -t dev:2 'prepare-po-workspace' C-m
 tmux send-keys -t dev:2  'vim-enter-session develop' C-m
 
 tmux new-window -n test-1 -t dev
-tmux send-keys -t dev:3 'host-enter root@192.168.215.53' C-m
+tmux send-keys -t dev:3 'host-enter root@dev-3.po.restr.im' C-m
 
 tmux new-window -n test-1_2 -t dev
-tmux send-keys -t dev:4 'host-enter root@192.168.215.53' C-m
+tmux send-keys -t dev:4 'host-enter root@dev-3.po.restr.im' C-m
 
 tmux new-window -n test-nvenc -t dev
-tmux send-keys -t dev:5 'host-enter root@192.168.215.212' C-m
+tmux send-keys -t dev:5 'host-enter root@dev-1.po.restr.im' C-m
 
 tmux new-window -n test-nvenc_2 -t dev
 
