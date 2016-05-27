@@ -1,0 +1,23 @@
+out_to_x yes
+update_interval 1
+
+alignment top_left
+gap_x 1920
+gap_y 1160
+ 
+TEXT
+CPU:${cpugraph cpu0 24,64 ffffff ff0000 -l -t} \
+MEM:${memgraph 24,64 ffff00 00ff00 -l -t} \
+${if_existing /proc/net/route eth0} \
+Net: \
+down: ${downspeed eth0} \
+up: ${upspeed eth0} \
+${endif} \
+${if_existing /proc/net/route wlan0} \
+Net: \
+down: ${downspeed wlan0} \
+up: ${upspeed wlan0} \
+${endif} \
+volume: ${exec pulseaudio-ctl volume}% ${exec pulseaudio-ctl mutestatus} \
+${time %d %m %Y} ${time %R} \
+keyboard: ${exec xkb-switch}
