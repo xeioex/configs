@@ -1,4 +1,4 @@
-sudo apt-get install exuberant-ctags elinks sshpass xclip xdotool ssh cups conky dzen2 xmonad colordiff cscope curl cdargs vifm feh
+sudo apt-get install exuberant-ctags elinks xclip xdotool x11-xserver-utils ssh cups conky dzen2 xmonad colordiff cscope curl cdargs vifm feh
 sudo apt-get install git subversion mercurial
 sudo apt-get install build-essential cmake gcc clang dpkg-dev
 curl http://beyondgrep.com/ack-2.12-single-file > /usr/local/bin/ack &&  chmod 0755 /usr/local/bin/ack
