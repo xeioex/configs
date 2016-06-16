@@ -115,7 +115,6 @@ alias ss="source $SHELLRC"
 
 # Generic
 alias ainstall='sudo apt-get install'
-alias ainstall-dont-ask='sudo apt-get install -y --force-yes'
 alias dpkgi='sudo dpkg -i'
 alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
@@ -126,13 +125,10 @@ alias clean-build='rm -fr ./build/ && rm -fr .scon*'
 alias ls='ls --color=auto'
 alias grep='egrep --color=auto'
 alias ldd='bash ldd'
-alias unix-now='date +"%s"'
-alias unix-now-diff="perl -e 'print time - shift();print \"\n\";'"
 
 alias cursor-invisible='tput cinvis'
 alias cursor-visible='tput cnorm'
 
-alias kill-service='pkill -9 -f'
 alias kill-all-playout='pkill -9 -f playout'
 alias kill-current-tty-playout="pkill -KILL -t $(tty | sed 's/\/dev\///') -f playout"
 
@@ -234,8 +230,10 @@ function __mount-workspace-if-needed() {
             echo "sshfs not available, installing"
             ainstall sshfs -t squeeze
         fi
+
         alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
         shopt -s expand_aliases
+
         RES=$(__mntws)
         if [[ $RES -ne 0 ]]; then
             echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
@@ -269,7 +267,6 @@ function __host-enter() {
     __host-prepare $1 $2
     ssh -t -X -R $SSHRTUNNELPORT:localhost:22 $2 $SHELLCMD
 }
-
 
 alias host-enter='__host-enter 0'
 alias host-enter-dbg='__host-enter 1'
@@ -340,8 +337,6 @@ function __prepare-nix-env() {
     important-message "updating nix channel..."
     sudo nix-channel --update
     sudo nohup nix-daemon > /dev/null&
-    important-message "nix-build ..."
-    info-message "nix-build --show-trace --fallback  --keep-failed --run-env --command \"$SHELLCMD\" -A $1 $2"
     nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
 }
 
@@ -349,6 +344,7 @@ function __prepare-dev-env() {
     if [ -n "$1" ]; then
         export LD_LIBRARY_PATH=$1
     fi
+
     __enable-cores
     __prepare-nix-env $2 $DEVNIXPATH
 }
@@ -373,65 +369,23 @@ function __deploy-ptest-env() {
     __deploy-nix-derivation testing-playout-develop
 }
 
-function __netem-activate() {
-    sudo modprobe ifb
-    sudo ip link set dev ifb0 up
-    sudo tc qdisc add dev eth0 ingress
-    sudo tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
-}
-
-function __netem-clear-qdisc() {
-    sudo tc qdisc delete dev ifb0 root
-    sudo tc qdisc delete dev eth0 root
-}
-
-alias netem-activate="__netem-activate"
-alias netem-clear="__netem-clear-qdisc"
-
-# Console
 function ctags-populate-with-include-headers() {
     rm -fr tags TAGS
     important-message "gathering include dirs..."
+    # to get $ON_COMPILE_FLAGS
+    source $(which $COMPILER) 2>/dev/null
     important-message "scaning sources for tags..."
     ctags --options=$HOME/.vim/ctags-options 2>&1 | grep -v 'ignoring null|No such file or directory'
-
-    # to get $ON_COMPILE_FLAGS
-    CF=$(source $(which $COMPILER) 2>/dev/null; echo $ON_COMPILE_FLAGS)
-
-    INCPATHS=$(echo $CF | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
+    export INCPATHS=$(echo $ON_COMPILE_FLAGS | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
     important-message "populating tags with nix include paths..."
     echo $INCPATHS | sed 's/ /\n/g' | \
         ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>&1 | \
         grep -v 'ignoring null'
-
     export VIMINCPATHS=$(echo $INCPATHS| tr '\n' ' ' | sed 's/ /**,/g')
-}
-
-function cscope-populate-with-include-headers() {
-important-message "populating cscope database..."
-    find . -name '*.py' \
-        -o -iname '*.[chm]' \
-        -o -name '*.cpp' \
-        -o -name '*.cc' \
-        -o -name '*.hpp'  \
-        -o -name 'SConscript'  \
-        -o -name '*.nu'  \
-        -o -name '*.podsl'  \
-        > cscope.files
-
-    export CSCOPE_DB=/tmp/cscope-$1.out
-    if [ -n "$NIX_CFLAGS_COMPILE" ]; then
-        INCFLAGS=$(echo $NIX_CFLAGS_COMPILE  | sed 's/ /\n/g' | grep  'include' | sort -u | sed -r 's/(.+)/-I\1/g' | tr '\n' ' ')
-    fi
-
-    # -b: just build
-    # -q: create inverted index
-    cscope -R -b -q $INCFLAGS -f $CSCOPE_DB
 }
 
 function vim-enter-session() {
     ctags-populate-with-include-headers
-    cscope-populate-with-include-headers "$USER-$1"
     info-message "Running vim..."
     vim --servername $1 -S ~/.vimrc
 }
@@ -450,45 +404,9 @@ alias prepare-po-workspace="mount-workspace; cd $PWORKSPACE;prepare-playout-env"
 alias playout-run-with-clean-env='kill-current-tty-playout; sleep 1 &&'
 
 alias playout-nix-version="nix-find-derivation playout"
-alias playout-deb-version='dpkg -l| grep playout'
-alias playout-deb-upgrade='apt-get update && apt-get install playout playout-dbg'
-
-alias playout-tree='pstree -plH $(pidof playout)'
-alias playout-pidof-worker-1="playout-tree | egrep -o 'playout\([0-9]+\)' | egrep -o '[0-9]+'"
-
-alias nix-check-derivations='nix-env --show-trace -f default.nix -qa \*'
-alias nix-find-derivation='nix-env  -qa '
 
 alias ssh-reverse-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhost"
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
-
-# Application
-alias pprof-name="perl -e '(\$base, \$rev) = shift() =~ /(prof-[^.]+).*(0[0-9]{3})/; \$part = shift(); if (\$part == 1) {print \$base;} if (\$part == 2) {print \$rev;}'"
-
-function __pprof-diff() {
-    PPROFMAIN=$1
-    PPROFMAINREV=$(pprof-name $PPROFMAIN 2)
-    if [[ -n $2 ]]; then
-        PPROFBASE=$2
-    else
-        PPROFBASE=$(echo $PPROFMAIN|sed -r 's/0[0-9]{3}/0001/')
-    fi
-    PPROFBASEREV=$(pprof-name $PPROFBASE 2)
-    PPROFNAME="$(pprof-name $PPROFMAIN 1)-$PPROFBASEREV-$PPROFMAINREV-diff.pdf"
-    pprof --base=$PPROFBASE ./build/playout $PPROFMAIN --pdf > $PPROFNAME
-    echo "generated: $PPROFNAME"
-}
-
-function __pprof-pdf() {
-    PPROFBIN=$1
-    PPROFFILE=$2
-    PPROFNAME="$(basename $PPROFFILE).pdf"
-    pprof  ./build/playout $PPROFFILE --pdf > $PPROFNAME
-    echo "generated: $PPROFNAME"
-}
-
-alias pprof-diff="__pprof-diff"
-alias pprof-pdf="__pprof-pdf"
 
 # HOST only
 if [[ $(hostname) == $BASEHOST ]]; then

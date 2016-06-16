@@ -8,9 +8,6 @@ import Data.Monoid
 
 import XMonad.Prompt
 import XMonad.Prompt.Shell
-import XMonad.Prompt.Ssh
-import XMonad.Prompt.RunOrRaise (runOrRaisePrompt)
-import XMonad.Prompt.AppendFile (appendFilePrompt)
 
 import XMonad.Util.EZConfig
 import XMonad.Util.Scratchpad
@@ -34,9 +31,9 @@ import XMonad.Hooks.FadeInactive
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
--- certain contrib modules.
---
 myTerminal      = "gnome-terminal-wrapper"
+myLocker        = "sflock -xshift -$(calc -p `xrandr --current | /bin/grep -P '(?<=primary )[0-9]+(?=x[0-9]+)' -o`/2)"
+myXAutoLock     = "xautolock -time 5 -locker \"" ++  myLocker ++ "\""
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -73,7 +70,7 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     [ ("M-S-<Return>",  spawn $ XMonad.terminal c)       -- spawn terminal
     , ("M-p"         ,  shellPrompt xpc)                 -- spawn menu program, uses Shell
     , ("M-w"         ,  spawn "x-www-browser")           -- spawn Google Chrome
-    , ("M-k"         ,  spawn "skype")                   -- spawn Skype
+    , ("M-k"         ,  spawn "skype.sh")                -- spawn Skype
     , ("M-c"         ,  spawn "unity-control-center")    -- spawn unity-control-center
     , ("M-v"         ,  spawn "vlc")                     -- spawn Vlc
     , ("M-e"         ,  spawn "evince")                  -- spawn Evince
@@ -101,6 +98,8 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("C-S-<Up>"    , spawn "pulseaudio-ctl plus")        -- volume up
     , ("C-S-<Down>"  , spawn "pulseaudio-ctl minus")       -- volume down
     , ("C-S-m"       , spawn "pulseaudio-ctl mutetoggle")  -- volume mute toggle
+    , ("C-S-<Print>" , spawn "shutter.sh")  -- screenshot -> dropbox
+    , ("C-S-l"       , spawn myLocker)
     ] ++
     -- mod-[1..9], Switch to workspace N
     -- mod-shift-[1..9], Move client to workspace N
@@ -228,11 +227,12 @@ myLogHook h = dynamicLogWithPP $ defaultPP
 -- By default, do nothing.
 myStartupHook = do
         spawnOn "1.web" "x-www-browser"
-        spawnOn "2.chat" "skype"
+        spawnOn "2.chat" "skype.sh"
         spawnOn "2.chat" "thunderbird"
         spawnOn "3.dev" myTerminal
         spawnOn "4.aux" myTerminal
-        spawnOn "5.media" "deadbeef"
+        spawnOn "4.media" "deadbeef"
+        spawn myXAutoLock
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
