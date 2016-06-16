@@ -1,8 +1,6 @@
-[ui]
-username = Dmitry Volyntsev <xeioex@nginx.com>
-
 [alias]
 blame = annotate --user --number
+st = status -q
 
 [diff]
 showfunc = 1
