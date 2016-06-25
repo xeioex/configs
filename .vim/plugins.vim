@@ -79,6 +79,8 @@ Plugin 'bkad/CamelCaseMotion'
 Plugin 'vim-scripts/Conque-Shell'
 " using ack instead of grep from vim
 Plugin 'mileszs/ack.vim'
+" quick ack replacement
+Plugin 'rking/ag.vim'
 " create a temporary scratch buffer to store
 " and edit text that will be discarded when you quit/exit vim
 Plugin 'vim-scripts/scratch.vim'
