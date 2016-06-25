@@ -57,7 +57,9 @@ set autowrite
 " Highlights space at the end of a line
 let c_space_errors = 1
 
-set foldmethod=manual
+"set foldmethod=manual
+set foldmethod=indent
+set foldlevel=20
 
 "interactive shell on '!
 set shell=/bin/bash\ --rcfile\ ~/.bash_profile
