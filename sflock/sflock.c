@@ -37,6 +37,12 @@ die(const char *errstr, ...) {
     exit(EXIT_FAILURE);
 }
 
+static void
+perror_and_die(const char *s) {
+        perror(s);
+        exit(EXIT_FAILURE);
+}
+
 #ifndef HAVE_BSD_AUTH
 static const char *
 get_password() { /* only run as root */
@@ -131,11 +137,11 @@ main(int argc, char **argv) {
 
     /* disable tty switching */
     if ((term = open("/dev/console", O_RDWR)) == -1) {
-        perror("error opening console");
+        perror_and_die("error opening console");
     }
 
     if ((ioctl(term, VT_LOCKSWITCH)) == -1) {
-        perror("error locking console");
+        perror_and_die("error locking console");
     }
 
     /* deamonize */
