@@ -31,3 +31,6 @@ au BufRead,BufNewFile *.wikipedia.org*      set filetype=mediawiki
 au BufRead,BufNewFile *.wikibooks.org*      set filetype=mediawiki
 au BufRead,BufNewFile *.wikimedia.org*      set filetype=mediawiki
 au BufRead,BufNewFile *wiki.undev*          set filetype=mediawiki
+
+" GNUPlot
+au BufNewFile,BufRead *.plt,*.gnuplot setf gnuplot
