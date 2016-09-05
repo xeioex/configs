@@ -38,9 +38,7 @@ Plugin 'vim-scripts/ifdef-highlighting'
 Plugin 'derekwyatt/vim-fswitch'
 " integrates the LanguageTool grammar checker into Vim
 Plugin 'vim-scripts/LanguageTool'
-" perform Google searches from the command line
-" :Goog <query>
-Plugin 'danchoi/goog'
+
 " plugins runtime reload
 Plugin 'xolox/vim-reload'
 Plugin 'xolox/vim-misc'
@@ -74,13 +72,14 @@ Plugin 'msanders/snipmate.vim'
 Plugin 'sukima/xmledit'
 " camelCaseMotions
 Plugin 'bkad/CamelCaseMotion'
-" allows you to run interactive programs, such as bash on linux or
-" powershell.exe on Windows, inside a Vim buffer
-Plugin 'vim-scripts/Conque-Shell'
+
 " using ack instead of grep from vim
 Plugin 'mileszs/ack.vim'
-" quick ack replacement
 Plugin 'rking/ag.vim'
+
+"  start searching from your project root instead of the cwd
+let g:ag_working_path_mode="r"
+
 " create a temporary scratch buffer to store
 " and edit text that will be discarded when you quit/exit vim
 Plugin 'vim-scripts/scratch.vim'
@@ -112,11 +111,11 @@ Plugin 'kien/rainbow_parentheses.vim'
 "  for CoffeeScript in Haml and HTML.
 Plugin 'kchmck/vim-coffee-script'
 
-Plugin 'jnwhiteh/vim-golang'
-
-Plugin 'vim-scripts/slimv.vim'
+Plugin 'fatih/vim-go'
 
 Plugin 'vim-scripts/functionlist.vim'
+
+Plugin 'vim-scripts/gnuplot.vim.git'
 
 " Conveniently shows loaded bundles and plugins
 "Plugin 'mbadran/headlights'
@@ -127,9 +126,6 @@ Plugin 'google/vim-codefmtlib'
 Plugin 'google/vim-codefmt'
 
 Plugin 'rust-lang/rust.vim'
-
-" non github repos
-Plugin 'git://git.wincent.com/command-t.git'
 
 call vundle#end()             " required
 filetype plugin indent on     " required!
