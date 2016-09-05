@@ -122,8 +122,6 @@ alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
 
 alias clean-build='rm -fr ./build/ && rm -fr .scon*'
 
-alias ls='ls --color=auto'
-alias grep='egrep --color=auto'
 alias ldd='bash ldd'
 
 alias cursor-invisible='tput cinvis'
