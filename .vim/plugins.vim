@@ -68,8 +68,6 @@ Plugin 'vim-scripts/YankRing.vim'
 " of often-typed text that you can insert into your document using a trigger
 " word followed by a <tab>. 
 Plugin 'msanders/snipmate.vim'
-" help edit XML documents. It includes tag completion and tag jumping
-Plugin 'sukima/xmledit'
 " camelCaseMotions
 Plugin 'bkad/CamelCaseMotion'
 
@@ -129,6 +127,3 @@ Plugin 'rust-lang/rust.vim'
 
 call vundle#end()             " required
 filetype plugin indent on     " required!
-
-
-source ~/.vim/bundle/slimv.vim/ftplugin/lisp/slimv-lisp.vim
