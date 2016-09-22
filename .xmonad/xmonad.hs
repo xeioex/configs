@@ -35,33 +35,12 @@ myTerminal      = "gnome-terminal-wrapper"
 myLocker        = "sflock -xshift -$(calc -p `xrandr --current | /bin/grep -P '(?<=primary )[0-9]+(?=x[0-9]+)' -o`/2)"
 myXAutoLock     = "xautolock -time 5 -locker \"" ++  myLocker ++ "\""
 
--- Whether focus follows the mouse pointer.
-myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
-
--- Width of the window border in pixels.
---
-myBorderWidth   = 2
-
-myModMask       = mod4Mask
-myWorkspaces    = [ "1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading" ] ++ map show [7..9]
-
--- Dzen/Conky
-myBitmapsDir = "~/.xmonad/dzen2"
-
-myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#ff0000"
-
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
 xpc :: XPConfig
-xpc = defaultXPConfig { bgColor  = "black"
-                , fgColor  = "grey"
-                , promptBorderWidth = 0
-                , position = Bottom
-                , height   = 15
-                , historySize = 256 }
+xpc = defaultXPConfig { bgColor = "black", fgColor = "grey", promptBorderWidth = 0,
+                        position = Bottom, height = 24, historySize = 256 }
 
 myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     [ ("M-S-<Return>",  spawn $ XMonad.terminal c)       -- spawn terminal
@@ -89,9 +68,11 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("M-,"         ,  sendMessage (IncMasterN 1))      -- increase number of windows in master pane
     , ("M-."         ,  sendMessage (IncMasterN (-1)))   -- decrease number of windows in master pane
     , ("M-b"         ,  sendMessage ToggleStruts)        -- toggle status bar gap, uses ManageDocks
+
     , ("M-C-q"       ,  broadcastMessage ReleaseResources
                         >> restart "xmonad" True)        -- restart xmonad
     , ("C-S-q"       ,  io (exitWith ExitSuccess))       -- exit xmonad
+
     , ("C-S-<Up>"    , spawn "pulseaudio-ctl plus")        -- volume up
     , ("C-S-<Down>"  , spawn "pulseaudio-ctl minus")       -- volume down
     , ("C-S-m"       , spawn "pulseaudio-ctl mutetoggle")  -- volume mute toggle
@@ -189,6 +170,10 @@ myEventHook = mempty
 
 ------------------------------------------------------------------------
 -- Status bars and logging
+
+-- Dzen/Conky
+myBitmapsDir = "~/.xmonad/dzen2"
+
 myLogHook :: Handle -> X ()
 myLogHook h = dynamicLogWithPP $ defaultPP
     {
@@ -235,12 +220,12 @@ myStartupHook = do
 myMainConfig dzLH = defaultConfig {
   -- simple stuff
     terminal           = myTerminal,
-    focusFollowsMouse  = myFocusFollowsMouse,
-    borderWidth        = myBorderWidth,
-    modMask            = myModMask,
-    workspaces         = myWorkspaces,
-    normalBorderColor  = myNormalBorderColor,
-    focusedBorderColor = myFocusedBorderColor,
+    focusFollowsMouse  = True,
+    borderWidth        = 2,
+    modMask            = mod4Mask,
+    workspaces         = ["1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading"] ++ map show [7..9],
+    normalBorderColor  = "#dddddd",
+    focusedBorderColor = "#ff0000",
 
   -- key bindings
     keys               = myKeys,
