@@ -45,11 +45,8 @@ myBorderWidth   = 2
 
 myModMask       = mod4Mask
 myWorkspaces    = [ "1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading" ] ++ map show [7..9]
--- Conky
-myStatusBar = "conky -c ~/.conkyrc"
+
 -- Dzen/Conky
-myXmonadBar = "dzen2 -x '1440' -y '0' -h '24' -w '640' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
--- myStatusBar = "conky -c ~/.xmonad/conky_dzen | dzen2 -x '1920' -y '1176' -w '1040' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'"
 myBitmapsDir = "~/.xmonad/dzen2"
 
 myNormalBorderColor  = "#dddddd"
@@ -133,10 +130,6 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myIMLayout = withIM (1%8) skype Grid
-  where
-     skype = And (ClassName "Skype") (Role "")
-
 myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
   where
      -- default tiling algorithm partitions the screen into two panes
@@ -159,7 +152,7 @@ myManageHook = manageSpawn <+> scratchpadManageHookDefault <+> manageDocks
                <+> fullscreenManageHook <+> myFloatHook
                <+> manageHook defaultConfig
   where fullscreenManageHook = composeOne [ isFullscreen -?> doFullFloat ]
- 
+
 myFloatHook = composeAll
     [ className =? "GIMP"                  --> moveToMedia
     , className =? "Google-chrome-stable"  --> moveToWeb
@@ -177,11 +170,12 @@ myFloatHook = composeAll
     moveToDev   = doF $ W.shift "3.dev"
     moveToMedia = doF $ W.shift "5.media"
     moveToReading = doF $ W.shift "6.reading"
- 
+
     classNotRole :: (String, String) -> Query Bool
     classNotRole (c,r) = className =? c <&&> role /=? r
- 
+
     role = stringProperty "WM_WINDOW_ROLE"
+
 ------------------------------------------------------------------------
 -- Event handling
 
@@ -225,6 +219,8 @@ myLogHook h = dynamicLogWithPP $ defaultPP
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
+--
+-- FIXME: move to .xinitrc
 myStartupHook = do
         spawnOn "1.web" "x-www-browser"
         spawnOn "2.chat" "skype.sh"
@@ -235,33 +231,31 @@ myStartupHook = do
         spawn myXAutoLock
 
 ------------------------------------------------------------------------
--- Now run xmonad with all the defaults we set up.
-main = do 
-          dzenLeftBar <- spawnPipe myXmonadBar
-          dzenRightBar <- spawnPipe myStatusBar
-          xmonad $ withUrgencyHookC dzenUrgencyHook { args = ["-bg", "red", "fg", "black", "-xs", "1", "-y", "25"] } urgencyConfig { remindWhen = Every 15 } $ defaultConfig {
-      -- simple stuff
-        terminal           = myTerminal,
-        focusFollowsMouse  = myFocusFollowsMouse,
-        borderWidth        = myBorderWidth,
-        modMask            = myModMask,
-        workspaces         = myWorkspaces,
-        normalBorderColor  = myNormalBorderColor,
-        focusedBorderColor = myFocusedBorderColor,
+-- Main config
+myMainConfig dzLH = defaultConfig {
+  -- simple stuff
+    terminal           = myTerminal,
+    focusFollowsMouse  = myFocusFollowsMouse,
+    borderWidth        = myBorderWidth,
+    modMask            = myModMask,
+    workspaces         = myWorkspaces,
+    normalBorderColor  = myNormalBorderColor,
+    focusedBorderColor = myFocusedBorderColor,
 
-      -- key bindings
-        keys               = myKeys,
-        mouseBindings      = myMouseBindings,
+  -- key bindings
+    keys               = myKeys,
+    mouseBindings      = myMouseBindings,
 
-      -- hooks, layouts
-        layoutHook         = myLayout,
-        manageHook         = myManageHook,
-        handleEventHook    = myEventHook,
-        logHook            = myLogHook dzenLeftBar >> fadeInactiveLogHook 0xdddddddd,
-        startupHook        = myStartupHook
-    }
+  -- hooks, layouts
+    layoutHook         = myLayout,
+    manageHook         = myManageHook,
+    handleEventHook    = myEventHook,
+    logHook            = myLogHook dzLH >> fadeInactiveLogHook 0xdddddddd,
+    startupHook        = myStartupHook
+}
 
--- | Finally, a copy of the default bindings in simple textual tabular format.
+------------------------------------------------------------------------
+-- A copy of the default bindings in simple textual tabular format.
 help :: String
 help = unlines ["The default modifier key is 'alt'. Default keybindings:",
     "",
@@ -311,3 +305,10 @@ help = unlines ["The default modifier key is 'alt'. Default keybindings:",
     "mod-button1  Set the window to floating mode and move by dragging",
     "mod-button2  Raise the window to the top of the stack",
     "mod-button3  Set the window to floating mode and resize by dragging"]
+
+------------------------------------------------------------------------
+-- Now run xmonad with all the defaults we set up.
+main = do
+      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '640' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
+      xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "red", "fg", "black", "-xs", "1", "-y", "25"] }
+             $ myMainConfig dzenLeftBar
