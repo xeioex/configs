@@ -1,5 +1,17 @@
+# History
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
+# Completion
 TAB: complete
 set completion-ignore-case on
+set colored-completion-prefix on
+set completion-map-case on
+set colored-stats on
+
+# Navigation
+"\C-b": shell-backward-word
+"\C-f": shell-forward-word
+
+# Misc
+set bell-style visible
