@@ -12,12 +12,10 @@ import XMonad.Prompt.Shell
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
 
+import XMonad.Layout.Gaps
 import XMonad.Layout.PerWorkspace (onWorkspace, onWorkspaces)
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.SimpleFloat
-import XMonad.Layout.Grid
-import XMonad.Layout.IM
-import Data.Ratio ((%))
 
 import XMonad.Actions.SpawnOn
 import qualified XMonad.Actions.Submap as SM
@@ -112,11 +110,19 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayoutHook = onWorkspace "2.chat" chatLayout $ defaultLayout
+myLayoutHook = gaps [(D, 32)] $
+               onWorkspace "1.web" webLayout $
+               onWorkspace "2.chat" chatLayout $
+               onWorkspace "3.dev" devLayout $
+               onWorkspace "4.aux" auxLayout $
+               defaultLayout
   where
      tiled   = Tall 1 (2/100) (1/2)
      rtall   = ResizableTall 1 (2/100) (1/2) []
+     webLayout = gaps [(L, 200), (R, 200)] $ avoidStruts $ rtall
      chatLayout = avoidStruts $ rtall ||| Mirror rtall
+     devLayout = gaps [(R, 480)] $ avoidStruts $ rtall
+     auxLayout = gaps [(L, 400)] $ avoidStruts $ rtall
      defaultLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
 
 ------------------------------------------------------------------------
@@ -129,19 +135,25 @@ myHook = (composeAll . concat $
     -- use xprop | grep WM_CLASS
     -- to get a class name
     [
-     [className  =? c --> doFloat              | c <- myFloats],
-     [className  =? c --> doShift  "1.web"     | c <- myWebs],
-     [className  =? c --> doShift  "2.chat"    | c <- myChats],
+     [className =? c --> doFloat              | c <- myFloats],
+     [isDialog       --> doFloat],
+     [name      =? n --> doFloat              | n <- myFloatCN],
 
-     [className =? "google-chrome" <&&> resource =? "Dialog" --> doFloat],
+     [className =? c <&&> role =? "browser" --> doShift  "1.web" | c <- myWebs],
 
-     [className =? "Gnome-terminal" <&&> title =? "dev" --> doShift  "3.dev",
-      className =? "Gnome-terminal" <&&> title =? "aux" --> doShift  "4.aux"],
+     [className =? c --> doShift  "2.chat"    | c <- myChats],
+     [classNotRole ("Skype", "ConversationsWindow") --> moveToChat],
+     -- FIXME
+     [role =? "pop-up" --> doShift  "2.chat"],
+     [currentWs =? "2.chat" --> keepMaster "Thunderbird"],
 
-     [classNotRole ("Skype", "ConversationsWindow") --> doFloat],
+     [className =? "Gnome-terminal" <&&> role =? "dev" --> doShift  "3.dev",
+      className =? "Gnome-terminal" <&&> role =? "aux" --> doShift  "4.aux"],
 
-     [className  =? c --> doShift  "5.media" | c <- myMedia],
-     [className  =? c --> doShift  "6.reading" | c <- myReadings]
+     [className =? c --> doShift  "5.media" | c <- myMedia],
+     [className =? c --> doShift  "6.reading" | c <- myReadings],
+
+     [isFullscreen          --> doFullFloat]
     ])
   where
     myFloats   = ["Mplayer", "Ffplay", "Vlc", "GIMP"]
@@ -150,10 +162,23 @@ myHook = (composeAll . concat $
     myMedia    = ["Deadbeef"]
     myReadings = ["Evince"]
 
+    myFloatCN = ["Choose a file", "Open Image", "File Operation Progress", "Firefox Preferences",
+                 "Preferences", "Search Engines", "Set up sync", "Passwords and Exceptions",
+                 "Autofill Options", "Rename File", "Copying files", "Moving files",
+                 "File Properties", "Replace", "Quit GIMP", "Change Foreground Color",
+                 "Change Background Color", ""]
+
     classNotRole :: (String, String) -> Query Bool
     classNotRole (c,r) = className =? c <&&> role /=? r
 
     role = stringProperty "WM_WINDOW_ROLE"
+    name = stringProperty "WM_NAME"
+
+    moveToChat   = doF $ W.shift "2.chat"
+
+    keepMaster c = assertSlave <+> assertMaster where
+                assertSlave = fmap (/= c) className --> doF W.swapDown
+                assertMaster = className =? c --> doF W.swapMaster
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -197,8 +222,10 @@ myStartupHook = do
         spawnOn "1.web" "x-www-browser"
         spawnOn "2.chat" "skype.sh"
         spawnOn "2.chat" "thunderbird"
-        spawnOn "3.dev" (myTerminal ++ "  --title=dev")
-        spawnOn "4.aux" (myTerminal ++ "  --title=aux")
+        spawnOn "2.chat" "x-www-browser --app=https://nginx.slack.com/messages/dev/"
+        spawnOn "3.dev" (myTerminal ++ "  --role=dev")
+        spawnOn "4.aux" (myTerminal ++ "  --role=aux")
+        -- move music status to a tray
         spawnOn "4.media" "deadbeef"
         spawn myXAutoLock
 
@@ -277,7 +304,7 @@ help = unlines ["The default modifier key is 'alt'. Default keybindings:",
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 main = do
-      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '900' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
+      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '1000' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
       dzenRightBar <- spawnPipe "conky -c ~/.conkyrc"
       xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "red", "fg", "black", "-xs", "1", "-y", "25"] }
              $ myMainConfig dzenLeftBar
