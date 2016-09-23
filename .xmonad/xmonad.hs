@@ -10,9 +10,10 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 
 import XMonad.Util.EZConfig
-import XMonad.Util.Scratchpad
 import XMonad.Util.Run
 
+import XMonad.Layout.PerWorkspace (onWorkspace, onWorkspaces)
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.SimpleFloat
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
@@ -111,62 +112,48 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
+myLayoutHook = onWorkspace "2.chat" chatLayout $ defaultLayout
   where
-     -- default tiling algorithm partitions the screen into two panes
-     tiled   = Tall nmaster delta ratio
-
-     -- The default number of windows in the master pane
-     nmaster = 1
-
-     -- Default proportion of screen occupied by master pane
-     ratio   = 1/2
-
-     -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
-
+     tiled   = Tall 1 (2/100) (1/2)
+     rtall   = ResizableTall 1 (2/100) (1/2) []
+     chatLayout = avoidStruts $ rtall ||| Mirror rtall
+     defaultLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
 
 ------------------------------------------------------------------------
 -- Window rules:
 myManageHook :: ManageHook
-myManageHook = manageSpawn <+> scratchpadManageHookDefault <+> manageDocks
-               <+> fullscreenManageHook <+> myFloatHook
-               <+> manageHook defaultConfig
-  where fullscreenManageHook = composeOne [ isFullscreen -?> doFullFloat ]
+myManageHook = manageSpawn <+> myHook <+> manageHook defaultConfig
+               <+> manageDocks
 
-myFloatHook = composeAll
-    [ className =? "GIMP"                  --> moveToMedia
-    , className =? "Google-chrome-stable"  --> moveToWeb
-    , className =? "Evince"                --> moveToReading
-    , className =? "Gnome-terminal"        --> moveToDev
-    , className =? "MPlayer"               --> moveToMedia
-    , className =? "Deadbeef"              --> moveToMedia
-    , className =? "Vlc"                   --> doFloat
-    , className =? "Skype"                 --> moveToChat
-    , classNotRole ("Skype", "MainWindow") --> doFloat
-    , manageDocks]
+myHook = (composeAll . concat $
+    -- use xprop | grep WM_CLASS
+    -- to get a class name
+    [
+     [className  =? c --> doFloat              | c <- myFloats],
+     [className  =? c --> doShift  "1.web"     | c <- myWebs],
+     [className  =? c --> doShift  "2.chat"    | c <- myChats],
+
+     [className =? "google-chrome" <&&> resource =? "Dialog" --> doFloat],
+
+     [className =? "Gnome-terminal" <&&> title =? "dev" --> doShift  "3.dev",
+      className =? "Gnome-terminal" <&&> title =? "aux" --> doShift  "4.aux"],
+
+     [classNotRole ("Skype", "ConversationsWindow") --> doFloat],
+
+     [className  =? c --> doShift  "5.media" | c <- myMedia],
+     [className  =? c --> doShift  "6.reading" | c <- myReadings]
+    ])
   where
-    moveToWeb   = doF $ W.shift "1.web"
-    moveToChat   = doF $ W.shift "2.chat"
-    moveToDev   = doF $ W.shift "3.dev"
-    moveToMedia = doF $ W.shift "5.media"
-    moveToReading = doF $ W.shift "6.reading"
+    myFloats   = ["Mplayer", "Ffplay", "Vlc", "GIMP"]
+    myWebs     = ["Firefox", "Google-chrome", "Google-chrome-stable"]
+    myChats    = ["Thunderbird", "Skype"]
+    myMedia    = ["Deadbeef"]
+    myReadings = ["Evince"]
 
     classNotRole :: (String, String) -> Query Bool
     classNotRole (c,r) = className =? c <&&> role /=? r
 
     role = stringProperty "WM_WINDOW_ROLE"
-
-------------------------------------------------------------------------
--- Event handling
-
--- * EwmhDesktops users should change this to ewmhDesktopsEventHook
---
--- Defines a custom handler function for X Events. The function should
--- return (All True) if the default handler is to be run afterwards. To
--- combine event hooks use mappend or mconcat from Data.Monoid.
---
-myEventHook = mempty
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -205,38 +192,34 @@ myLogHook h = dynamicLogWithPP $ defaultPP
 --
 -- By default, do nothing.
 --
--- FIXME: move to .xinitrc
+-- FIXME: spawn only once
 myStartupHook = do
         spawnOn "1.web" "x-www-browser"
         spawnOn "2.chat" "skype.sh"
         spawnOn "2.chat" "thunderbird"
-        spawnOn "3.dev" myTerminal
-        spawnOn "4.aux" myTerminal
+        spawnOn "3.dev" (myTerminal ++ "  --title=dev")
+        spawnOn "4.aux" (myTerminal ++ "  --title=aux")
         spawnOn "4.media" "deadbeef"
         spawn myXAutoLock
 
 ------------------------------------------------------------------------
 -- Main config
+--
 myMainConfig dzLH = defaultConfig {
-  -- simple stuff
     terminal           = myTerminal,
     focusFollowsMouse  = True,
     borderWidth        = 2,
     modMask            = mod4Mask,
     workspaces         = ["1.web", "2.chat", "3.dev", "4.aux", "5.media", "6.reading"] ++ map show [7..9],
-    normalBorderColor  = "#dddddd",
-    focusedBorderColor = "#ff0000",
+    normalBorderColor  = "gray",
+    focusedBorderColor = "red",
 
-  -- key bindings
     keys               = myKeys,
     mouseBindings      = myMouseBindings,
-
-  -- hooks, layouts
-    layoutHook         = myLayout,
+    layoutHook         = myLayoutHook,
     manageHook         = myManageHook,
-    handleEventHook    = myEventHook,
-    logHook            = myLogHook dzLH >> fadeInactiveLogHook 0xdddddddd,
-    startupHook        = myStartupHook
+--     startupHook        = myStartupHook,
+    logHook            = myLogHook dzLH >> fadeInactiveLogHook 0xdddddddd
 }
 
 ------------------------------------------------------------------------
@@ -294,6 +277,7 @@ help = unlines ["The default modifier key is 'alt'. Default keybindings:",
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 main = do
-      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '640' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
+      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '900' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
+      dzenRightBar <- spawnPipe "conky -c ~/.conkyrc"
       xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "red", "fg", "black", "-xs", "1", "-y", "25"] }
              $ myMainConfig dzenLeftBar
