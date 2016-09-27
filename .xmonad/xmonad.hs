@@ -4,7 +4,9 @@ import XMonad.Operations
 
 import System.IO
 import System.Exit
+
 import Data.Monoid
+import Data.Ratio ((%))
 
 import XMonad.Prompt
 import XMonad.Prompt.Shell
@@ -13,6 +15,8 @@ import XMonad.Util.EZConfig
 import XMonad.Util.Run
 
 import XMonad.Layout.Gaps
+import XMonad.Layout.IM
+import XMonad.Layout.Reflect
 import XMonad.Layout.PerWorkspace (onWorkspace, onWorkspaces)
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.SimpleFloat
@@ -50,8 +54,11 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
     , ("M-v"         ,  spawn "vlc")                     -- spawn Vlc
     , ("M-e"         ,  spawn "evince")                  -- spawn Evince
     , ("M-d"         ,  spawn "deadbeef")                -- spawn Deadbeef
+
     , ("M-s"         ,  search)                          -- search websites, uses Search & Submap
+
     , ("M-S-c"       ,  kill)                            -- kill window
+
     , ("M-<Space>"   ,  sendMessage NextLayout)          -- next layout
     , ("M-S-<Space>" ,  setLayout $ XMonad.layoutHook c) -- default layout
     , ("M-n"         ,  refresh)                         -- resize to correct size
@@ -72,9 +79,9 @@ myKeys c = mkKeymap c $                                 -- keys; uses EZConfig
                         >> restart "xmonad" True)        -- restart xmonad
     , ("C-S-q"       ,  io (exitWith ExitSuccess))       -- exit xmonad
 
-    , ("C-S-<Up>"    , spawn "pulseaudio-ctl plus")        -- volume up
-    , ("C-S-<Down>"  , spawn "pulseaudio-ctl minus")       -- volume down
-    , ("C-S-m"       , spawn "pulseaudio-ctl mutetoggle")  -- volume mute toggle
+    , ("C-S-<Up>"    , spawn "pulseaudio-ctl.py plus")        -- volume up
+    , ("C-S-<Down>"  , spawn "pulseaudio-ctl.py minus")       -- volume down
+    , ("C-S-m"       , spawn "pulseaudio-ctl.py mutetoggle")  -- volume mute toggle
     , ("C-S-<Print>" , spawn "shutter.sh")  -- screenshot -> dropbox
     , ("C-S-l"       , spawn myLocker)
     ] ++
@@ -110,7 +117,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayoutHook = gaps [(D, 32)] $
+myLayoutHook = gaps [(D, 32)] $ avoidStruts $
                onWorkspace "1.web" webLayout $
                onWorkspace "2.chat" chatLayout $
                onWorkspace "3.dev" devLayout $
@@ -119,15 +126,25 @@ myLayoutHook = gaps [(D, 32)] $
   where
      tiled   = Tall 1 (2/100) (1/2)
      rtall   = ResizableTall 1 (2/100) (1/2) []
-     webLayout = gaps [(L, 200), (R, 200)] $ avoidStruts $ rtall
-     chatLayout = avoidStruts $ rtall ||| Mirror rtall
-     devLayout = gaps [(R, 480)] $ avoidStruts $ rtall
-     auxLayout = gaps [(L, 400)] $ avoidStruts $ rtall
-     defaultLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
+     webLayout = gaps [(L, 200), (R, 200)] $ rtall
+
+     -- complex layout:
+     -- master pane on the left
+     -- IM roster on the right
+     chatLayout = reflectHoriz $ withIM (1%10) skypeMainWindow (reflectHoriz $ rtall)
+     skypeMainWindow = (And (ClassName "Skype")
+                            (Not ((Title "Choose File(s) to send to selected users") `Or`
+                                  (Title "Add people") `Or`
+                                  (Role "ConversationsWindow"))))
+
+     devLayout = gaps [(R, 480)] $ rtall
+     auxLayout = gaps [(L, 400)] $ rtall
+     defaultLayout = tiled ||| Mirror tiled ||| Full ||| simpleFloat
 
 ------------------------------------------------------------------------
 -- Window rules:
 myManageHook :: ManageHook
+-- NOTE: rules apply in <- direction
 myManageHook = manageSpawn <+> myHook <+> manageHook defaultConfig
                <+> manageDocks
 
@@ -141,10 +158,7 @@ myHook = (composeAll . concat $
 
      [className =? c <&&> role =? "browser" --> doShift  "1.web" | c <- myWebs],
 
-     [className =? c --> doShift  "2.chat"    | c <- myChats],
-     [classNotRole ("Skype", "ConversationsWindow") --> moveToChat],
-     -- FIXME
-     [role =? "pop-up" --> doShift  "2.chat"],
+     [className =? "nginx.slack.com__messages_dev" --> doShift  "2.chat"],
      [currentWs =? "2.chat" --> keepMaster "Thunderbird"],
 
      [className =? "Gnome-terminal" <&&> role =? "dev" --> doShift  "3.dev",
@@ -157,7 +171,7 @@ myHook = (composeAll . concat $
     ])
   where
     myFloats   = ["Mplayer", "Ffplay", "Vlc", "GIMP"]
-    myWebs     = ["Firefox", "Google-chrome", "Google-chrome-stable"]
+    myWebs     = ["Firefox", "Google-chrome"]
     myChats    = ["Thunderbird", "Skype"]
     myMedia    = ["Deadbeef"]
     myReadings = ["Evince"]
@@ -173,8 +187,6 @@ myHook = (composeAll . concat $
 
     role = stringProperty "WM_WINDOW_ROLE"
     name = stringProperty "WM_NAME"
-
-    moveToChat   = doF $ W.shift "2.chat"
 
     keepMaster c = assertSlave <+> assertMaster where
                 assertSlave = fmap (/= c) className --> doF W.swapDown
@@ -198,11 +210,11 @@ myLogHook h = dynamicLogWithPP $ defaultPP
       , ppSep               =   "  |  "
       , ppLayout            =   dzenColor "#ebac54" "#1B1D1E" .
                                 (\x -> case x of
-                                    "ResizableTall"             ->      "^i(" ++ myBitmapsDir ++ "/tall.xbm)"
-                                    "Mirror ResizableTall"      ->      "^i(" ++ myBitmapsDir ++ "/mtall.xbm)"
-                                    "Full"                      ->      "^i(" ++ myBitmapsDir ++ "/full.xbm)"
-                                    "Simple Float"              ->      "~"
-                                    _                           ->      x
+                                    "ResizableTall"         ->  "^i(" ++ myBitmapsDir ++ "/tall.xbm)"
+                                    "Mirror ResizableTall"  ->  "^i(" ++ myBitmapsDir ++ "/mtall.xbm)"
+                                    "Full"                  ->  "^i(" ++ myBitmapsDir ++ "/full.xbm)"
+                                    "Simple Float"          ->  "~"
+                                    _                       ->  x
                                 )
       , ppTitle             =   (" " ++) . dzenColor "white" "#1B1D1E" . dzenEscape
       , ppOutput            =   hPutStrLn h
@@ -225,8 +237,6 @@ myStartupHook = do
         spawnOn "2.chat" "x-www-browser --app=https://nginx.slack.com/messages/dev/"
         spawnOn "3.dev" (myTerminal ++ "  --role=dev")
         spawnOn "4.aux" (myTerminal ++ "  --role=aux")
-        -- move music status to a tray
-        spawnOn "4.media" "deadbeef"
         spawn myXAutoLock
 
 ------------------------------------------------------------------------
@@ -304,7 +314,7 @@ help = unlines ["The default modifier key is 'alt'. Default keybindings:",
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 main = do
-      dzenLeftBar <- spawnPipe "dzen2 -x '1440' -y '0' -h '24' -w '1000' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
-      dzenRightBar <- spawnPipe "conky -c ~/.conkyrc"
+      dzenLeftBar <- spawnPipe "dzen2.sh"
+      dzenRightBar <- spawnPipe "conky.sh"
       xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "red", "fg", "black", "-xs", "1", "-y", "25"] }
              $ myMainConfig dzenLeftBar
