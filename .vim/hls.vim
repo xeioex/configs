@@ -17,7 +17,7 @@ au Syntax lisp RainbowParenthesesLoadRound
 au BufEnter *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 au BufLeave *.lisp,*.lsp,*.l,*.nu,*.podsl RainbowParenthesesToggle
 
-au BufEnter *.h,*.c,*.t call HighlightLongLines()
+au BufEnter *.h,*.c,*.t,*py call HighlightLongLines()
 
 function! HighlightLongLines()
     :setlocal textwidth=80
