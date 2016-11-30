@@ -1,6 +1,8 @@
 " default
 set makeprg=make
 
+au BufRead /tmp/mutt-* set tw=72
+au BufRead /tmp/hg-editor-* set tw=72
 
 " indent
 set tabstop=4
