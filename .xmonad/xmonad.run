@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Run the gnome-keyring-daemon to avoid issues you otherwise may encounter
+# when using gnome applications which expect access to the keyring, such
+# as Empathy. This prevents prompts you may otherwise get for invalid
+# certificates and the like.
+gnome-keyring-daemon --start --components=gpg,pkcs11,secrets,ssh
+
+setxkbmap us,ru -option grp:alt_shift_toggle
+pacmd set-default-sink alsa_output.usb-ESI_Audiotechnik_GmbH_Dr._DAC_nano-01-nano.analog-stereo
+xrandr --output VGA1 --primary --left-of HDMI1 --output HDMI1 --auto
+
+exec dbus-launch  xmonad
