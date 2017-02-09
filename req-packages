@@ -1,9 +1,6 @@
 sudo apt-get install git subversion mercurial
 sudo apt-get install build-essential cmake gcc clang dpkg-dev
-sudo apt-get install exuberant-ctags ssh colordiff curl cdargs silversearcher-ag
-sudo apt-get install xclip xdotool x11-xserver-utils ssh cups conky dzen2 xmonad
+sudo apt-get install exuberant-ctags ssh colordiff curl cdargs
+sudo apt-get install xclip xdotool x11-xserver-utils conky dzen2 xmonad ssh-askpass-gnome
+sudo apt-get install consolekit cups
 sudo apt-get install libgoo-canvas-perl gnome-web-photo
-
-#additional repos:
-#https://github.com/skibyte/gdblib
-#https://github.com/ierton/xkb-switch
