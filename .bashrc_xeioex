@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#! /bin/bash
+
+# FIXME: with checkbashisms
 
 # Bash snippets
 # for i in {1..500}; do curl 'url' > /dev/null & done
@@ -81,9 +83,6 @@ if [ -n "$(type __git_ps1 2>/dev/null)" ]; then
     export PS1="\$(__git_ps1) $PS1"
 fi
 
-# AUX
-export SSHRTUNNELPORT='11111'
-
 __create-if-not-exist $WORKSPACE
 __create-if-not-exist ~/.gdb
 
@@ -115,7 +114,6 @@ alias ss="source $SHELLRC"
 
 # Generic
 alias ainstall='sudo apt-get install'
-alias dpkgi='sudo dpkg -i'
 alias asearch='sudo apt-cache search'
 alias install-essential="ainstall -y $ESSENTIALPACKETS"
 alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
@@ -127,9 +125,6 @@ alias ldd='bash ldd'
 alias cursor-invisible='tput cinvis'
 alias cursor-visible='tput cnorm'
 
-alias kill-all-playout='pkill -9 -f playout'
-alias kill-current-tty-playout="pkill -KILL -t $(tty | sed 's/\/dev\///') -f playout"
-
 # X11
 function __set_dual_monitors () {
     xrandr --output VGA1 --primary --left-of HDMI1 --output HDMI1 --auto
@@ -140,41 +135,13 @@ function __set_single_monitor () {
     xrandr --output HDMI1 --off
 }
 
-function __switch_x11_to() {
-    WID=$(xdotool search $1 2>/dev/null)
-    xdotool windowfocus $WID
-    xdotool windowactivate $WID
-}
-alias switch-to-dev="__switch_x11_to dev"
-alias switch-to-aux="__switch_x11_to aux"
-
 function __xclip-strip-trailing() {
     xclip -o -sel $1 | sed -e 's/ \+/ /g' | xclip -i -sel $1
 }
 alias xclipboard-strip-trailing="__xclip-strip-trailing clipboard"
 
-# Python
-function __venv_activate() {
-    DIR=venv
-    __create-if-not-exist $DIR
-    virtualenv $DIR
-    source $DIR/bin/activate
-}
-alias vactivate="__venv_activate"
-
-# remote server helpers
-function __copy-home() {
-    scp $2 $USER@$BASEHOSTIP:$1
-}
-alias force-reboot="echo 'b' > /proc/sysrq-trigger"
 alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
-alias copy-home='__copy-home /tmp/'
-alias copy-home-to='__copy-home'
-
-function __install-repo-key() {
-    wget $1 -O- | sudo apt-key add -
-}
 
 # Interactive
 # It's best if there's no output to stdout from login rc files such as ~/.bash_profile
@@ -217,6 +184,8 @@ if [[ $(hostname) != $BASEHOST ]]; then
     alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
     alias root-shell-enter="install-root-essential-configs; sudo -i"
 fi
+
+SSHRTUNNELPORT='11111'
 
 alias mount-workspace="__mount-workspace-if-needed"
 function __mount-workspace-if-needed() {
@@ -309,8 +278,6 @@ alias tmux-enter-aux="~/.tmux/${PROJECTPREFIX}aux"
 alias tmux-kill-dev='tmux kill-session -t dev'
 alias tmux-kill-aux='tmux kill-session -t aux'
 
-alias install-repo-key="__install-repo-key $1"
-
 # custom
 function __enable-cores() {
     sudo sysctl -w kernel.core_pattern=/tmp/core.%t.%h.%e.%p
@@ -363,27 +330,7 @@ function __prepare-ptest-env() {
     __prepare-dev-env "" testing-playout-develop
 }
 
-function __deploy-ptest-env() {
-    __deploy-nix-derivation testing-playout-develop
-}
-
-function ctags-populate-with-include-headers() {
-    rm -fr tags TAGS
-    important-message "gathering include dirs..."
-    # to get $ON_COMPILE_FLAGS
-    source $(which $COMPILER) 2>/dev/null
-    important-message "scaning sources for tags..."
-    ctags --options=$HOME/.vim/ctags-options 2>&1 | grep -v 'ignoring null|No such file or directory'
-    export INCPATHS=$(echo $ON_COMPILE_FLAGS | sed 's/ /\n/g' | grep 'include' | sort -u | sed 's/-I//g')
-    important-message "populating tags with nix include paths..."
-    echo $INCPATHS | sed 's/ /\n/g' | \
-        ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q --totals -R -a 2>&1 | \
-        grep -v 'ignoring null'
-    export VIMINCPATHS=$(echo $INCPATHS| tr '\n' ' ' | sed 's/ /**,/g')
-}
-
 function vim-enter-session() {
-    ctags-populate-with-include-headers
     info-message "Running vim..."
     vim --servername $1 -S ~/.vimrc
 }
@@ -392,18 +339,13 @@ function vim-enter-clean-session() {
     rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1.vim; vim-enter-session $1
 }
 
-alias vim-enter-clean-dev='vim-enter-clean-session dev'
-
 alias prepare-playout-env="__prepare-playout-env playout-develop"
 alias prepare-nix-env='__prepare-nix-env'
 
 alias prepare-po-workspace="mount-workspace; cd $PWORKSPACE;prepare-playout-env"
 
-alias playout-run-with-clean-env='kill-current-tty-playout; sleep 1 &&'
-
 alias playout-nix-version="nix-find-derivation playout"
 
-alias ssh-reverse-socks-proxy="ssh -fN -p $SSHRTUNNELPORT -D 1080 $USER@localhost"
 alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # HOST only
@@ -422,15 +364,3 @@ if [[ $(hostname) == $BASEHOST ]]; then
         fi
     fi
 fi
-
-function h2d() {
-    if [[ $1 == 0x* ]]; then
-        printf "%d\n" $1
-    else
-        printf "%d\n" "0x$1"
-    fi
-}
-
-function d2h() {
-    printf "%x\n" $1
-}
