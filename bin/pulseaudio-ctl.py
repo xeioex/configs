@@ -43,7 +43,7 @@ name = "alsa_output.usb-ESI_Audiotechnik_GmbH_Dr._DAC_nano-01.analog-stereo"
 def main():
     cmds = {
         "plus" : cmd("pactl set-sink-volume {} +5%", name),
-        "minus" : cmd("pactl set-sink-volume {} -- -5%", name),
+        "minus" : cmd("pactl set-sink-volume {} -5%", name),
         "mutetoggle" : cmd("pactl set-sink-mute {} {}", name, 
                            lambda: 0 if muted(name) else 1),
         "mutestatus" : lambda: "MUTED" if muted(name) else "",
