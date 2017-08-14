@@ -5,18 +5,15 @@ tmux has-session -t aux
 if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s aux -n pyconsole -d
-tmux send-keys -t aux:1 'python' C-m
+tmux send-keys -t aux:1 'ipython3' C-m
 
-tmux new-window -n curl -t aux
+tmux new-window -n shell -t aux
 
 tmux new-window -n htop -t aux
 tmux send-keys -t aux:3 'htop' C-m
 
-tmux new-window -n cfgs -t aux
-tmux send-keys -t aux:4 'cdb 0' C-m
-
 tmux new-window -n root-shell -t aux
-tmux send-keys -t aux:5 'sudo -i' C-m
+tmux send-keys -t aux:4 'sudo -i' C-m
 
 tmux select-window -t aux:1
 fi

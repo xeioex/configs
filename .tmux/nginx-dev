@@ -4,21 +4,19 @@ if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s dev -n shell -d
 
-tmux new-window -n nginx-se -t dev
-tmux send-keys -t dev:2 'cdb nginx-se' C-m
-tmux send-keys -t dev:2 'vim-enter-session develop-se' C-m
+tmux new-window -n njs -t dev
+tmux send-keys -t dev:2 'cdb njs' C-m
+tmux send-keys -t dev:2 'vim-enter-session develop-njs' C-m
 
 tmux new-window -n nginx-oss -t dev
 tmux send-keys -t dev:3 'cdb nginx' C-m
 tmux send-keys -t dev:3 'vim-enter-session develop-oss' C-m
 
-tmux new-window -n tests -t dev
-tmux send-keys -t dev:4 'cdb nginx-tests-se' C-m
+tmux new-window -n nginx-se -t dev
+tmux send-keys -t dev:4 'cdb nginx-se' C-m
+tmux send-keys -t dev:4 'vim-enter-session develop-se' C-m
 
-tmux new-window -n mediadata -t dev
-tmux send-keys -t dev:5 'cdb mediadata' C-m
-
-tmux select-window -t dev:3
+tmux select-window -t dev:1
 fi
 
 tmux attach -t dev
