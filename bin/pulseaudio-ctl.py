@@ -20,7 +20,6 @@ def muted(name):
 
     raise Exception("Unknown name: {}".format(name))
 
-
 def volume(index):
     for l in dump_volumes().split("\n"):
         s = l.lstrip(">").split()
@@ -28,7 +27,7 @@ def volume(index):
 
         if len(s) >= 6 and \
             s[0] == 'Sink' and s[1] == str(index):
-            return int(s[5])
+            return int(s[7])
 
     raise Exception("Unknown index: {}".format(index))
 
@@ -39,7 +38,7 @@ def cmd(template, *args):
 
     return lazy_wrap
 
-name = "alsa_output.usb-ESI_Audiotechnik_GmbH_Dr._DAC_nano-01-nano.analog-stereo"
+name = "alsa_output.usb-ESI_Audiotechnik_GmbH_Dr._DAC_nano-01.analog-stereo"
 
 def main():
     cmds = {
