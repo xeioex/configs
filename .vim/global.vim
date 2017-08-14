@@ -35,7 +35,7 @@ set viminfo='100,\"1000
 
 "allow switch from non-saved file
 set hidden
-set history=15000
+set history=10000
 
 set mouse=v
 
@@ -57,9 +57,7 @@ set autowrite
 " Highlights space at the end of a line
 let c_space_errors = 1
 
-"set foldmethod=manual
-set foldmethod=indent
-set foldlevel=20
+set foldmethod=manual
 
 "interactive shell on '!
 set shell=/bin/bash\ --rcfile\ ~/.bash_profile
