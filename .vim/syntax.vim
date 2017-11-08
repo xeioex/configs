@@ -14,6 +14,7 @@ au BufNewFile,BufRead *.py set filetype=python
 au BufNewFile,BufRead SCons* set filetype=python
 au BufNewFile,BufRead *.json set filetype=json
 au BufNewFile,BufRead *.t set filetype=perl
+au BufNewFile,BufRead *.njs set filetype=javascript
 
 " per filetype custom setup
 augroup json_autocmd

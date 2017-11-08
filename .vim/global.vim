@@ -57,7 +57,7 @@ set autowrite
 " Highlights space at the end of a line
 let c_space_errors = 1
 
-set foldmethod=manual
+set nofoldenable "disable folding
 
 "interactive shell on '!
 set shell=/bin/bash\ --rcfile\ ~/.bash_profile

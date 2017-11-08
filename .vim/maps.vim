@@ -56,13 +56,9 @@ nnoremap <leader>vr :source $MYVIMRC<cr>
 " clean build dir
 nnoremap <leader>cl :!rm -fr ./build/ && rm -fr .scon*<CR>
 
-" search word under cursor using ack
-noremap <Leader>a :Ack <cword><cr>
-noremap <Leader>A :Ack <cWORD><cr>
-
-" search word under cursor using cscope
-" before first search !cscope_gen.sh required
-noremap <Leader>c :cs find s <C-R>=expand("<cword>")<CR><CR>
+" search word under cursor using ag
+noremap <Leader>a :Ag <cword><cr>
+noremap <Leader>A :Ag <cWORD><cr>
 
 " open file's directory
 noremap <Leader>d :e %:h<cr>
