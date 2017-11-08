@@ -1,11 +1,11 @@
 # -- General settings -- #
 out_to_x yes
-update_interval 1
+update_interval 2
 
 # -- Alignment settings -- #
 alignment top_left
 gap_x 1928
-gap_y 1166
+gap_y 1170
 
 own_window yes
 own_window_type override
@@ -27,17 +27,10 @@ color7 FFFF00
 color8 B22222
 
 TEXT
-${color8}CPU:${cpu cpu0}% ${cpugraph cpu0 24,64 ffffff ff0000 -t} \
-MEM:${memperc}% ${memgraph 24,64 00ff00 ffff00 -t}\
-${if_existing /proc/net/route eth0} \
-NET: ${downspeedgraph eth0 24,64 ffffff 0000ff -l -t}\
-${endif} \
-${if_existing /proc/net/route wlan0} \
-NET: ${downspeedgraph wlan0 24,64 ffffff 0000ff -l -t}\
-${endif} \
-DISK: ${diskiograph sda 24,64 ffffff 0000ff -l -t} ${color4}|${color0} \
-${color6}volume: ${exec pulseaudio-ctl volume}% ${exec pulseaudio-ctl mutestatus} ${color4}|${color0} \
-${color5}${time %d %m %Y} ${time %R} ${color4}|${color0} \
-${color0}${exec uptime -p} ${color4}| \
-${color7}keyboard: ${color6}${exec xkb-switch}
+${color8}C:${cpu cpu0}% ${cpugraph cpu0 24,64 ffffff ff0000 -t} \
+M:${memperc}% ${memgraph 24,64 00ff00 ffff00 -t} \
+D: ${diskiograph sda 24,64 ffffff 0000ff -l -t} ${color4}|${color0} \
+${color6}V: ${exec pulseaudio-ctl.py volume}% ${exec pulseaudio-ctl.py mutestatus} ${color4}|${color0}\
+${color0}${exec uptime} ${color4}| \
+${color7}kbrd: ${color6}${exec xkb-switch}
 
