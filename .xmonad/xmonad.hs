@@ -131,7 +131,7 @@ myLayoutHook = gaps [(D, 32)] $ avoidStruts $
      -- complex layout:
      -- master pane on the left
      -- IM roster on the right
-     chatLayout = reflectHoriz $ withIM (1%10) skypeMainWindow (reflectHoriz $ rtall)
+     chatLayout = rtall
      skypeMainWindow = (And (ClassName "Skype")
                             (Not ((Title "Choose File(s) to send to selected users") `Or`
                                   (Title "Add people") `Or`
@@ -159,6 +159,7 @@ myHook = (composeAll . concat $
      [className =? c <&&> role =? "browser" --> doShift  "1.web" | c <- myWebs],
 
      [className =? "nginx.slack.com__messages_dev" --> doShift  "2.chat"],
+     [className =? "Skype" --> doShift  "2.chat"],
      [currentWs =? "2.chat" --> keepMaster "Thunderbird"],
 
      [className =? "Gnome-terminal" <&&> role =? "dev" --> doShift  "3.dev",
@@ -170,7 +171,8 @@ myHook = (composeAll . concat $
      [isFullscreen          --> doFullFloat]
     ])
   where
-    myFloats   = ["Mplayer", "Ffplay", "Vlc", "GIMP"]
+    myFloats   = ["Mplayer", "Ffplay", "Vlc", "GIMP", "feh",
+                  "org-openscience-jmol-app-jmolpanel-JmolPanel"]
     myWebs     = ["Firefox", "Google-chrome"]
     myChats    = ["Thunderbird", "Skype"]
     myMedia    = ["Deadbeef"]
@@ -232,7 +234,7 @@ myLogHook h = dynamicLogWithPP $ defaultPP
 -- FIXME: spawn only once
 myStartupHook = do
         spawnOn "1.web" "x-www-browser"
-        spawnOn "2.chat" "skype.sh"
+        spawnOn "2.chat" "skypeforlinux"
         spawnOn "2.chat" "thunderbird"
         spawnOn "2.chat" "x-www-browser --app=https://nginx.slack.com/messages/dev/"
         spawnOn "3.dev" (myTerminal ++ "  --role=dev")
@@ -255,7 +257,7 @@ myMainConfig dzLH = defaultConfig {
     mouseBindings      = myMouseBindings,
     layoutHook         = myLayoutHook,
     manageHook         = myManageHook,
---     startupHook        = myStartupHook,
+    startupHook        = myStartupHook,
     logHook            = myLogHook dzLH >> fadeInactiveLogHook 0xdddddddd
 }
 
