@@ -128,14 +128,7 @@ myLayoutHook = gaps [(D, 32)] $ avoidStruts $
      rtall   = ResizableTall 1 (2/100) (1/2) []
      webLayout = gaps [(L, 200), (R, 200)] $ rtall
 
-     -- complex layout:
-     -- master pane on the left
-     -- IM roster on the right
-     chatLayout = rtall
-     skypeMainWindow = (And (ClassName "Skype")
-                            (Not ((Title "Choose File(s) to send to selected users") `Or`
-                                  (Title "Add people") `Or`
-                                  (Role "ConversationsWindow"))))
+     chatLayout = gaps [(L, 100), (R, 100)] $ rtall
 
      devLayout = gaps [(R, 480)] $ rtall
      auxLayout = gaps [(L, 400)] $ rtall
