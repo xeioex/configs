@@ -4,12 +4,17 @@ st = status -q
 
 [diff]
 showfunc = 1
+git = 1
 
 [extensions]
 hgext.patchbomb =
+rebase =
 color =
 strip =
 mq =
+
+[ui]
+merge = meld
 
 %include ~/.hgrcprivate
 
