@@ -1,5 +1,7 @@
 sudo apt-get install git subversion mercurial
 sudo apt-get install build-essential cmake gcc clang dpkg-dev
+sudo apt-get install libxkbfile-dev # for xkb-switch
+sudo apt-get install apcalc # for sflock
 sudo apt-get install exuberant-ctags ssh colordiff curl cdargs
 sudo apt-get install xclip xdotool x11-xserver-utils conky dzen2 xmonad ssh-askpass-gnome
 sudo apt-get install consolekit cups
