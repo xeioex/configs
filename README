@@ -1,20 +1,20 @@
-1. get ctags with Obj-C support
-        ctags from trunk
-        svn co 'https://svn.code.sf.net/p/ctags/code/' ctags
-        autoheader
-        autoconf
-        configure
-        make -j4
-        sudo make install
-
-2. Building vim
-        apt-get source vim
-        apt-get build-dep vim
+1. Building vim
+        sudo apt-get source vim
+        sudo apt-get build-dep vim
         vim debian/rules # customize (vim.debain.rules.patch)
         cd vim-7.*
-        dpkg-buildpackage -rfakeroot
+        sudo dpkg-buildpackage -rfakeroot
+        cd ..
+        sudo dpkg -i vim*.deb
 
 2. using vim configs
         copy .vimrc, .vim/ to home dir
         git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
         Launch vim, run :BundleInstall
+
+3. xkb-switch
+        git clone https://github.com/ierton/xkb-switch
+        mkdir build && cd build
+        cmake ..
+        make
+        sudo make install
