@@ -18,18 +18,10 @@ source ~/.vim/sessions.vim
 source ~/.vim/routines.vim
 
 source ~/.vim/autocomplete.vim
-source ~/.vim/folding.vim
-source ~/.vim/builtin-shell.vim
 source ~/.vim/git.vim
 
 "plugins setups
 source ~/.vim/plugins.vim
-
-source ~/.vim/syntastic.vim
-source ~/.vim/language-tool.vim
-source ~/.vim/fswitch.vim
-
-source ~/.vim/swank.vim
 source ~/.vim/snippets.vim
 
 "project setups
