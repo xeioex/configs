@@ -57,8 +57,8 @@ nnoremap <leader>vr :source $MYVIMRC<cr>
 nnoremap <leader>cl :!rm -fr ./build/ && rm -fr .scon*<CR>
 
 " search word under cursor using ag
-noremap <Leader>a :Ag <cword><cr>
-noremap <Leader>A :Ag <cWORD><cr>
+noremap <Leader>a :Ack <cword><cr>
+noremap <Leader>A :Ack <cWORD><cr>
 
 " open file's directory
 noremap <Leader>d :e %:h<cr>
