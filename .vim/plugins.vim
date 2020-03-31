@@ -16,28 +16,13 @@ Plugin 'gmarik/Vundle.vim'
 " path to github or other repo for plugins
 "
 
-" used for fuzzyFinder
-Plugin 'L9'
-" find files, tags, buffers, etc by fuzzy patterns
-" example 1: Fufile **/RTSP will find all files with filenames whicn contain "RTSP" substring
-" in all vim path diretories
-Plugin 'FuzzyFinder'
-" file manager
 Plugin 'scrooloose/nerdtree'
 " visualize changes as tree
 Plugin 'sjl/gundo.vim'
 "Plugin 'vim-scripts/GdbFromVim'
-Plugin 'vim-scripts/JSON.vim'
-" Hooks the make quickfix command and converts all compiler errors into signs
-" that are placed next to the line with the error
-Plugin 'vim-scripts/errormarker.vim'
-" Provides highlighting for  #ifdef  #ifndef  #else  #endif  blocks, with the
-" ability to mark a symbol as defined or undefined
 Plugin 'vim-scripts/ifdef-highlighting'
 " switch between source and header files
 Plugin 'derekwyatt/vim-fswitch'
-" integrates the LanguageTool grammar checker into Vim
-Plugin 'vim-scripts/LanguageTool'
 
 " plugins runtime reload
 Plugin 'xolox/vim-reload'
@@ -60,20 +45,11 @@ Plugin 'tpope/vim-abolish'
 " Mercurial wrapper
 Plugin 'ludovicchabant/vim-lawrencium'
 
-":h yankring.txt
-":h yankring-tutorial
-Plugin 'vim-scripts/YankRing.vim'
-
-" implements some of TextMate's snippets features in Vim. A snippet is a piece
-" of often-typed text that you can insert into your document using a trigger
-" word followed by a <tab>. 
-Plugin 'msanders/snipmate.vim'
 " camelCaseMotions
 Plugin 'bkad/CamelCaseMotion'
 
 " using ack instead of grep from vim
 Plugin 'mileszs/ack.vim'
-Plugin 'rking/ag.vim'
 
 "  start searching from your project root instead of the cwd
 let g:ag_working_path_mode="r"
@@ -95,9 +71,6 @@ Plugin 'corntrace/bufexplorer'
 " syntax checkers and displays any resulting errors to the user. This can be
 " done on demand, or automatically as files are saved
 Plugin 'scrooloose/syntastic'
-" Files with ANSI escape sequences look good when dumped onto a terminal that
-" accepts them, but have been a distracting clutter when edited via vim
-Plugin 'vim-scripts/AnsiEsc.vim'
 " using * for search for current visual selection
 Plugin 'vim-scripts/visualstar.vim'
 " populated arglist with quickfix list files
@@ -105,25 +78,10 @@ Plugin 'nelstrom/vim-qargs'
 " Highlight matching parens in a rainbow of colors
 Plugin 'kien/rainbow_parentheses.vim'
 
-"  It handles syntax, indenting, compiling, and more. Also included is support
-"  for CoffeeScript in Haml and HTML.
-Plugin 'kchmck/vim-coffee-script'
-
-Plugin 'fatih/vim-go'
-
 Plugin 'vim-scripts/functionlist.vim'
-
-Plugin 'vim-scripts/gnuplot.vim.git'
 
 " Conveniently shows loaded bundles and plugins
 "Plugin 'mbadran/headlights'
-
-" vim-codefmt
-Plugin 'google/vim-maktaba'
-Plugin 'google/vim-codefmtlib'
-Plugin 'google/vim-codefmt'
-
-Plugin 'rust-lang/rust.vim'
 
 call vundle#end()             " required
 filetype plugin indent on     " required!
