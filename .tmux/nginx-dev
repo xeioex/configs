@@ -1,5 +1,5 @@
 source ~/.bashrc
-tmux has-session -t dev
+tmux has-session -t dev 2>/dev/null
 if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s dev -n shell -d

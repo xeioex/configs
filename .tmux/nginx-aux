@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 source ~/.bashrc
-tmux has-session -t aux
+tmux has-session -t aux 2>/dev/null
 if [ $? != 0 ]; then
 reload-ssh-agent
 tmux new-session -s aux -n pyconsole -d
