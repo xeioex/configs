@@ -15,5 +15,6 @@ fu! RestoreCurrentSession()
     endif
 endfunction
 
-autocmd VimLeave * call SaveCurrentSession()
-autocmd VimEnter * call RestoreCurrentSession()
+"fix me
+"autocmd VimLeave * call SaveCurrentSession()
+"autocmd VimEnter * call RestoreCurrentSession()
