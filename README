@@ -1,20 +1,14 @@
-1. Building vim
-        sudo apt-get source vim
-        sudo apt-get build-dep vim
-        vim debian/rules # customize (vim.debain.rules.patch)
-        cd vim-7.*
-        sudo dpkg-buildpackage -rfakeroot
-        cd ..
-        sudo dpkg -i vim*.deb
+1. Building neovim
+        Download the latest release from https://github.com/neovim/neovim and extract it.
+
+        cd neovim
+        make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=~/bin/nvim/
+        make install
+        add ~/bin/nvim/bin to PATH
 
 2. using vim configs
         copy .vimrc, .vim/ to home dir
-        git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-        Launch vim, run :BundleInstall
-
-3. xkb-switch
-        git clone https://github.com/ierton/xkb-switch
-        mkdir build && cd build
-        cmake ..
-        make
-        sudo make install
+        install vim-plug
+            sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+                https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        Launch vim, run :PlugInstall
