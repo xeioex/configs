@@ -90,20 +90,9 @@ __create-if-not-exist ~/.gdb
 __source-if-exist /etc/bashrc
 __source-if-exist /usr/share/doc/cdargs/examples/cdargs-bash.sh
 __source-if-exist /etc/bash_completion
-__source-if-exist /etc/profile.d/nix.sh
-
 
 PATH=$PATH:~/bin/
-
-if [[ -n $stdenv && -f $stdenv/setup &&  -n $NIX_ENV ]]; then
-    p=$PATH
-    . $stdenv/setup
-    export PATH="$PATH:$p"
-    export NIX_REMOTE=daemon
-    echo "importing nix env ($NIX_ENV) using $stdenv/setup"
-    export PS1="(nix:$NIX_ENV) $PS1"
-    set +e
-fi
+PATH=$PATH:~/bin/node-v20.7.0-linux-arm64/bin/
 
 # Aliases
 if [[ $TMUX || $EXPALIAS ]]; then
@@ -115,32 +104,15 @@ alias ss="source $SHELLRC"
 # Generic
 alias ainstall='sudo apt-get install'
 alias asearch='sudo apt-cache search'
-alias install-essential="ainstall -y $ESSENTIALPACKETS"
-alias install-essential-dbg="ainstall -y $ESSENTIALDBGPACKETS"
 
-alias clean-build='rm -fr ./build/ && rm -fr .scon*'
+alias vim="env --unset=DISPLAY XDG_DATA_HOME=~/.vim/ nvim -u ~/.vimrc"
 
 alias ldd='bash ldd'
 
 alias cursor-invisible='tput cinvis'
 alias cursor-visible='tput cnorm'
 
-# X11
-function __set_dual_monitors () {
-    xrandr --output VGA1 --primary --left-of HDMI1 --output HDMI1 --auto
-}
-
-# set single monitor
-function __set_single_monitor () {
-    xrandr --output HDMI1 --off
-}
-
-function __xclip-strip-trailing() {
-    xclip -o -sel $1 | sed -e 's/ \+/ /g' | xclip -i -sel $1
-}
-alias xclipboard-strip-trailing="__xclip-strip-trailing clipboard"
-
-alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add'
+alias reload-ssh-agent='eval `ssh-agent -s`; ssh-add ~/.ssh/nginx_id_rsa'
 alias ssh-copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub'
 
 # Interactive
@@ -157,86 +129,6 @@ if [[ $- == *i* ]]; then
         stty ixoff -ixon
     fi
 fi
-
-if [[ $(hostname) != $BASEHOST ]]; then
-    export DISPLAY=":0.0"
-    function __mount-rw-nix() {
-        export RW_NIX="/tmp/$USER-nix/"
-        mkdir -p $RW_NIX
-
-        which mount.aufs
-        if [[ $? -ne 0 ]]; then
-            ainstall aufs-tools
-        fi
-
-        RES=$(mount | grep nix  | grep aufs | wc -l)
-
-        if [[ $RES -ne "1" ]]; then
-            echo "mouting rw nix on $RW_NIX"
-            mount -t aufs -o br=$RW_NIX=rw:/nix=ro -o udba=reval none /nix/
-        fi
-    }
-
-    alias vim="vim -S ~/.vimrc_$USER"
-
-    alias mount-rw-nix="__mount-rw-nix"
-
-    alias install-root-essential-configs="sudo cp $ESSENTIALCONFIGS /root/"
-    alias root-shell-enter="install-root-essential-configs; sudo -i"
-fi
-
-SSHRTUNNELPORT='11111'
-
-alias mount-workspace="__mount-workspace-if-needed"
-function __mount-workspace-if-needed() {
-    __dir_is-accessable $PWORKSPACE
-    if [[ $? -ne 0 ]]; then
-        echo "Can't detect workspace at: $PWORKSPACE, mounting"
-        which sshfs
-        if [[ $? -ne 0 ]]; then
-            echo "sshfs not available, installing"
-            ainstall sshfs -t squeeze
-        fi
-
-        alias __mntws="sshfs -p $SSHRTUNNELPORT $USER@localhost:/home/$USER/workspace/ $RWORKSPACE"
-        shopt -s expand_aliases
-
-        RES=$(__mntws)
-        if [[ $RES -ne 0 ]]; then
-            echo "Can't mount $PWORKSPACE. Trying umount -l $RWORKSPACE and do sshfs again"
-            umount -l $RWORKSPACE
-            $(__mntws)
-        fi
-
-        RES=$(cd $PWORKSPACE)
-        if [[ $RES -ne 0 ]]; then
-            echo "Can't mount $PWORKSPACE"
-        fi
-    fi
-}
-
-function __host-prepare() {
-    scp $ESSENTIALCONFIGS $2:~/
-
-    scp  ~/.vimrc_minimal $2:~/.vimrc_$USER
-
-    ssh $2 "mkdir -p ~/.vim_$USER/plugin 2>/dev/null"
-    scp  ~/.vim/plugin/comment.vim $2:~/.vim_$USER/plugin/
-
-    scp  ~/.bashrc $2:$SHELLRC
-    if [[ $1 ==  "1" ]]; then
-        echo "host $2 enter, preparing debug env"
-        ssh  $2 "bash -ic install-essential"
-    fi
-}
-
-function __host-enter() {
-    __host-prepare $1 $2
-    ssh -t -X -R $SSHRTUNNELPORT:localhost:22 $2 $SHELLCMD
-}
-
-alias host-enter='__host-enter 0'
-alias host-enter-dbg='__host-enter 1'
 
 # TMUX
 # reload environment
@@ -278,75 +170,14 @@ alias tmux-enter-aux="~/.tmux/${PROJECTPREFIX}aux"
 alias tmux-kill-dev='tmux kill-session -t dev'
 alias tmux-kill-aux='tmux kill-session -t aux'
 
-# custom
-function __enable-cores() {
-    sudo sysctl -w kernel.core_pattern=/tmp/core.%t.%h.%e.%p
-    ulimit -c unlimited
-}
-
-function __prepare-nix-env() {
-    which nix-build
-    if [[ $? -ne 0 ]]; then
-        info-message "nix-env not available, installing"
-        # TODO: check system type before loading
-        wget http://hydra.nixos.org/build/6695717/download/1/nix_1.6.1-1_amd64.deb
-        sudo dpkg -i ./nix_1.6.1-1_amd64.deb
-        sudo apt-get -y -f install
-        sudo nix-channel --add $LOCAL_NIX_CHANNEL
-        sudo nix-channel --update
-    fi
-
-    export NIX_ENV=$1
-    export NIX_REMOTE=daemon
-    sudo pkill nix-daemon
-    important-message "updating nix channel..."
-    sudo nix-channel --update
-    sudo nohup nix-daemon > /dev/null&
-    nix-build --show-trace --fallback  --keep-failed --run-env --command "$SHELLCMD" -A $1 $2
-}
-
-function __prepare-dev-env() {
-    if [ -n "$1" ]; then
-        export LD_LIBRARY_PATH=$1
-    fi
-
-    __enable-cores
-    __prepare-nix-env $2 $DEVNIXPATH
-}
-
-function __deploy-nix-derivation() {
-    nix-build -A $1  $DEVNIXPATH
-}
-
-function __prepare-playout-env() {
-    __prepare-dev-env "./build/MLFoundation/:./build/MLStreams/:./build/Playout" $1
-}
-
-function __prepare-deligra-env() {
-    __prepare-dev-env "./lib" deligra-develop
-}
-
-function __prepare-ptest-env() {
-    __prepare-dev-env "" testing-playout-develop
-}
-
 function vim-enter-session() {
     info-message "Running vim..."
-    vim --servername $1 -S ~/.vimrc
+    vim -S ~/.vimrc
 }
 
 function vim-enter-clean-session() {
     rm -fr ~/.vim/backups/*; rm -fr ~/.vim/sessions/$USER-$1.vim; vim-enter-session $1
 }
-
-alias prepare-playout-env="__prepare-playout-env playout-develop"
-alias prepare-nix-env='__prepare-nix-env'
-
-alias prepare-po-workspace="mount-workspace; cd $PWORKSPACE;prepare-playout-env"
-
-alias playout-nix-version="nix-find-derivation playout"
-
-alias strip-escape-colors='sed -r "s/\x1B\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g'
 
 # HOST only
 if [[ $(hostname) == $BASEHOST ]]; then
