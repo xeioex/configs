@@ -12,7 +12,7 @@ au FileType json setlocal ts=8 sts=2 sw=2 expandtab
 " Customisations based on house-style (arbitrary)
 au FileType html setlocal ts=2 sts=2 sw=2 expandtab
 au FileType css setlocal ts=2 sts=2 sw=2 expandtab
-au FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
+au FileType javascript setlocal ts=4 sts=4 sw=4 expandtab
 au FileType python setlocal ts=4 sts=4 sw=4 expandtab
 au FileType sh setlocal ts=4 sts=4 sw=4 expandtab
 au FileType shell setlocal ts=4 sts=4 sw=4 expandtab
