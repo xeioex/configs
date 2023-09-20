@@ -22,7 +22,6 @@ source ~/.vim/git.vim
 
 "plugins setups
 source ~/.vim/plugins.vim
-source ~/.vim/snippets.vim
 
 "project setups
 let project = expand("$PROJECT")
