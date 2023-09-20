@@ -16,6 +16,16 @@ tmux new-window -n nginx-se -t dev
 tmux send-keys -t dev:4 'cdb nginx-se' C-m
 tmux send-keys -t dev:4 'vim-enter-session develop-se' C-m
 
+tmux new-window -n nginx-tests -t dev
+tmux send-keys -t dev:5 'cdb nginx-tests' C-m
+tmux send-keys -t dev:5 '#rm -fr /tmp/nginx-test* && TEST_NGINX_LEAVE=1 TEST_NGINX_BINARY=/home/xeioex/workspace/nginx/nginx/objs/nginx prove js*.t' C-m
+
+tmux new-window -n test262 -t dev
+tmux send-keys -t dev:6 'cdb test262' C-m
+tmux send-keys -t dev:6 '#LOG=test262_njs_0.5.0_03.log; time python2 ./src/test262.py --command="/home/xeioex/workspace/nginx/nginScript/njs/build/njs -q" --tests=./test262/ --strict_only --summary | tee $LOG' C-m
+tmux send-keys -t dev:6 '#TEST="built-ins/Array/prototype/Symbol.iterator"; cat test262/harness/assert.js test262/harness/sta.js test262/harness/propertyHelper.js `find ./test262/ -wholename "*${TEST}.js"` > test.js' C-m
+tmux send-keys -t dev:6 '#/home/xeioex/workspace/nginx/nginScript/njs/build/njs test.js' C-m
+
 tmux select-window -t dev:1
 fi
 
