@@ -15,3 +15,5 @@ set colored-stats on
 
 # Misc
 set bell-style visible
+
+set enable-bracketed-paste on
