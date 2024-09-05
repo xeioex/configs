@@ -88,10 +88,12 @@ __create-if-not-exist ~/.gdb
 
 # Sources
 __source-if-exist /etc/bashrc
+__source-if-exist ~/.cargo/env
 __source-if-exist /usr/share/doc/cdargs/examples/cdargs-bash.sh
 __source-if-exist /etc/bash_completion
 
 PATH=$PATH:~/bin/
+PATH=$PATH:~/bin/depot_tools
 PATH=$PATH:~/bin/node-v20.7.0-linux-arm64/bin/
 
 # Aliases
@@ -105,7 +107,7 @@ alias ss="source $SHELLRC"
 alias ainstall='sudo apt-get install'
 alias asearch='sudo apt-cache search'
 
-alias vim="env --unset=DISPLAY XDG_DATA_HOME=~/.vim/ nvim -u ~/.vimrc"
+alias vim="env --unset=DISPLAY nvim -u ~/.vimrc"
 
 alias ldd='bash ldd'
 
