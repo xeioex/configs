@@ -18,7 +18,7 @@ tmux send-keys -t dev:4 'vim-enter-session develop-se' C-m
 
 tmux new-window -n nginx-tests -t dev
 tmux send-keys -t dev:5 'cdb nginx-tests' C-m
-tmux send-keys -t dev:5 '#rm -fr /tmp/nginx-test* && TEST_NGINX_LEAVE=1 TEST_NGINX_BINARY=/home/xeioex/workspace/nginx/nginx/objs/nginx prove js*.t' C-m
+tmux send-keys -t dev:5 '#rm -fr /tmp/nginx-test*; TEST_NGINX_LEAVE=1 TEST_NGINX_BINARY=/home/xeioex/workspace/nginx/nginx/objs/nginx prove -I /home/xeioex/workspace/nginx/nginx-tests/lib/ nginx/t/*.t' C-m
 
 tmux new-window -n test262 -t dev
 tmux send-keys -t dev:6 'cdb test262' C-m
