@@ -12,6 +12,7 @@ set cin
 
 set number
 syntax on
+colorscheme vim
 
 "underline current line
 set cursorline

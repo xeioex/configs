@@ -1,7 +1,5 @@
 call plug#begin()
 
-Plug 'gmarik/Vundle.vim'
-
 " :scriptsname - shows all loaded plugins
 
 "
