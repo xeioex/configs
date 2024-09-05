@@ -1,42 +1,27 @@
 [core]
-        editor = vim
-        pager = less -r
+    editor = vim
+    pager = less -r
 
 [include]
-       path = ~/.gitconfigprivate
+   path = ~/.gitconfigprivate
 
 [color]
-        branch = auto
-        diff = auto
-        status = auto
-        interactive = auto
-        ui = true
-        pager = true
+    branch = auto
+    diff = auto
+    status = auto
+    interactive = auto
+    ui = true
+    pager = true
 
 [alias] 
 	st = status -s
 	cm = commit 
-	pom = push origin master
-        merge = merge --no-ff
-	sst = status
 	br = branch
 	co = checkout
-	up = pull --rebase
-	put = push origin HEAD
 	df = diff --color=always
-	wdf = diff --word-diff --color=always
 	lg = log -p --color
-	latest = log -n5 -r
 	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-        slog = shortlog --no-merges
-        rlog = log --pretty=format:'%an - %ad: %s' --no-merges
-	lc = log ORIG_HEAD.. --stat --no-merges
-	addremove = !git add .; git ls-files --deleted xargs git rm
-	changes = diff --name-status -r
-	diffstat = diff --stat -r
-	prune-all = !git remote | xargs -n 1 git remote prune
-	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
-	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
-	sub-update = "submodule update --init --recursive"
-	unadd = reset HEAD --
-	unstage = reset HEAD --
+    slog = shortlog --no-merges
+    rlog = log --pretty=format:'%an - %ad: %s' --no-merges
+[pull]
+	rebase = true
