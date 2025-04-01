@@ -1,3 +1,4 @@
+set mouse=
 " UTF-8 is the only format
 set encoding=utf-8
 

@@ -1,11 +1,6 @@
 inoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
-" paste toggle
-set pastetoggle=<F2>
-" after paste
-inoremap <silent> <C-u> <ESC>u:set paste<CR>.:set nopaste<CR>gi
-
 " number toggle
 nnoremap <F3> :set nonumber!<CR>
 
